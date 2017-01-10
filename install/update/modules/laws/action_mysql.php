@@ -128,6 +128,12 @@ $sql_create_module[] = "INSERT INTO " . $db_config['prefix'] . "_" . $lang . "_"
 ('numsub', '50'),
 ('typeview', '0'),
 ('down_in_home', '1'),
-('detail_other', ''),
+('detail_other', 'a:1:{i:0;s:3:\"cat\";}'),
+('detail_hide_empty_field', '1'),
+('detail_show_link_cat', '1'),
+('detail_show_link_area', '1'),
+('detail_show_link_subject', '1'),
+('detail_show_link_signer', '1'),
+('detail_pdf_quick_view', '1'),
 ('other_numlinks', '5')
 ";

@@ -17,17 +17,17 @@ $nv_update_config = array();
 $nv_update_config['type'] = 1;
 
 // ID goi cap nhat
-$nv_update_config['packageID'] = 'NVULAWS4100';
+$nv_update_config['packageID'] = 'NVULAWS4101';
 
 // Cap nhat cho module nao, de trong neu la cap nhat NukeViet, ten thu muc module neu la cap nhat module
 $nv_update_config['formodule'] = 'laws';
 
 // Thong tin phien ban, tac gia, ho tro
-$nv_update_config['release_date'] = 1474650000;
+$nv_update_config['release_date'] = 1484067600;
 $nv_update_config['author'] = 'VINADES.,JSC (contact@vinades.vn)';
-$nv_update_config['support_website'] = 'https://github.com/nukeviet/module-laws/tree/to-4.1.00';
-$nv_update_config['to_version'] = '4.1.00';
-$nv_update_config['allow_old_version'] = array('4.0.29');
+$nv_update_config['support_website'] = 'https://github.com/nukeviet/module-laws/tree/to-4.1.01';
+$nv_update_config['to_version'] = '4.1.01';
+$nv_update_config['allow_old_version'] = array('4.0.29', '4.1.00');
 
 // 0:Nang cap bang tay, 1:Nang cap tu dong, 2:Nang cap nua tu dong
 $nv_update_config['update_auto_type'] = 1;
@@ -36,11 +36,18 @@ $nv_update_config['lang'] = array();
 $nv_update_config['lang']['vi'] = array();
 
 // Tiếng Việt
+$nv_update_config['lang']['vi']['nv_up_config'] = 'Thêm một số cấu hình';
 $nv_update_config['lang']['vi']['nv_up_finish'] = 'Đánh dấu phiên bản mới';
 
 $nv_update_config['tasklist'] = array();
 $nv_update_config['tasklist'][] = array(
-    'r' => '4.1.00',
+    'r' => '4.1.01',
+    'rq' => 1,
+    'l' => 'nv_up_config',
+    'f' => 'nv_up_config'
+);
+$nv_update_config['tasklist'][] = array(
+    'r' => '4.1.01',
     'rq' => 1,
     'l' => 'nv_up_finish',
     'f' => 'nv_up_finish'
@@ -96,6 +103,41 @@ while (list($_tmp) = $result->fetch(PDO::FETCH_NUM)) {
 }
 
 /**
+ * nv_up_config()
+ *
+ * @return
+ *
+ */
+function nv_up_config()
+{
+    global $nv_update_baseurl, $db, $db_config, $nv_Cache, $array_modlang_update;
+    $return = array(
+        'status' => 1,
+        'complete' => 1,
+        'next' => 1,
+        'link' => 'NO',
+        'lang' => 'NO',
+        'message' => ''
+    );
+    foreach ($array_modlang_update as $lang => $array_mod) {
+        foreach ($array_mod['mod'] as $module_info) {
+            $table_prefix = $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'];
+            try {
+                $db->query("INSERT INTO " . $table_prefix . "_config (config_name, config_value) VALUES ('detail_hide_empty_field', '0');");
+                $db->query("INSERT INTO " . $table_prefix . "_config (config_name, config_value) VALUES ('detail_show_link_cat', '1');");
+                $db->query("INSERT INTO " . $table_prefix . "_config (config_name, config_value) VALUES ('detail_show_link_area', '1');");
+                $db->query("INSERT INTO " . $table_prefix . "_config (config_name, config_value) VALUES ('detail_show_link_subject', '1');");
+                $db->query("INSERT INTO " . $table_prefix . "_config (config_name, config_value) VALUES ('detail_show_link_signer', '1');");
+                $db->query("INSERT INTO " . $table_prefix . "_config (config_name, config_value) VALUES ('detail_pdf_quick_view', '1');");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+        }
+    }
+    return $return;
+}
+
+/**
  * nv_up_finish()
  *
  * @return
@@ -116,13 +158,13 @@ function nv_up_finish()
 
     try {
         $num = $db->query("SELECT COUNT(*) FROM " . $db_config['prefix'] . "_setup_extensions WHERE basename='" . $nv_update_config['formodule'] . "' AND type='module'")->fetchColumn();
-        $version = "4.1.00 " . $nv_update_config['release_date'];
+        $version = $nv_update_config['to_version'] . " " . $nv_update_config['release_date'];
         
         if (!$num) {
             $db->query("INSERT INTO " . $db_config['prefix'] . "_setup_extensions (
                 id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note
             ) VALUES (
-                254, 'module', 'laws', 0, 1, 'laws', 'laws', '4.1.00 " . $nv_update_config['release_date'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC (contact@vinades.vn)', 
+                254, 'module', 'laws', 0, 1, 'laws', 'laws', '" . $nv_update_config['to_version'] . " " . $nv_update_config['release_date'] . "', " . NV_CURRENTTIME . ", 'VINADES.,JSC (contact@vinades.vn)', 
                 'Hỗ trợ hỏi đáp'
             )");
         } else {
