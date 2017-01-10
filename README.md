@@ -22,7 +22,7 @@ Truy cập quản trị vào khu vực quản lý module, di chuyển đến ph�
 
 ## Cập nhật các giao diện không phải giao diện mặc định
 
-Nếu site của bạn có tồn tại `themes/ten-theme/modules/laws` cần đối chiếu code để sửa các file sau:
+Nếu site của bạn có tồn tại `themes/ten-theme/modules/laws` cần đối chiếu code với giao diện default để sửa các file sau:
 
 - themes/ten-theme/modules/laws/detail.tpl
 - themes/ten-theme/modules/laws/theme.php (nếu có)
