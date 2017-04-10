@@ -1,8 +1,8 @@
-# Hướng dẫn cập nhật module laws từ 4.0.29, 4.1.00 lên 4.1.01
+# Hướng dẫn cập nhật module laws từ 4.1.01 lên 4.1.02
 
 Chú ý: 
-- Gói cập nhật này chỉ dành cho module laws 4.0.29, 4.1.00, nếu module của bạn không ở phiên bản này cần tìm các hướng dẫn cập nhật tối thiểu 4.0.29 trước.
-- Module laws 4.1.01 hoạt động tốt trên NukeViet 4 RC3, NukeViet 4 Official và NukeViet 4.1 Beta
+- Gói cập nhật này chỉ dành cho module laws 4.1.01, nếu module của bạn không ở phiên bản này cần tìm các hướng dẫn cập nhật lên 4.1.01 trước.
+- Module laws 4.1.02 hoạt động trên NukeViet 4.1 Beta 2 (4.1.01)
 
 ## Chuẩn bị cập nhật
 
@@ -14,7 +14,7 @@ Backup toàn bộ CSDL dữ liệu và code của site đề phòng rủi ro.
 
 Nếu không cập nhật được theo cách trên hãy thực hiện cập nhật thủ công như sau:
 
-Tải gói cập nhật tại https://github.com/nukeviet/module-laws/releases/download/4.1.01/update-to-4.1.01.zip. Giải nén và upload thư mục install lên ngang hàng với thư mục install trên server. Đăng nhập quản trị site, nhận được thông báo cập nhật và tiến hành cập nhật theo hướng dẫn của hệ thống.
+Tải gói cập nhật tại https://github.com/nukeviet/module-laws/releases/download/4.1.02/update-to-4.1.02.zip. Giải nén và upload thư mục install lên ngang hàng với thư mục install trên server. Đăng nhập quản trị site, nhận được thông báo cập nhật và tiến hành cập nhật theo hướng dẫn của hệ thống.
 
 ## Sau cập nhật
 
@@ -24,6 +24,6 @@ Truy cập quản trị vào khu vực quản lý module, di chuyển đến ph�
 
 Nếu site của bạn có tồn tại `themes/ten-theme/modules/laws` cần đối chiếu code với giao diện default để sửa các file sau:
 
-- themes/ten-theme/modules/laws/detail.tpl
+- themes/ten-theme/modules/laws/block_search_center.tpl
+- themes/ten-theme/modules/laws/block_search_vertical.tpl
 - themes/ten-theme/modules/laws/theme.php (nếu có)
-- themes/ten-theme/js/laws.js (nếu có)
