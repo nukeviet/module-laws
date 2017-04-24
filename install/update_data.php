@@ -27,7 +27,7 @@ $nv_update_config['release_date'] = 1491810462;
 $nv_update_config['author'] = 'VINADES.,JSC (contact@vinades.vn)';
 $nv_update_config['support_website'] = 'https://github.com/nukeviet/module-laws/tree/to-4.1.02';
 $nv_update_config['to_version'] = '4.1.02';
-$nv_update_config['allow_old_version'] = array('4.1.01');
+$nv_update_config['allow_old_version'] = array('4.0.29', '4.1.00', '4.1.01');
 
 // 0:Nang cap bang tay, 1:Nang cap tu dong, 2:Nang cap nua tu dong
 $nv_update_config['update_auto_type'] = 1;
@@ -36,9 +36,16 @@ $nv_update_config['lang'] = array();
 $nv_update_config['lang']['vi'] = array();
 
 // Tiếng Việt
+$nv_update_config['lang']['vi']['nv_up_config'] = 'Thêm một số cấu hình';
 $nv_update_config['lang']['vi']['nv_up_finish'] = 'Đánh dấu phiên bản mới';
 
 $nv_update_config['tasklist'] = array();
+$nv_update_config['tasklist'][] = array(
+    'r' => '4.1.01',
+    'rq' => 1,
+    'l' => 'nv_up_config',
+    'f' => 'nv_up_config'
+);
 $nv_update_config['tasklist'][] = array(
     'r' => '4.1.02',
     'rq' => 1,
@@ -93,6 +100,41 @@ while (list($_tmp) = $result->fetch(PDO::FETCH_NUM)) {
         $array_modlang_update[$_tmp]['mod'][] = array("module_title" => $_modt, "module_data" => $_modd);
         $array_modtable_update[] = $db_config['prefix'] . "_" . $_tmp . "_" . $_modd;
     }
+}
+
+/**
+ * nv_up_config()
+ *
+ * @return
+ *
+ */
+function nv_up_config()
+{
+    global $nv_update_baseurl, $db, $db_config, $nv_Cache, $array_modlang_update;
+    $return = array(
+        'status' => 1,
+        'complete' => 1,
+        'next' => 1,
+        'link' => 'NO',
+        'lang' => 'NO',
+        'message' => ''
+    );
+    foreach ($array_modlang_update as $lang => $array_mod) {
+        foreach ($array_mod['mod'] as $module_info) {
+            $table_prefix = $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'];
+            try {
+                $db->query("INSERT INTO " . $table_prefix . "_config (config_name, config_value) VALUES ('detail_hide_empty_field', '0');");
+                $db->query("INSERT INTO " . $table_prefix . "_config (config_name, config_value) VALUES ('detail_show_link_cat', '1');");
+                $db->query("INSERT INTO " . $table_prefix . "_config (config_name, config_value) VALUES ('detail_show_link_area', '1');");
+                $db->query("INSERT INTO " . $table_prefix . "_config (config_name, config_value) VALUES ('detail_show_link_subject', '1');");
+                $db->query("INSERT INTO " . $table_prefix . "_config (config_name, config_value) VALUES ('detail_show_link_signer', '1');");
+                $db->query("INSERT INTO " . $table_prefix . "_config (config_name, config_value) VALUES ('detail_pdf_quick_view', '1');");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+        }
+    }
+    return $return;
 }
 
 /**

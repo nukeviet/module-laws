@@ -1,8 +1,8 @@
-# Hướng dẫn cập nhật module laws từ 4.1.01 lên 4.1.02
+# Hướng dẫn cập nhật module laws từ 4.0.29, 4.1.00, 4.1.01 lên 4.1.02
 
 Chú ý: 
-- Gói cập nhật này chỉ dành cho module laws 4.1.01, nếu module của bạn không ở phiên bản này cần tìm các hướng dẫn cập nhật lên 4.1.01 trước.
-- Module laws 4.1.02 hoạt động trên NukeViet 4.1 Beta 2 (4.1.01)
+- Gói cập nhật này dành cho module laws 4.0.29, 4.1.00, 4.1.01, nếu module của bạn không ở phiên bản này cần tìm các hướng dẫn cập nhật lên tối thiểu 4.0.29 trước.
+- Module laws 4.1.02 hoạt động trên NukeViet 4.1 Beta 2 (4.1.01), NukeViet 4.1 Official (4.1.02)
 
 ## Chuẩn bị cập nhật
 
