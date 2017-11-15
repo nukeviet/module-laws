@@ -11,14 +11,22 @@
         <colgroup>
             <col />
             <col class="w100" />
-            <col span="4" class="w150" />
+            <col span="5" class="w150" />
+
         </colgroup>
         <thead>
             <tr>
                 <th>{LANG.title}</th>
                 <th>{LANG.code}</th>
+                <!-- BEGIN: view_time_title -->
                 <th>{LANG.publtime}</th>
                 <th>{LANG.exptime}</th>
+                <!-- END: view_time_title -->
+                <!-- BEGIN: view_comm_time_title -->
+                <th>{LANG.start_comm_time}</th>
+                <th>{LANG.end_comm_time}</th>
+                <!-- END: view_comm_time_title -->
+                <th class="text-center">{LANG.admin_add}</th>
                 <th class="text-center">{LANG.status}</th>
                 <th class="text-center">{LANG.feature}</th>
             </tr>
@@ -28,14 +36,27 @@
             <tr>
                 <td><a href="{DATA.url_view}" target="_blank" title="{DATA.title}">{DATA.title}</a></td>
                 <td><strong>{DATA.code}</strong></td>
+                <!-- BEGIN: view_time -->
                 <td>{DATA.publtime}</td>
                 <td>{DATA.exptime}</td>
+                <!-- END: view_time -->
+                <!-- BEGIN: view_comm_time -->
+                <td>{DATA.start_comm_time}</td>
+                <td>{DATA.end_comm_time}</td>
+                <!-- END: view_comm_time -->
+                <td>{DATA.admin_add}</td>
                 <td class="text-center">
                 <select class="form-control" id="status_{DATA.id}" name="status[]" onchange="nv_change_status({DATA.id});">
                     <option value="0">{LANG.status0}</option>
                     <option value="1"{DATA.selected}>{LANG.status1}</option>
                 </select></td>
-                <td class="text-center"><em class="fa fa-edit fa-lg">&nbsp;</em><a href="{DATA.url_edit}">{GLANG.edit}</a> - <em class="fa fa-trash-o fa-lg">&nbsp;</em><a href="javascript:void(0);" onclick="nv_delete_law({DATA.id});">{GLANG.delete}</a></td>
+                <td class="text-center">
+                	<em class="fa fa-edit fa-lg">&nbsp;</em><a href="{DATA.url_edit}">{GLANG.edit}</a>
+                	- <em class="fa fa-trash-o fa-lg">&nbsp;</em><a href="javascript:void(0);" onclick="nv_delete_law({DATA.id});">{GLANG.delete}</a>
+                	<!-- BEGIN: view_comm -->
+                	- <em class="fa fa-eye fa-lg">&nbsp;</em><a href="{DATA.url_view_comm}">{LANG.view_comm}</a>
+                	<!-- END: view_comm -->
+                </td>
             </tr>
             <!-- END: loop -->
         </tbody>
@@ -84,6 +105,17 @@
                 <!-- END: slist -->
             </select>
         </div>
+        <!-- BEGIN: elist_loop -->
+        <div class="form-group">
+            <label class="sr-only">{LANG.ExamineSel}</label>
+            <select class="form-control select2" name="eid">
+                <option value="">---{LANG.ExamineSel}---</option>
+                <!-- BEGIN: elist -->
+                <option value="{ELIST.id}">{ELIST.title}</option>
+                <!-- END: elist -->
+            </select>
+        </div>
+        <!-- END: elist_loop -->
         <div class="form-group">
             <label class="sr-only">{LANG.signer}</label>
             <select class="form-control select2" name="sgid">
@@ -114,21 +146,19 @@
         $('#lawlist').load(rawurldecode(url));
     }
 
-    function nv_search_laws(){
+    function nv_search_laws() {
         var keywords = $('input[name="keywords"]').val();
         var cid = $('select[name="cid"]').val();
         var aid = $('select[name="aid"]').val();
         var sid = $('select[name="sid"]').val();
+        var eid = $('select[name="eid"]').val();
         var sgid = $('select[name="sgid"]').val();
 
-        if( keywords == '' && cid == '' && aid == '' && sid == '' && sgid == '' )
-        {
-            alert( '{LANG.search_error}' );
-        }
-        else
-        {
+        if (keywords == '' && cid == '' && aid == '' && sid == '' && eid == '' && sgid == '') {
+            alert('{LANG.search_error}');
+        } else {
             $('#lawlist').html('<div style="text-align: center"><em class="fa fa-spinner fa-spin fa-4x">&nbsp;</em><br />{LANG.wait}</div>');
-            $('#lawlist').load('{BASE_LOAD}&keywords=' + keywords + '&cat=' + cid + '&aid=' + aid + '&sid=' + sid + '&sgid=' + sgid);
+            $('#lawlist').load('{BASE_LOAD}&keywords=' + encodeURIComponent(keywords) + '&cat=' + cid + '&aid=' + aid + '&sid=' + sid + '&eid=' + eid + '&sgid=' + sgid);
         }
     }
 
@@ -180,6 +210,30 @@
                                     <!-- END: files -->
                                 </div></td>
                             </tr>
+                            <!-- BEGIN: comment -->
+                            <tr class="form-inline">
+                                <td> {LANG.start_comm_time} </td>
+                                <td><label>
+                                    <input class="form-control" name="start_comm_time" id="start_comm_time" value="{DATA.start_comm_time}" style="width: 110px;" maxlength="10" type="text" />
+                                    &nbsp;({LANG.prm})</label></td>
+                            </tr>
+                            <tr class="form-inline">
+                                <td> {LANG.end_comm_time} </td>
+                                <td><label>
+                                    <input class="form-control" name="end_comm_time" id="end_comm_time" value="{DATA.end_comm_time}" style="width: 110px;" maxlength="10" type="text" />
+                                    &nbsp;({LANG.prm})</label></td>
+                            </tr>
+                            <tr>
+                                <td> {LANG.approval} </td>
+                                <td>
+                                <select class="form-control" name="approval" style="width: 200px">
+                                    <option value="0"{DATA.e0}>{LANG.e0}</option>
+                                    <option value="1"{DATA.e1}>{LANG.e1}</option>
+                                </select>
+                                </td>
+                            </tr>
+                            <!-- END: comment-->
+                            <!-- BEGIN: normal_laws -->
                             <tr class="form-inline">
                                 <td> {LANG.publtime}  <span class="red">*</span></td>
                                 <td><label>
@@ -201,7 +255,7 @@
                                 </select>
                                 <div id="exptimearea" style="display:{DATA.display}">
                                     <input class="form-control" name="exptime" id="exptime" value="{DATA.exptime}" style="width: 110px;" maxlength="10" type="text" />
-                                    <img src="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/images/calendar.jpg" style="cursor: pointer; vertical-align: middle;" onclick="popCalendar.show(this, 'exptime', 'dd.mm.yyyy', true);" alt="" height="17" /> ({LANG.prm})
+                                    ({LANG.prm})
                                 </div>
                                 <script type="text/javascript">
                                     $(document).ready(function() {
@@ -216,6 +270,7 @@
                                     });
                                 </script></td>
                             </tr>
+                            <!-- END: normal_laws -->
                             <tr>
                                 <td> {LANG.replacement} ({LANG.ID}) </td>
                                 <td>
@@ -287,6 +342,19 @@
                                 <!-- END: subopt -->
                             </select></td>
                         </tr>
+                        <!-- BEGIN: loop -->
+                        <tr>
+                            <td>{LANG.ExamineSel} <span class="red">*</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                            <select class="form-control select2" title="{LANG.ExamineSel}" name="eid">
+                                <!-- BEGIN: exbopt -->
+                                <option value="{EXBOPT.id}"{EXBOPT.selected}>{EXBOPT.title}</option>
+                                <!-- END: exbopt -->
+                            </select></td>
+                        </tr>
+                         <!-- END: loop -->
                         <tr>
                             <td>{LANG.signer} <span class="red">*</span></td>
                         </tr>
@@ -331,7 +399,7 @@
 </div>
 <script type="text/javascript">
     //<![CDATA[
-    $("#publtime,#startvalid").datepicker({
+    $("#publtime,#startvalid,#end_comm_time,#start_comm_time,#exptime").datepicker({
         showOn : "both",
         yearRange: "2000:2025",
         dateFormat : "dd.mm.yy",
