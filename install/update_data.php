@@ -182,7 +182,7 @@ function nv_up_s2()
             $table_prefix = $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'];
             try {
                 $db->query("CREATE TABLE IF NOT EXISTS `" . $table_prefix . "_examine` (
-                  `id` int(11) NOT NULL,
+                  `id` smallint(4) unsigned NOT NULL AUTO_INCREMENT,
                   `title` varchar(255) NOT NULL,
                   `weight` smallint(4) NOT NULL,
                   PRIMARY KEY (id)
