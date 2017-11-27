@@ -2,8 +2,9 @@
 
 Văn bản pháp quy
 
+```
 #lệnh thêm bảng nv4_vi_laws_admins
-```CREATE TABLE `nv4_vi_laws_admins` (
+CREATE TABLE `nv4_vi_laws_admins` (
   `userid` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
   `catid` smallint(5) NOT NULL DEFAULT '0',
   `admin` tinyint(4) NOT NULL DEFAULT '0',
