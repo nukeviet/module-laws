@@ -106,14 +106,14 @@ function nv_catList()
     $list = array();
     while ($row = $result->fetch()) {
     	if (defined('NV_IS_ADMIN_MODULE') || $array_cat_admin[$admin_id][$row['id']]['admin'] == 1 || $array_cat_admin[$admin_id][$row['id']]['add_content'] == 1 || $array_cat_admin[$admin_id][$row['id']]['edit_content'] == 1) {
-    		$list[$row['parentid']][] = array( //
-    				'id' => (int) $row['id'], //
-    				'parentid' => (int) $row['parentid'], //
-    				'title' => $row['title'], //
-    				'alias' => $row['alias'], //
-    				'weight' => (int) $row['weight'], //
-    				'name' => $row['title'], //
-    				'newday' => $row['newday'] //
+    		$list[$row['parentid']][] = array(
+    				'id' => (int) $row['id'],
+    				'parentid' => (int) $row['parentid'],
+    				'title' => $row['title'],
+    				'alias' => $row['alias'],
+    				'weight' => (int) $row['weight'],
+    				'name' => $row['title'],
+    				'newday' => $row['newday']
     		);
     	}
     }

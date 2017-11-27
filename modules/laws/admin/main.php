@@ -15,6 +15,11 @@ $page_title = $lang_module['main'];
 $contents = "";
 $groups_list = nv_groups_list();
 $catList = nv_catList();
+$_arr_cat = array();
+foreach ($catList as $catid_i => $array_value) {
+	$_arr_cat[$array_value['id']] = $array_value['id'];
+}
+$cat_str = implode(',',$_arr_cat);
 $aList = nv_aList();
 $sList = nv_sList();
 $eList = nv_eList();
@@ -23,8 +28,9 @@ $ecount = count($eList);
 $sgList = nv_sgList();
 $scount = count($sgList);
 
-$sql = "SELECT COUNT(*) as ccount FROM " . NV_PREFIXLANG . "_" . $module_data . "_row";
+$sql = "SELECT COUNT(*) as ccount FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE cid IN (".$cat_str.")";
 $result = $db->query($sql);
+
 $all_page = $result->fetch();
 $all_page = $all_page['ccount'];
 
@@ -624,14 +630,14 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
             }
         }
 
-        $sql = "SELECT COUNT(*) FROM " . NV_PREFIXLANG . "_" . $module_data . "_row t1 " . $join . ($where ? " WHERE " . implode(" AND ", $where) : "");
+        $sql = "SELECT COUNT(*) FROM " . NV_PREFIXLANG . "_" . $module_data . "_row t1 " . $join . ($where ? " WHERE " . implode(" AND ", $where) : "") . " AND cid IN (".$cat_str.")";
         $all_page = $db->query($sql)->fetchColumn();
 
         $page = $nv_Request->get_int('page', 'get', 1);
         $per_page = 30;
 
         if ($all_page) {
-            $sql = "SELECT t1.*, u1.username FROM " . NV_PREFIXLANG . "_" . $module_data . "_row t1 " . $join . ($where ? " WHERE " . implode(" AND ", $where) : "") . " ORDER BY t1.addtime DESC LIMIT " . (($page - 1) * $per_page) . "," . $per_page;
+            $sql = "SELECT t1.*, u1.username FROM " . NV_PREFIXLANG . "_" . $module_data . "_row t1 " . $join . ($where ? " WHERE " . implode(" AND ", $where) : "") . " AND cid IN (".$cat_str.") ORDER BY t1.addtime DESC LIMIT " . (($page - 1) * $per_page) . "," . $per_page;
             $result = $db->query($sql);
             $a = 0;
             while ($row = $result->fetch()) {
