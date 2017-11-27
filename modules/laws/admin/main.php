@@ -79,11 +79,11 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
             $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id=" . $post['id'];
             $result = $db->query($sql);
             $num = $result->rowCount();
-            if ($num != 1) {
-                nv_redirect_location(NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=" . $op);
-            }
-            $row = $result->fetch();
 
+            $row = $result->fetch();
+            if ($num != 1 || (!defined('NV_IS_ADMIN_MODULE') and $array_cat_admin[$admin_id][$row['cid']]['admin'] != 1 and $array_cat_admin[$admin_id][$row['cid']]['edit_content'] != 1)) {
+            	nv_redirect_location(NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=" . $op);
+            }
             $post['area_id'] = array();
             $result = $db->query('SELECT area_id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row_area WHERE row_id=' . $row['id']);
             while (list ($area_id) = $result->fetch(3)) {
@@ -664,6 +664,12 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
 					 $xtpl->parse('list.loop.view_comm');
 				}else{
 					$xtpl->parse('list.loop.view_time');
+				}
+				if (defined('NV_IS_ADMIN_MODULE') || $array_cat_admin[$admin_id][$row['cid']]['admin'] == 1|| $array_cat_admin[$admin_id][$row['cid']]['edit_content'] == 1) {
+					$xtpl->parse('list.loop.view_edit');
+				}
+				if (defined('NV_IS_ADMIN_MODULE') || $array_cat_admin[$admin_id][$row['cid']]['admin'] == 1|| $array_cat_admin[$admin_id][$row['cid']]['del_content'] == 1) {
+					$xtpl->parse('list.loop.view_delete');
 				}
                 $xtpl->parse('list.loop');
                 $a++;

@@ -13,18 +13,67 @@ if (!defined('NV_ADMIN') or !defined('NV_MAINFILE') or !defined('NV_IS_MODADMIN'
 $allow_func = array(
     'main',
     'area',
-    'cat',
     'subject',
     'examine',
     'getlid',
-    'signer',
     'scontent',
-    'config',
     'change_cat',
     'view'
 );
+if ($NV_IS_ADMIN_MODULE) {
+	$allow_func[] = 'signer';
+	$allow_func[] = 'scontent';
+	$allow_func[] = 'area';
+	$allow_func[] = 'cat';
+	$allow_func[] = 'subject';
+}
 
+if($NV_IS_ADMIN_FULL_MODULE) {
+	$allow_func[] = 'admins';
+	$allow_func[] = 'config';
+}
 define('NV_IS_FILE_ADMIN', true);
+if ($NV_IS_ADMIN_FULL_MODULE) {
+	define('NV_IS_ADMIN_FULL_MODULE', true);
+}
+if ($NV_IS_ADMIN_MODULE) {
+	define('NV_IS_ADMIN_MODULE', true);
+}
+
+/**
+ * nv_fix_cat_order()
+ *
+ * @param integer $parentid
+ * @param integer $order
+ * @param integer $lev
+ * @return
+ */
+function nv_fix_cat_order($parentid = 0, $order = 0, $lev = 0)
+{
+	global $db, $module_data;
+
+	$sql = 'SELECT id, parentid FROM ' . NV_PREFIXLANG . '_' . $module_data . '_cat WHERE parentid=' . $parentid . ' ORDER BY weight ASC';
+	$result = $db->query($sql);
+	$array_cat_order = array();
+	while ($row = $result->fetch()) {
+		$array_cat_order[] = $row['id'];
+	}
+	$result->closeCursor();
+	$weight = 0;
+	if ($parentid > 0) {
+		++$lev;
+	} else {
+		$lev = 0;
+	}
+	foreach ($array_cat_order as $catid_i) {
+		++$order;
+		++$weight;
+		$sql = 'UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_cat SET weight=' . $weight . ', sort=' . $order . ', lev=' . $lev . ' WHERE id=' . intval($catid_i);
+		$db->query($sql);
+		$order = nv_fix_cat_order($catid_i, $order);
+	}
+	return $order;
+}
 
 function nv_setCats($list2, $id, $list, $num = 0)
 {
@@ -50,21 +99,23 @@ function nv_setCats($list2, $id, $list, $num = 0)
 
 function nv_catList()
 {
-    global $db, $module_data;
+	global $db, $module_data, $array_cat_admin, $admin_id;
 
     $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_cat ORDER BY parentid,weight ASC";
     $result = $db->query($sql);
     $list = array();
     while ($row = $result->fetch()) {
-        $list[$row['parentid']][] = array( //
-            'id' => (int) $row['id'], //
-            'parentid' => (int) $row['parentid'], //
-            'title' => $row['title'], //
-            'alias' => $row['alias'], //
-            'weight' => (int) $row['weight'], //
-            'name' => $row['title'], //
-            'newday' => $row['newday'] //
-        );
+    	if (defined('NV_IS_ADMIN_MODULE') || $array_cat_admin[$admin_id][$row['id']]['admin'] == 1 || $array_cat_admin[$admin_id][$row['id']]['add_content'] == 1 || $array_cat_admin[$admin_id][$row['id']]['edit_content'] == 1) {
+    		$list[$row['parentid']][] = array( //
+    				'id' => (int) $row['id'], //
+    				'parentid' => (int) $row['parentid'], //
+    				'title' => $row['title'], //
+    				'alias' => $row['alias'], //
+    				'weight' => (int) $row['weight'], //
+    				'name' => $row['title'], //
+    				'newday' => $row['newday'] //
+    		);
+    	}
     }
 
     if (empty($list)) {
