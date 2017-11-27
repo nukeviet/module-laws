@@ -157,3 +157,5 @@ $lang_module['lastname_firstname'] = 'Full name';
 $lang_module['admin_permissions'] = 'Permissions';
 $lang_module['admin_edit'] = 'Edit permissions';
 $lang_module['admin_edit_user'] = 'Edit permissions of user';
+
+$lang_module['admin_add'] = "Admin add";

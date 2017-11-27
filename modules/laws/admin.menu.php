@@ -8,7 +8,8 @@
  * @Createdate Thu, 03 Jul 2014 04:35:32 GMT
  */
 
-if (!defined('NV_ADMIN')) die('Stop!!!');
+if (!defined('NV_ADMIN'))
+    die('Stop!!!');
 
 global $module_config, $array_cat_admin, $admin_id;
 
