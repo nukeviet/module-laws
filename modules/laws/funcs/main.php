@@ -13,14 +13,21 @@ if (!defined('NV_IS_MOD_LAWS')) die('Stop!!!');
 $page_title = $module_info['site_title'];
 $key_words = $module_info['keywords'];
 
-$page = 1;
-if (isset($array_op[0]) and substr($array_op[0], 0, 5) == 'page-') {
-    $page = intval(substr($array_op[0], 5));
-}
-
 $contents = $cache_file = '';
 $per_page = $nv_laws_setting['nummain'];
-$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
+$base_url_rewrite = $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
+
+$page = (isset($array_op[0]) and substr($array_op[0], 0, 5) == 'page-') ? intval(substr($array_op[0], 5)) : 1;
+
+if ($page > 1) {
+    $page_title .= ' ' . NV_TITLEBAR_DEFIS . ' ' . $lang_global['page'] . ' ' . $page;
+    $base_url_rewrite .= '/page-' . $page;
+}
+$base_url_rewrite = nv_url_rewrite($base_url_rewrite, true);
+
+if ($_SERVER['REQUEST_URI'] != $base_url_rewrite and NV_MAIN_DOMAIN . $_SERVER['REQUEST_URI'] != $base_url_rewrite) {
+    nv_redirect_location($base_url_rewrite);
+}
 
 if (!defined('NV_IS_MODADMIN') and $page < 5) {
     $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';
@@ -103,6 +110,9 @@ if (empty($contents)) {
             }
 
             $array_data[] = $row;
+        }
+        if(empty($array_data)){
+            nv_redirect_location($base_url);
         }
         $contents = nv_theme_laws_main($array_data, $generate_page);
     } else {
