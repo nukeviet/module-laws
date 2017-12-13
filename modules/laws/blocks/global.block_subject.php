@@ -89,8 +89,13 @@ if (!function_exists('nv_laws_block_subject')) {
             $cat['link'] = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=subject/" . $cat['alias'];
             $cat['title0'] = nv_clean60($cat['title'], $block_config['title_length']);
 
-            $xtpl->assign('DATA', $cat);
-            $xtpl->parse('main.loop');
+            if($cat['id'] == 0){
+                $xtpl->assign('ROW', $cat);
+                $xtpl->parse('main.all');
+            }else{
+                $xtpl->assign('DATA', $cat);
+                $xtpl->parse('main.loop');
+            }
         }
 
         $xtpl->parse('main');
