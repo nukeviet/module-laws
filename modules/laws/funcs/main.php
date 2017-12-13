@@ -17,13 +17,6 @@ $contents = $cache_file = '';
 $per_page = $nv_laws_setting['nummain'];
 $base_url_rewrite = $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
 
-if (!defined('NV_IS_MODADMIN') and $page < 5) {
-    $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';
-    if (($cache = $nv_Cache->getItem($module_name, $cache_file)) != false) {
-        $contents = $cache;
-    }
-}
-
 $page = (isset($array_op[0]) and substr($array_op[0], 0, 5) == 'page-') ? intval(substr($array_op[0], 5)) : 1;
 
 if ($page > 1) {
@@ -34,6 +27,13 @@ $base_url_rewrite = nv_url_rewrite($base_url_rewrite, true);
 
 if ($_SERVER['REQUEST_URI'] != $base_url_rewrite and NV_MAIN_DOMAIN . $_SERVER['REQUEST_URI'] != $base_url_rewrite) {
     nv_redirect_location($base_url_rewrite);
+}
+
+if (!defined('NV_IS_MODADMIN') and $page < 5) {
+    $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';
+    if (($cache = $nv_Cache->getItem($module_name, $cache_file)) != false) {
+        $contents = $cache;
+    }
 }
 
 if (empty($contents)) {
