@@ -17,7 +17,7 @@ $nv_update_config = array();
 $nv_update_config['type'] = 1;
 
 // ID goi cap nhat
-$nv_update_config['packageID'] = 'NVUDLAWS4029';
+$nv_update_config['packageID'] = 'NVUDLAWS4027';
 
 // Cap nhat cho module nao, de trong neu la cap nhat NukeViet, ten thu muc module neu la cap nhat module
 $nv_update_config['formodule'] = 'laws';
@@ -25,11 +25,10 @@ $nv_update_config['formodule'] = 'laws';
 // Thong tin phien ban, tac gia, ho tro
 $nv_update_config['release_date'] = 1463590800;
 $nv_update_config['author'] = 'VINADES.,JSC (contact@vinades.vn)';
-$nv_update_config['support_website'] = 'https://github.com/nukeviet/module-laws/tree/4.0.29';
-$nv_update_config['to_version'] = '4.0.29';
+$nv_update_config['support_website'] = 'https://github.com/nukeviet/module-laws/tree/4.0.27';
+$nv_update_config['to_version'] = '4.0.27';
 $nv_update_config['allow_old_version'] = array(
-    '4.0.27',
-    '4.0.28'
+    '4.0'
 );
 
 // 0:Nang cap bang tay, 1:Nang cap tu dong, 2:Nang cap nua tu dong
@@ -43,7 +42,7 @@ $nv_update_config['lang']['vi']['nv_up_finish'] = 'Đánh dấu phiên bản m�
 
 $nv_update_config['tasklist'] = array();
 $nv_update_config['tasklist'][] = array(
-    'r' => '4.0.29',
+    'r' => '4.0.27',
     'rq' => 1,
     'l' => 'nv_up_finish',
     'f' => 'nv_up_finish'
@@ -54,7 +53,7 @@ $nv_update_config['tasklist'][] = array(
 Chuan hoa tra ve:
 array(
 'status' =>
-'complete' => 
+'complete' =>
 'next' =>
 'link' =>
 'lang' =>
@@ -117,20 +116,19 @@ function nv_up_finish()
 
     try {
         $num = $db->query("SELECT COUNT(*) FROM " . $db_config['prefix'] . "_setup_extensions WHERE basename='" . $nv_update_config['formodule'] . "' AND type='module'")->fetchColumn();
-        $version = "4.0.29 1463590800";
-        
+        $version = "4.0.27 1463590800";
+
         if (!$num) {
             $db->query("INSERT INTO " . $db_config['prefix'] . "_setup_extensions (
-                id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author, note
+                id, type, title, is_sys, is_virtual, basename, table_prefix, version, addtime, author
             ) VALUES (
-                254, 'module', 'laws', 0, 1, 'laws', 'laws', '4.0.29 1463590800', " . NV_CURRENTTIME . ", 'VINADES.,JSC (contact@vinades.vn)', 
-                'Hỗ trợ hỏi đáp'
+                254, 'module', 'laws', 0, 1, 'laws', 'laws', '4.0.27 1463590800', " . NV_CURRENTTIME . ", 'VINADES.,JSC (contact@vinades.vn)'
             )");
         } else {
-            $db->query("UPDATE " . $db_config['prefix'] . "_setup_extensions SET 
-                id=254, 
-                version='" . $version . "', 
-                author='VINADES.,JSC (contact@vinades.vn)' 
+            $db->query("UPDATE " . $db_config['prefix'] . "_setup_extensions SET
+                id=254,
+                version='" . $version . "',
+                author='VINADES.,JSC (contact@vinades.vn)'
             WHERE basename='" . $nv_update_config['formodule'] . "' AND type='module'");
         }
     } catch (PDOException $e) {

@@ -16,6 +16,7 @@ While( $row = $result->fetch() )
 {
 	$array_item[$row['id']] = array(
 		'parentid' => $row['parentid'],
+		'groups_view' => $row['groups_view'],
 		'key' => $row['id'],
 		'title' => $row['title'],
 		'alias' => $row['alias']
