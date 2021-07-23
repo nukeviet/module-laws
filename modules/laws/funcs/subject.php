@@ -60,6 +60,8 @@ if (empty($contents)) {
     $query = $db->query("SELECT FOUND_ROWS()");
     $all_page = $query->fetchColumn();
 
+    betweenURLs($page, ceil($all_page/$per_page), $base_url, '/page-', $prevPage, $nextPage);
+
     $generate_page = nv_alias_page($page_title, $base_url, $all_page, $per_page, $page);
     $array_data = raw_law_list_by_result($result, $page, $per_page);
     $contents = nv_theme_laws_subject($array_data, $generate_page, $nv_laws_listsubject[$catid]);
