@@ -14,6 +14,7 @@ if (!defined('NV_IS_MOD_LAWS')) {
 
 $page_title = $module_info['site_title'];
 $key_words = $module_info['keywords'];
+$page_url = $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
 
 $page = 1;
 $issetPage = false;
@@ -21,17 +22,17 @@ if (isset($array_op[0])) {
     if (preg_match('/^page\-([0-9]{1,10})$/', $array_op[0], $m)) {
         $page = intval($m[1]);
         $issetPage = true;
-    } else {
-        nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
     }
 }
 if ($page < 1 or ($issetPage and $page < 2)) {
-    nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
+    $page_url .= '/page-' . $page;
 }
+
+$canonicalUrl = getCanonicalUrl($page_url);
 
 $contents = $cache_file = '';
 $per_page = $nv_laws_setting['nummain'];
-$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
+
 
 if (!defined('NV_IS_MODADMIN') and $page < 5) {
     $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';
@@ -57,7 +58,7 @@ if (empty($contents)) {
         $array_data = raw_law_list_by_result($result, $page, $per_page);
 
         if ($page > 1 and empty($array_data)) {
-            nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
+            $canonicalUrl = getCanonicalUrl($base_url);
         }
 
         $contents = nv_theme_laws_main($array_data, $generate_page);

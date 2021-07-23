@@ -12,8 +12,10 @@ if (!defined('NV_IS_MOD_LAWS')) {
     die('Stop!!!');
 }
 
+$page_url = $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
+
 if (empty($catid)) {
-    nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name, true);
+    $canonicalUrl = getCanonicalUrl($base_url);
 }
 
 // Set page title, keywords, description
@@ -24,10 +26,13 @@ $description = empty($nv_laws_listcat[$catid]['introduction']) ? $page_title : $
 //
 $page = $nv_Request->get_int('page', 'get', 0);
 $per_page = $nv_laws_setting['numsub'];
-$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $nv_laws_listcat[$catid]['alias'];
-if (isset($array_op[1])) {
-    nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
+$base_url .=  "&amp;" . NV_OP_VARIABLE . "=" . $nv_laws_listcat[$catid]['alias'];
+
+if ($page > 1) {
+    $page_url .= '/page-' . $page;
 }
+
+$canonicalUrl = getCanonicalUrl($page_url);
 
 if (!defined('NV_IS_MODADMIN') and $page < 5) {
     $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_' . $catid . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';
@@ -58,7 +63,7 @@ if (empty($contents)) {
 
     if (!$all_page or $page >= $all_page) {
         if ($nv_Request->isset_request('page', 'get')) {
-            nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name, true);
+            $canonicalUrl = getCanonicalUrl($base_url);
         } else {
             include NV_ROOTDIR . '/includes/header.php';
             echo nv_site_theme('');

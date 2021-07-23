@@ -57,7 +57,7 @@ if (preg_match("/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/", $sto, $m)) {
     $sto1 = 0;
 }
 
-$base_url_rewrite = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&q=' . htmlspecialchars(nv_unhtmlspecialchars($key));
+$page_url = $base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&q=' . htmlspecialchars(nv_unhtmlspecialchars($key));
 $where = '';
 $search = false;
 if (!empty($key) or !empty($area) or !empty($cat) or !empty($subject) or !empty($sstatus) or !empty($ssigner) or !empty($sfrom1) or !empty($sto1) or !empty($approval) or !empty($examine)) {
@@ -70,7 +70,7 @@ if (!empty($key) or !empty($area) or !empty($cat) or !empty($subject) or !empty(
     }
 
     if (!empty($area)) {
-        $base_url_rewrite .= "&area=" . $area;
+        $base_url .= "&area=" . $area;
 
         $tmp = $nv_laws_listarea[$area];
         $in = "";
@@ -86,7 +86,7 @@ if (!empty($key) or !empty($area) or !empty($cat) or !empty($subject) or !empty(
     }
 
     if (!empty($cat)) {
-        $base_url_rewrite .= "&cat=" . $cat;
+        $base_url .= "&cat=" . $cat;
 
         $tmp = $nv_laws_listcat[$cat];
         $in = "";
@@ -103,48 +103,50 @@ if (!empty($key) or !empty($area) or !empty($cat) or !empty($subject) or !empty(
 
     if (!empty($subject)) {
         $where .= " AND sid=" . $subject;
-        $base_url_rewrite .= "&subject=" . $subject;
+        $base_url .= "&subject=" . $subject;
     }
 
     if ($approval != 2 && $module_config[$module_name]['activecomm']==1) {
         $where .= " AND approval=" . $approval;
-        $base_url_rewrite .= "&approval=" . $approval;
+        $base_url .= "&approval=" . $approval;
     }
 
     if (!empty($examine) && $module_config[$module_name]['activecomm']==1) {
         $where .= " AND eid=" . $examine;
-        $base_url_rewrite .= "&examine=" . $examine;
+        $base_url .= "&examine=" . $examine;
     }
 
     if (!empty($sfrom1)) {
         $where .= " AND publtime>=" . $sfrom1;
-        $base_url_rewrite .= "&sfrom=" . $sfrom;
+        $base_url .= "&sfrom=" . $sfrom;
     }
 
     if (!empty($sto1)) {
         $where .= " AND publtime<=" . $sto1;
-        $base_url_rewrite .= "&sto=" . $sto;
+        $base_url .= "&sto=" . $sto;
     }
 
     if (!empty($sstatus)) {
         if ($sstatus == 1) {
             $where .= " AND ( exptime=0 OR exptime>=" . NV_CURRENTTIME . ")";
-            $base_url_rewrite .= "&status=" . $sstatus;
+            $base_url .= "&status=" . $sstatus;
         } else {
             $where .= " AND ( exptime!=0 AND exptime<" . NV_CURRENTTIME . ")";
-            $base_url_rewrite .= "&status=" . $sstatus;
+            $base_url .= "&status=" . $sstatus;
         }
     }
 
     if ($is_advance) {
-        $base_url_rewrite .= "&is_advance=" . $is_advance;
+        $base_url .= "&is_advance=" . $is_advance;
     }
 }
 
 $page = $nv_Request->get_int('page', 'get', 1);
 if ($page > 1) {
-    $base_url_rewrite .= '&page=' . $page;
+    $page_url .= '&page=' . $page;
 }
+
+$canonicalUrl = getCanonicalUrl($page_url);
 
 if (!$search) {
     include NV_ROOTDIR . '/includes/header.php';

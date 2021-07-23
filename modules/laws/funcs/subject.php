@@ -13,10 +13,7 @@ if (!defined('NV_IS_MOD_LAWS')) {
 }
 
 $alias = isset($array_op[1]) ? $array_op[1] : "";
-
-if (!preg_match("/^([a-z0-9\-\_\.]+)$/i", $alias)) {
-    nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name, true);
-}
+$page_url = $base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name;
 
 $catid = 0;
 foreach ($nv_laws_listsubject as $c) {
@@ -24,10 +21,6 @@ foreach ($nv_laws_listsubject as $c) {
         $catid = $c['id'];
         break;
     }
-}
-
-if (empty($catid)) {
-    nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name, true);
 }
 
 // Set page title, keywords, description
@@ -39,15 +32,18 @@ $page = 1;
 if (isset($array_op[2])) {
     if (preg_match('/^page\-([0-9]{1,10})$/', $array_op[2], $m)) {
         $page = intval($m[1]);
-    } else {
-        nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
     }
 }
-if (isset($array_op[3])) {
-    nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
-}
+
 $per_page = $nv_laws_setting['numsub'];
-$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=subject/" . $nv_laws_listsubject[$catid]['alias'];
+$page_url = $base_url .= "&amp;" . NV_OP_VARIABLE . "=subject/" . $nv_laws_listsubject[$catid]['alias'];
+
+if ($page > 1) {
+    $page_url .= '/page-' . $page;
+}
+
+$canonicalUrl = getCanonicalUrl($page_url);
+
 
 if (!defined('NV_IS_MODADMIN') and $page < 5) {
     $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_' . $catid . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';

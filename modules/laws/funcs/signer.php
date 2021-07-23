@@ -21,21 +21,14 @@ if (empty($signer)) {
     nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, true);
 }
 
-$base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=signer/' . $signer['id'] . '/' . change_alias($signer['title']);
+$page_url = $base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=signer/' . $signer['id'] . '/' . change_alias($signer['title']);
 $page = 1;
 if (isset($array_op[3]) and substr($array_op[3], 0, 5) == 'page-') {
     $page = intval(substr($array_op[3], 5));
-    $base_url = $base_url . '/page-' . $page;
+    $page_url = $base_url . '/page-' . $page;
 }
-$base_url_rewrite = nv_url_rewrite($base_url, true);
-if ($_SERVER['REQUEST_URI'] == $base_url_rewrite) {
-    $canonicalUrl = NV_MAIN_DOMAIN . $base_url_rewrite;
-} elseif (NV_MAIN_DOMAIN . $_SERVER['REQUEST_URI'] != $base_url_rewrite) {
-    http_response_code(301);
-    nv_redirect_location($base_url_rewrite);
-} else {
-    $canonicalUrl = $base_url_rewrite;
-}
+
+$canonicalUrl = getCanonicalUrl($page_url);
 
 $per_page = $nv_laws_setting['numsub'];
 

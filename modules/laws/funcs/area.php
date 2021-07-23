@@ -13,21 +13,12 @@ if (!defined('NV_IS_MOD_LAWS')) {
 }
 
 $alias = isset($array_op[1]) ? $array_op[1] : "";
-
-if (!preg_match("/^([a-z0-9\-\_\.]+)$/i", $alias)) {
-    nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name, true);
-}
-
+$page_url = $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
 $page = 1;
 if (isset($array_op[2])) {
     if (preg_match('/^page\-([0-9]{1,10})$/', $array_op[2], $m)) {
         $page = intval($m[1]);
-    } else {
-        nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
-    }
-}
-if (isset($array_op[3])) {
-    nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
+    } 
 }
 
 $catid = 0;
@@ -38,10 +29,6 @@ foreach ($nv_laws_listarea as $c) {
     }
 }
 
-if (empty($catid)) {
-    nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name, true);
-}
-
 // Set page title, keywords, description
 $page_title = $mod_title = $nv_laws_listarea[$catid]['title'];
 $key_words = empty($nv_laws_listarea[$catid]['keywords']) ? $module_info['keywords'] : $nv_laws_listarea[$catid]['keywords'];
@@ -49,7 +36,12 @@ $description = empty($nv_laws_listarea[$catid]['introduction']) ? $page_title : 
 
 //
 $per_page = $nv_laws_setting['numsub'];
-$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=area/" . $nv_laws_listarea[$catid]['alias'];
+$page_url = $base_url .= "&amp;" . NV_OP_VARIABLE . "=area/" . $nv_laws_listarea[$catid]['alias'];
+
+if ($page < 1 or ($issetPage and $page < 2)) {
+    $page_url .= '/page-' . $page;
+}
+$canonicalUrl = getCanonicalUrl($page_url);
 
 if (!defined('NV_IS_MODADMIN') and $page < 5) {
     $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_' . $catid . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';
