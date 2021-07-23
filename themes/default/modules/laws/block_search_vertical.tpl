@@ -1,6 +1,6 @@
 <!-- BEGIN: main -->
-<link rel="stylesheet" type="text/css" href="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/jquery-ui/jquery-ui.min.css">
-<link rel="stylesheet" href="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/select2/select2.min.css">
+<link rel="stylesheet" type="text/css" href="{NV_STATIC_URL}{NV_ASSETS_DIR}/js/jquery-ui/jquery-ui.min.css">
+<link rel="stylesheet" href="{NV_STATIC_URL}{NV_ASSETS_DIR}/js/select2/select2.min.css">
 <form id="ltablesearch{BLOCKID}" action="{FORM_ACTION}" method="get" onsubmit="return nv_check_search_laws(this);">
     <!-- BEGIN: no_rewrite -->
     <input type="hidden" name="{NV_LANG_VARIABLE}" value="{NV_LANG_DATA}"/>
@@ -15,7 +15,7 @@
             <div class="col-xs-19"><input class="form-control" id="ls_key" type="text" name="q" value="{Q}"/></div>
             <!-- BEGIN: is_advance_btn -->
             <div class="col-xs-5">
-                <a class="<!-- BEGIN: is_advance_class -->advance<!-- END: is_advance_class -->" id="btn-search"><em class="fa fa-search">&nbsp;</em>{LANG_ADVANCE}</a>
+                <a rel="dofollow" class="<!-- BEGIN: is_advance_class -->advance<!-- END: is_advance_class -->" id="btn-search"><em class="fa fa-search">&nbsp;</em>{LANG_ADVANCE}</a>
             </div>
             <!-- END: is_advance_btn -->
         </div>
@@ -111,10 +111,10 @@
         <input class="btn btn-primary" type="submit" value="{LANG.search}"/>
     </div>
 </form>
-<script type="text/javascript" src="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/jquery-ui/jquery-ui.min.js"></script>
-<script type="text/javascript" src="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/language/jquery.ui.datepicker-{NV_LANG_INTERFACE}.js"></script>
-<script type="text/javascript" src="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/select2/select2.min.js"></script>
-<script type="text/javascript" src="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/select2/i18n/{NV_LANG_INTERFACE}.js"></script>
+<script type="text/javascript" src="{NV_STATIC_URL}{NV_ASSETS_DIR}/js/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{NV_STATIC_URL}{NV_ASSETS_DIR}/js/language/jquery.ui.datepicker-{NV_LANG_INTERFACE}.js"></script>
+<script type="text/javascript" src="{NV_STATIC_URL}{NV_ASSETS_DIR}/js/select2/select2.min.js"></script>
+<script type="text/javascript" src="{NV_STATIC_URL}{NV_ASSETS_DIR}/js/select2/i18n/{NV_LANG_INTERFACE}.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $('#lclearform{BLOCKID}').click(function() {

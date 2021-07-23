@@ -14,7 +14,7 @@
             <div class="row">
                 <div class="col-xs-19 col-md-19"><input class="form-control" id="ls_key" type="text" name="q" value="{Q}"/></div>
                 <!-- BEGIN: is_advance_btn -->
-                <div class="col-xs-5 col-md-5"><a href="#" class="<!-- BEGIN: is_advance_class -->advance<!-- END: is_advance_class -->" id="btn-search"><em class="fa fa-search">&nbsp;</em>{LANG_ADVANCE}</a></div>
+                <div class="col-xs-5 col-md-5"><a rel="dofollow" href="#" class="<!-- BEGIN: is_advance_class -->advance<!-- END: is_advance_class -->" id="btn-search"><em class="fa fa-search">&nbsp;</em>{LANG_ADVANCE}</a></div>
                 <!-- END: is_advance_btn -->
             </div>
         </div>

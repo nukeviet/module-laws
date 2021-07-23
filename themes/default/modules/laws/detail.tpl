@@ -50,7 +50,7 @@
             <tr class="hoatim">
                 <td class="text-right">{LANG.cat}</td>
                 <td>
-                    <!-- BEGIN: link --><a href="{DATA.cat_url}" title="{DATA.cat}">{DATA.cat}</a><!-- END: link -->
+                    <!-- BEGIN: link --><a rel="dofollow" href="{DATA.cat_url}" title="{DATA.cat}">{DATA.cat}</a><!-- END: link -->
                     <!-- BEGIN: text -->{DATA.cat}<!-- END: text -->
                 </td>
             </tr>
@@ -58,7 +58,7 @@
             <tr class="hoatim">
                 <td class="text-right">{LANG.area}</td>
                 <td>
-                    <!-- BEGIN: area_link --><a href="{AREA.url}" title="{AREA.title}">{AREA.title}</a><br /><!-- END: area_link -->
+                    <!-- BEGIN: area_link --><a rel="dofollow" href="{AREA.url}" title="{AREA.title}">{AREA.title}</a><br /><!-- END: area_link -->
                     <!-- BEGIN: area_text -->{AREA.title}<br /><!-- END: area_text -->
                 </td>
             </tr>
@@ -66,7 +66,7 @@
             <tr class="hoatim">
                 <td class="text-right">{LANG.subject}</td>
                 <td>
-                    <!-- BEGIN: link --><a href="{DATA.subject_url}" title="{DATA.subject}">{DATA.subject}</a><!-- END: link -->
+                    <!-- BEGIN: link --><a rel="dofollow" href="{DATA.subject_url}" title="{DATA.subject}">{DATA.subject}</a><!-- END: link -->
                     <!-- BEGIN: text -->{DATA.subject}<!-- END: text -->
                 </td>
             </tr>
@@ -83,7 +83,7 @@
             <tr class="hoatim">
                 <td class="text-right">{LANG.signer}</td>
                 <td>
-                    <!-- BEGIN: link --><a href="{DATA.signer_url}" title="{DATA.signer}">{DATA.signer}</a><!-- END: link -->
+                    <!-- BEGIN: link --><a rel="dofollow" href="{DATA.signer_url}" title="{DATA.signer}">{DATA.signer}</a><!-- END: link -->
                     <!-- BEGIN: text -->{DATA.signer}<!-- END: text -->
                 </td>
             </tr>
@@ -94,7 +94,7 @@
                 <td>
                     <ul class="list-item">
                         <!-- BEGIN: loop -->
-                        <li><a href="{replacement.link}" title="{replacement.title}">{replacement.code}</a> - {replacement.title}</li>
+                        <li><a rel="dofollow" href="{replacement.link}" title="{replacement.title}">{replacement.code}</a> - {replacement.title}</li>
                         <!-- END: loop -->
                     </ul>
                 </td>
@@ -106,7 +106,7 @@
                 <td>
                     <ul class="list-item">
                         <!-- BEGIN: loop -->
-                        <li><a href="{unreplacement.link}" title="{unreplacement.title}">{unreplacement.code}</a> - {unreplacement.title}</li>
+                        <li><a rel="dofollow" href="{unreplacement.link}" title="{unreplacement.title}">{unreplacement.code}</a> - {unreplacement.title}</li>
                         <!-- END: loop -->
                     </ul>
                 </td>
@@ -118,7 +118,7 @@
                 <td>
                     <ul class="list-item">
                         <!-- BEGIN: loop -->
-                        <li><a href="{relatement.link}" title="{relatement.title}">{relatement.code}</a> - {relatement.title}</li>
+                        <li><a rel="dofollow" href="{relatement.link}" title="{relatement.title}">{relatement.code}</a> - {relatement.title}</li>
                         <!-- END: loop -->
                     </ul>
                 </td>
@@ -140,8 +140,8 @@
 <div class="list-group laws-download-file">
     <!-- BEGIN: loop -->
     <div class="list-group-item">
-        <!-- BEGIN: show_quick_view --><span class="badge"><a role="button" data-toggle="collapse" href="#pdf{FILE.key}" aria-expanded="false" aria-controls="pdf{FILE.key}"><i class="fa fa-file-pdf-o" data-toggle="tooltip" data-title="{LANG.quick_view_pdf}"></i></a></span><!-- END: show_quick_view -->
-        <a href="{FILE.url}" title="{FILE.titledown}{FILE.title}">{FILE.titledown}: <strong>{FILE.title}</strong></a>
+        <!-- BEGIN: show_quick_view --><span class="badge"><a rel="dofollow" role="button" data-toggle="collapse" href="#pdf{FILE.key}" aria-expanded="false" aria-controls="pdf{FILE.key}"><i class="fa fa-file-pdf-o" data-toggle="tooltip" data-title="{LANG.quick_view_pdf}"></i></a></span><!-- END: show_quick_view -->
+        <a rel="dofollow" href="{FILE.url}" title="{FILE.titledown}{FILE.title}">{FILE.titledown}: <strong>{FILE.title}</strong></a>
         <!-- BEGIN: content_quick_view -->
         <div class="clearfix"></div>
         <div class="collapse" id="pdf{FILE.key}" data-src="{FILE.urlpdf}" data-toggle="collapsepdf">
@@ -163,8 +163,8 @@
 
 <!-- BEGIN: admin_link -->
 <div class="text-right list-group clearfix">
-    <a class="btn btn-primary btn-xs" href="{DATA.edit_link}"><i class="fa fa-edit"></i> {LANG.edit}</a>
-    <a class="btn btn-danger btn-xs" href="javascript:void(0);" onclick="nv_delete_law('{LINK_DELETE}', {DATA.id});"><i class="fa fa-trash-o"></i> {LANG.delete}</a>
+    <a rel="dofollow" class="btn btn-primary btn-xs" href="{DATA.edit_link}"><i class="fa fa-edit"></i> {LANG.edit}</a>
+    <a rel="dofollow" class="btn btn-danger btn-xs" href="javascript:void(0);" onclick="nv_delete_law('{LINK_DELETE}', {DATA.id});"><i class="fa fa-trash-o"></i> {LANG.delete}</a>
 </div>
 <!-- END: admin_link -->
 
@@ -177,7 +177,7 @@
 <!-- END: comment -->
 
 <!-- BEGIN: other_cat -->
-<h3 class="subtitle">{LANG.other_cat} <a href="{DATA.cat_url}" title="{DATA.cat}">"{DATA.cat}"</a></h3>
+<h3 class="subtitle">{LANG.other_cat} <a rel="dofollow" href="{DATA.cat_url}" title="{DATA.cat}">"{DATA.cat}"</a></h3>
 {OTHER_CAT}
 <!-- END: other_cat -->
 
@@ -187,12 +187,12 @@
 <!-- END: other_area -->
 
 <!-- BEGIN: other_subject -->
-<h3 class="subtitle">{LANG.other_subject} <a href="{DATA.subject_url}" title="{DATA.subject}">"{DATA.subject}"</a></h3>
+<h3 class="subtitle">{LANG.other_subject} <a rel="dofollow" href="{DATA.subject_url}" title="{DATA.subject}">"{DATA.subject}"</a></h3>
 {OTHER_SUBJECT}
 <!-- END: other_subject -->
 
 <!-- BEGIN: other_signer -->
-<h3 class="subtitle">{LANG.other_signer} <a href="{DATA.signer_url}" title="{DATA.signer}">"{DATA.signer}"</a></h3>
+<h3 class="subtitle">{LANG.other_signer} <a rel="dofollow" href="{DATA.signer_url}" title="{DATA.signer}">"{DATA.signer}"</a></h3>
 {OTHER_SIGNER}
 <!-- END: other_signer -->
 
