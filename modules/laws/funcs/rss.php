@@ -63,5 +63,6 @@ if (!empty($nv_laws_listcat)) {
     }
 }
 
-nv_rss_generate($channel, $items);
+$atomlink = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $module_info['alias']['rss'];
+nv_rss_generate($channel, $items, $atomlink);
 die();
