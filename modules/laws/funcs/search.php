@@ -141,6 +141,7 @@ if (!empty($key) or !empty($area) or !empty($cat) or !empty($subject) or !empty(
     }
 }
 
+$page_url = $base_url;
 $page = $nv_Request->get_int('page', 'get', 1);
 if ($page > 1) {
     $page_url .= '&page=' . $page;

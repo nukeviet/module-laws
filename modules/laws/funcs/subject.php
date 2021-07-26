@@ -23,6 +23,10 @@ foreach ($nv_laws_listsubject as $c) {
     }
 }
 
+if (empty($catid)) {
+    $canonicalUrl = getCanonicalUrl($base_url);
+}
+
 // Set page title, keywords, description
 $page_title = $mod_title = $nv_laws_listsubject[$catid]['title'];
 $key_words = empty($nv_laws_listsubject[$catid]['keywords']) ? $module_info['keywords'] : $nv_laws_listsubject[$catid]['keywords'];

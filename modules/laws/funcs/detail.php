@@ -15,8 +15,14 @@ if (!defined('NV_IS_MOD_LAWS')) {
 $lawalias = $alias = isset($array_op[1]) ? $array_op[1] : '';
 $page_url = $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
 
-$result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE alias=' . $db->quote($alias) . ' AND status=1');
-$row = $result->fetch();
+$sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE alias=' . $db->quote($alias) . ' AND status=1';
+if (($result = $db->query($sql)) === false) {
+    $canonicalUrl = getCanonicalUrl($page_url);
+}
+
+if (($row = $result->fetch()) === false) {
+    $canonicalUrl = getCanonicalUrl($page_url);
+}
 
 if (isset($array_op[2])) {
     $page_url = $base_url . '&' . NV_OP_VARIABLE . '=detail/' . $array_op[1];

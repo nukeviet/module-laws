@@ -24,7 +24,7 @@ $key_words = empty($nv_laws_listcat[$catid]['keywords']) ? $module_info['keyword
 $description = empty($nv_laws_listcat[$catid]['introduction']) ? $page_title : $nv_laws_listcat[$catid]['introduction'];
 
 //
-$page = $nv_Request->get_int('page', 'get', 0);
+$page = $nv_Request->get_int('page', 'get', 1);
 $per_page = $nv_laws_setting['numsub'];
 $base_url .=  "&amp;" . NV_OP_VARIABLE . "=" . $nv_laws_listcat[$catid]['alias'];
 

@@ -29,6 +29,10 @@ foreach ($nv_laws_listarea as $c) {
     }
 }
 
+if (empty($catid)) {
+    $canonicalUrl = getCanonicalUrl($base_url);
+}
+
 // Set page title, keywords, description
 $page_title = $mod_title = $nv_laws_listarea[$catid]['title'];
 $key_words = empty($nv_laws_listarea[$catid]['keywords']) ? $module_info['keywords'] : $nv_laws_listarea[$catid]['keywords'];
@@ -38,7 +42,7 @@ $description = empty($nv_laws_listarea[$catid]['introduction']) ? $page_title : 
 $per_page = $nv_laws_setting['numsub'];
 $page_url = $base_url .= "&amp;" . NV_OP_VARIABLE . "=area/" . $nv_laws_listarea[$catid]['alias'];
 
-if ($page < 1 or ($issetPage and $page < 2)) {
+if ($page > 1) {
     $page_url .= '/page-' . $page;
 }
 $canonicalUrl = getCanonicalUrl($page_url);
