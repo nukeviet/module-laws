@@ -57,7 +57,7 @@ if (preg_match("/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/", $sto, $m)) {
     $sto1 = 0;
 }
 
-$page_url = $base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&q=' . htmlspecialchars(nv_unhtmlspecialchars($key));
+$base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&q=' . htmlspecialchars(nv_unhtmlspecialchars($key));
 $where = '';
 $search = false;
 if (!empty($key) or !empty($area) or !empty($cat) or !empty($subject) or !empty($sstatus) or !empty($ssigner) or !empty($sfrom1) or !empty($sto1) or !empty($approval) or !empty($examine)) {

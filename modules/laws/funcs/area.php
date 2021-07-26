@@ -13,7 +13,7 @@ if (!defined('NV_IS_MOD_LAWS')) {
 }
 
 $alias = isset($array_op[1]) ? $array_op[1] : "";
-$page_url = $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
+$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
 $page = 1;
 if (isset($array_op[2])) {
     if (preg_match('/^page\-([0-9]{1,10})$/', $array_op[2], $m)) {

@@ -12,7 +12,7 @@ if (!defined('NV_IS_MOD_LAWS')) {
     die('Stop!!!');
 }
 
-$page_url = $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
+$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
 
 if (empty($catid)) {
     $canonicalUrl = getCanonicalUrl($base_url);
@@ -26,7 +26,7 @@ $description = empty($nv_laws_listcat[$catid]['introduction']) ? $page_title : $
 //
 $page = $nv_Request->get_int('page', 'get', 1);
 $per_page = $nv_laws_setting['numsub'];
-$base_url .=  "&amp;" . NV_OP_VARIABLE . "=" . $nv_laws_listcat[$catid]['alias'];
+$page_url = $base_url .=  "&amp;" . NV_OP_VARIABLE . "=" . $nv_laws_listcat[$catid]['alias'];
 
 if ($page > 1) {
     $page_url .= '/page-' . $page;
