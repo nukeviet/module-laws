@@ -29,7 +29,7 @@ $per_page = $nv_laws_setting['numsub'];
 $page_url = $base_url .=  "&amp;" . NV_OP_VARIABLE . "=" . $nv_laws_listcat[$catid]['alias'];
 
 if ($page > 1) {
-    $page_url .= '/page-' . $page;
+    $page_url .= '&amp;page=' . $page;
 }
 
 $canonicalUrl = getCanonicalUrl($page_url);
@@ -61,7 +61,7 @@ if (empty($contents)) {
     $query = $db->query("SELECT FOUND_ROWS()");
     $all_page = $query->fetchColumn();
 
-    betweenURLs($page, ceil($all_page/$per_page), $base_url, '/page-', $prevPage, $nextPage);
+    betweenURLs($page, ceil($all_page/$per_page), $base_url, '&amp;page=', $prevPage, $nextPage);
 
     if (!$all_page or $page >= $all_page) {
         if ($nv_Request->isset_request('page', 'get')) {
