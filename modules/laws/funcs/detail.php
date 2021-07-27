@@ -13,8 +13,6 @@ if (!defined('NV_IS_MOD_LAWS')) {
 }
 
 $lawalias = $alias = isset($array_op[1]) ? $array_op[1] : '';
-$page_url = $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
-
 $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE alias=' . $db->quote($alias) . ' AND status=1';
 if (($result = $db->query($sql)) === false) {
     $canonicalUrl = getCanonicalUrl($page_url);
@@ -24,13 +22,11 @@ if (($row = $result->fetch()) === false) {
     $canonicalUrl = getCanonicalUrl($page_url);
 }
 
-if (isset($array_op[2])) {
-    $page_url = $base_url . '&' . NV_OP_VARIABLE . '=detail/' . $array_op[1];
-}
+$page_url = $base_url = nv_url_rewrite(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $module_info['alias']['detail'] . "/" . $row['alias'], true);
 
 $canonicalUrl = getCanonicalUrl($page_url);
 
-$row['edit_link'] = $base_url . "&amp;edit=1&amp;id=" . $row['id'];
+$row['edit_link'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;edit=1&amp;id=" . $row['id'];
 
 $row['aid'] = [];
 $result = $db->query('SELECT area_id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row_area WHERE row_id=' . $row['id']);
