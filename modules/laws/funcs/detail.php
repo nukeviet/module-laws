@@ -22,7 +22,9 @@ if (($row = $result->fetch()) === false) {
     $canonicalUrl = getCanonicalUrl($page_url);
 }
 
-$page_url = $base_url = nv_url_rewrite(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $module_info['alias']['detail'] . "/" . $row['alias'], true);
+$page_url = $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $module_info['alias']['detail'] . "/";
+
+$page_url .= $lawalias;
 
 $canonicalUrl = getCanonicalUrl($page_url);
 
@@ -81,7 +83,7 @@ if ($nv_Request->isset_request('pdf', 'get')) {
         nv_info_die($lang_global['error_404_title'], $lang_global['error_404_title'], $lang_global['error_404_content'], 404);
     }
 
-    $file_url = $page_url . '&' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $lawalias . '&download=1&id=' . $fileid;
+    $file_url = $page_url . '&download=1&id=' . $fileid;
     $contents = nv_theme_viewpdf($file_url);
     nv_htmlOutput($contents);
 }
@@ -99,7 +101,7 @@ if (!empty($row['replacement'])) {
         $row['replacement'][] = array(
             'title' => $_title,
             'code' => $_code,
-            'link' => $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $_alias
+            'link' => $base_url . $_alias
         );
     }
 }
@@ -112,7 +114,7 @@ while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
     $row['unreplacement'][] = array(
         'title' => $_title,
         'code' => $_code,
-        'link' => $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $_alias
+        'link' => $base_url . $_alias
     );
 }
 
@@ -125,7 +127,7 @@ if (!empty($row['relatement'])) {
         $row['relatement'][] = array(
             'title' => $_title,
             'code' => $_code,
-            'link' => $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $_alias
+            'link' => $base_url . $_alias
         );
     }
 }
@@ -158,8 +160,8 @@ if (!empty($row['files'])) {
             'key' => md5($id . $file_title),
             'ext' => nv_getextension($file_title),
             'titledown' => $lang_module['download'] . ' ' . (count($files) > 1 ? $id + 1 : ''),
-            'url' => (!preg_match("/^http*/", $file)) ? $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $lawalias . '&amp;download=1&amp;id=' . $id : $file,
-            'urlpdf' => $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $lawalias . '&amp;pdf=1&amp;id=' . $id
+            'url' => (!preg_match("/^http*/", $file)) ? $base_url . $lawalias . '&amp;download=1&amp;id=' . $id : $file,
+            'urlpdf' => $base_url . $lawalias . '&amp;pdf=1&amp;id=' . $id
         );
     }
 }
@@ -186,7 +188,7 @@ if ($nv_laws_setting['detail_other']) {
     if (in_array('cat', $nv_laws_setting['detail_other'])) {
         $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE cid=' . $row['cid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
         while ($data = $result->fetch()) {
-            $data['url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
+            $data['url'] = $base_url . $data['alias'];
             $other_cat[$data['id']] = $data;
         }
     }
@@ -195,7 +197,7 @@ if ($nv_laws_setting['detail_other']) {
         $_row_aid = implode(',', $row['aid']);
         $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row t1 INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row_area t2 ON t1.id=t2.row_id WHERE t2.area_id IN (' . $_row_aid . ') AND t1.id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
         while ($data = $result->fetch()) {
-            $data['url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
+            $data['url'] = $base_url . $data['alias'];
             $other_area[$data['id']] = $data;
         }
     }
@@ -203,7 +205,7 @@ if ($nv_laws_setting['detail_other']) {
     if (in_array('subject', $nv_laws_setting['detail_other'])) {
         $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $row['sid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
         while ($data = $result->fetch()) {
-            $data['url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
+            $data['url'] = $base_url . $data['alias'];
             $other_subject[$data['id']] = $data;
         }
     }
@@ -211,7 +213,7 @@ if ($nv_laws_setting['detail_other']) {
     if (in_array('singer', $nv_laws_setting['detail_other'])) {
         $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sgid=' . $row['sgid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
         while ($data = $result->fetch()) {
-            $data['url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
+            $data['url'] = $base_url . $data['alias'];
             $other_signer[$data['id']] = $data;
         }
     }
