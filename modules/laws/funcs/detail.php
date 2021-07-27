@@ -137,7 +137,7 @@ if (!empty($row['sgid'])) {
     $sql = 'SELECT title FROM ' . NV_PREFIXLANG . '_' . $module_data . '_signer WHERE id = ' . $row['sgid'];
     $result = $db->query($sql);
     list ($row['signer']) = $result->fetch(3);
-    $row['signer_url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=signer/' . $row['sgid'] . '/' . change_alias($row['signer']);
+    $row['signer_url'] = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . '=signer/' . $row['sgid'] . '/' . change_alias($row['signer']);
 }
 
 // Uy ban tham tra
