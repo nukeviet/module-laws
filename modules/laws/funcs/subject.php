@@ -15,6 +15,10 @@ if (!defined('NV_IS_MOD_LAWS')) {
 $alias = isset($array_op[1]) ? $array_op[1] : "";
 $base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name;
 
+if (!preg_match("/^([a-z0-9\-\_\.]+)$/i", $alias)) {
+    nv_redirect_location($base_url, true);
+}
+
 $catid = 0;
 foreach ($nv_laws_listsubject as $c) {
     if ($c['alias'] == $alias) {
@@ -24,7 +28,7 @@ foreach ($nv_laws_listsubject as $c) {
 }
 
 if (empty($catid)) {
-    $canonicalUrl = getCanonicalUrl($base_url);
+    nv_redirect_location($base_url, true);
 }
 
 // Set page title, keywords, description
@@ -36,7 +40,13 @@ $page = 1;
 if (isset($array_op[2])) {
     if (preg_match('/^page\-([0-9]{1,10})$/', $array_op[2], $m)) {
         $page = intval($m[1]);
+    } else {
+        nv_redirect_location($base_url);
     }
+}
+
+if (isset($array_op[3])) {
+    nv_redirect_location($base_url);
 }
 
 $per_page = $nv_laws_setting['numsub'];

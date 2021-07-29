@@ -15,8 +15,12 @@ if (!defined('NV_IS_MOD_LAWS')) {
 $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
 
 if (empty($catid)) {
-    $canonicalUrl = getCanonicalUrl($base_url);
+    nv_redirect_location($base_url, true);
 }
+if (isset($array_op[1])) {
+    nv_redirect_location($base_url);
+}
+
 
 // Set page title, keywords, description
 $page_title = $mod_title = $nv_laws_listcat[$catid]['title'];
@@ -65,7 +69,7 @@ if (empty($contents)) {
 
     if (!$all_page or $page >= $all_page) {
         if ($nv_Request->isset_request('page', 'get')) {
-            $canonicalUrl = getCanonicalUrl($base_url);
+            nv_redirect_location($base_url, true);
         } else {
             include NV_ROOTDIR . '/includes/header.php';
             echo nv_site_theme('');

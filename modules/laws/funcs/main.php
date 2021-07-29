@@ -22,13 +22,14 @@ if (isset($array_op[0])) {
     if (preg_match('/^page\-([0-9]{1,10})$/', $array_op[0], $m)) {
         $page = intval($m[1]);
         $issetPage = true;
+    } else {
+        nv_redirect_location($base_url);
     }
 }
-if ($page < 1 or ($issetPage and $page < 2)) {
-    $page_url .= '/page-' . $page;
-}
 
-$canonicalUrl = getCanonicalUrl($page_url);
+if ($page < 1 or ($issetPage and $page < 2)) {
+    nv_redirect_location($base_url);
+}
 
 $contents = $cache_file = '';
 $per_page = $nv_laws_setting['nummain'];
@@ -59,9 +60,15 @@ if (empty($contents)) {
         $generate_page = nv_alias_page($page_title, $base_url, $all_page, $per_page, $page);
         $array_data = raw_law_list_by_result($result, $page, $per_page);
 
-        if ($page > 1 and empty($array_data)) {
-            $canonicalUrl = getCanonicalUrl($base_url);
+        if ($page > 1) {
+            if(empty($array_data)){
+                nv_redirect_location($base_url);
+            }else{
+                $page_url .= '&amp;' . NV_OP_VARIABLE . '/page-' . $page;
+            }
         }
+        
+        $canonicalUrl = getCanonicalUrl($page_url);
 
         $contents = nv_theme_laws_main($array_data, $generate_page);
     } else {

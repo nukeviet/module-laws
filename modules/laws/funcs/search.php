@@ -163,7 +163,7 @@ $db->sqlreset()
 
 $all_page = $db->query($db->sql())->fetchColumn();
 
-betweenURLs($page, ceil($all_page/$per_page), $base_url, '/page-', $prevPage, $nextPage);
+betweenURLs($page, ceil($all_page/$per_page), $base_url, '&page=', $prevPage, $nextPage);
 
 $_order = ($nv_laws_setting['typeview'] == 1 or $nv_laws_setting['typeview'] == 4) ? 'ASC' : 'DESC';
 $_order_param = ($nv_laws_setting['typeview'] == 0 or $nv_laws_setting['typeview'] == 1) ? 'publtime' : 'addtime';
