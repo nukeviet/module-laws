@@ -137,7 +137,7 @@ if (!nv_function_exists('nv_law_block_newg')) {
                 $sql = "SELECT id, parentid, alias, title, introduction, keywords, newday FROM " . NV_PREFIXLANG . "_" . $data . "_cat ORDER BY parentid,weight ASC";
                 $nv_laws_listcat = $nv_Cache->db($sql, 'id', $module);
 
-                $my_head .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . NV_BASE_SITEURL . "themes/" . $block_theme . "/css/laws.css\" />";
+                $my_head .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . NV_STATIC_URL . "themes/" . $block_theme . "/css/laws.css\" />";
 
                 $temp_lang_module = $lang_module;
                 $lang_module = array();
