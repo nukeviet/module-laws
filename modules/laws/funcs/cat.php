@@ -12,9 +12,15 @@ if (!defined('NV_IS_MOD_LAWS')) {
     die('Stop!!!');
 }
 
+$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
+
 if (empty($catid)) {
-    nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name, true);
+    nv_redirect_location($base_url, true);
 }
+if (isset($array_op[1])) {
+    nv_redirect_location($base_url);
+}
+
 
 // Set page title, keywords, description
 $page_title = $mod_title = $nv_laws_listcat[$catid]['title'];
@@ -22,12 +28,15 @@ $key_words = empty($nv_laws_listcat[$catid]['keywords']) ? $module_info['keyword
 $description = empty($nv_laws_listcat[$catid]['introduction']) ? $page_title : $nv_laws_listcat[$catid]['introduction'];
 
 //
-$page = $nv_Request->get_int('page', 'get', 0);
+$page = $nv_Request->get_int('page', 'get', 1);
 $per_page = $nv_laws_setting['numsub'];
-$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $nv_laws_listcat[$catid]['alias'];
-if (isset($array_op[1])) {
-    nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
+$page_url = $base_url .=  "&amp;" . NV_OP_VARIABLE . "=" . $nv_laws_listcat[$catid]['alias'];
+
+if ($page > 1) {
+    $page_url .= '&amp;page=' . $page;
 }
+
+$canonicalUrl = getCanonicalUrl($page_url);
 
 if (!defined('NV_IS_MODADMIN') and $page < 5) {
     $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_' . $catid . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';
@@ -56,9 +65,11 @@ if (empty($contents)) {
     $query = $db->query("SELECT FOUND_ROWS()");
     $all_page = $query->fetchColumn();
 
+    betweenURLs($page, ceil($all_page/$per_page), $base_url, '&amp;page=', $prevPage, $nextPage);
+
     if (!$all_page or $page >= $all_page) {
         if ($nv_Request->isset_request('page', 'get')) {
-            nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name, true);
+            nv_redirect_location($base_url, true);
         } else {
             include NV_ROOTDIR . '/includes/header.php';
             echo nv_site_theme('');

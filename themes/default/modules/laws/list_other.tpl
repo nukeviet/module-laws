@@ -12,7 +12,7 @@
     </div>
     <!-- BEGIN: loop -->
     <div class="table-rows">
-        <div class="c-code"><span class="label-name">{LANG.code}:</span><a href="{ROW.url}" title="{ROW.title}">{ROW.code}</a></div>
+        <div class="c-code"><span class="label-name">{LANG.code}:</span><a rel="dofollow" href="{ROW.url}" title="{ROW.title}">{ROW.code}</a></div>
         <!-- BEGIN: publtime -->
         <div class="c-time"><span class="label-name">{LANG.publtime}:</span>{ROW.publtime}</div>
         <!-- END: publtime -->
@@ -20,7 +20,7 @@
         <div class="c-comtime"><span class="label-name">{LANG.comm_time_title}:</span>{ROW.comm_time}</div>
         <!-- END: comm_time -->
         <div class="c-intro">
-            <a href="{ROW.url}">{LAW_TITLE}</a>
+            <a rel="dofollow" href="{ROW.url}">{LAW_TITLE}</a>
             <!-- BEGIN: introtext -->
             <div class="l-intro margin-top-sm">
                 {ROW.introtext}

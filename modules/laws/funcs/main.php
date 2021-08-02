@@ -14,6 +14,7 @@ if (!defined('NV_IS_MOD_LAWS')) {
 
 $page_title = $module_info['site_title'];
 $key_words = $module_info['keywords'];
+$page_url = $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
 
 $page = 1;
 $issetPage = false;
@@ -22,16 +23,17 @@ if (isset($array_op[0])) {
         $page = intval($m[1]);
         $issetPage = true;
     } else {
-        nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
+        nv_redirect_location($base_url);
     }
 }
+
 if ($page < 1 or ($issetPage and $page < 2)) {
-    nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
+    nv_redirect_location($base_url);
 }
 
 $contents = $cache_file = '';
 $per_page = $nv_laws_setting['nummain'];
-$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
+
 
 if (!defined('NV_IS_MODADMIN') and $page < 5) {
     $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';
@@ -53,12 +55,20 @@ if (empty($contents)) {
         $query = $db->query("SELECT FOUND_ROWS()");
         $all_page = $query->fetchColumn();
 
+        betweenURLs($page, ceil($all_page/$per_page), $base_url, '/page-', $prevPage, $nextPage);
+
         $generate_page = nv_alias_page($page_title, $base_url, $all_page, $per_page, $page);
         $array_data = raw_law_list_by_result($result, $page, $per_page);
 
-        if ($page > 1 and empty($array_data)) {
-            nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
+        if ($page > 1) {
+            if(empty($array_data)){
+                nv_redirect_location($base_url);
+            }else{
+                $page_url .= '&amp;' . NV_OP_VARIABLE . '/page-' . $page;
+            }
         }
+        
+        $canonicalUrl = getCanonicalUrl($page_url);
 
         $contents = nv_theme_laws_main($array_data, $generate_page);
     } else {

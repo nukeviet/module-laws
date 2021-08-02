@@ -3,7 +3,7 @@
 	<!-- BEGIN: loop -->
 	<div class="m-bottom item">
 		<h3 class="law-code">
-			<a href="{ROW.link}" title="{ROW.title}">{ROW.code}</a>
+			<a rel="dofollow" href="{ROW.link}" title="{ROW.title}">{ROW.code}</a>
 			<!-- BEGIN: newday -->
 			<span class="icon_new"></span>
 			<!-- END: newday -->
@@ -17,7 +17,7 @@
 	<!-- END: loop -->
 </div>
 <!-- BEGIN: marquee_js -->
-<script type='text/javascript' src='{NV_BASE_SITEURL}themes/{TEMPLATE}/js/laws_jquery.marquee.js'></script>
+<script type='text/javascript' src='{NV_STATIC_URL}themes/{TEMPLATE}/js/laws_jquery.marquee.js'></script>
 <script type="text/javascript">
 	$('.marquee').marquee();
 </script>

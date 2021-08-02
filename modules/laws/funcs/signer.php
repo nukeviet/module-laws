@@ -13,29 +13,25 @@ if (!defined('NV_IS_MOD_LAWS')) {
 }
 
 $id = isset($array_op[1]) ? intval($array_op[1]) : 0;
+$page_url = $base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name;
 
 $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_signer WHERE id=' . $id;
 $result = $db->query($sql);
 $signer = $result->fetch();
 if (empty($signer)) {
-    nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, true);
+    nv_redirect_location($base_url, true);
 }
 
-$base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=signer/' . $signer['id'] . '/' . change_alias($signer['title']);
+$base_url .= '&amp;' . NV_OP_VARIABLE . '=signer/' . $signer['id'] . '/' . change_alias($signer['title']);
+$page_url = $base_url;
 $page = 1;
 if (isset($array_op[3]) and substr($array_op[3], 0, 5) == 'page-') {
     $page = intval(substr($array_op[3], 5));
-    $base_url = $base_url . '/page-' . $page;
+    $page_url .= '/page-' . $page;
 }
-$base_url_rewrite = nv_url_rewrite($base_url, true);
-if ($_SERVER['REQUEST_URI'] == $base_url_rewrite) {
-    $canonicalUrl = NV_MAIN_DOMAIN . $base_url_rewrite;
-} elseif (NV_MAIN_DOMAIN . $_SERVER['REQUEST_URI'] != $base_url_rewrite) {
-    http_response_code(301);
-    nv_redirect_location($base_url_rewrite);
-} else {
-    $canonicalUrl = $base_url_rewrite;
-}
+
+$page_url = nv_url_rewrite($page_url, true);
+$canonicalUrl = getCanonicalUrl($page_url);
 
 $per_page = $nv_laws_setting['numsub'];
 
@@ -57,6 +53,8 @@ if (empty($contents)) {
     $result = $db->query($sql);
     $query = $db->query('SELECT FOUND_ROWS()');
     $all_page = $query->fetchColumn();
+
+    betweenURLs($page, ceil($all_page/$per_page), $base_url, '/page-', $prevPage, $nextPage);
 
     $generate_page = nv_alias_page($page_title, $base_url, $all_page, $per_page, $page);
     $array_data = raw_law_list_by_result($result, $page, $per_page);
