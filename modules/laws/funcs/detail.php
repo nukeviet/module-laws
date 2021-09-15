@@ -12,24 +12,27 @@ if (!defined('NV_IS_MOD_LAWS')) {
     die('Stop!!!');
 }
 
-$lawalias = $alias = isset($array_op[1]) ? $array_op[1] : '';
-$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
-if (!preg_match('/^([a-z0-9\-\_\.]+)$/i', $alias)) {
-    nv_redirect_location($base_url, true);
+$base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name;
+$lawalias = isset($array_op[1]) ? $array_op[1] : '';
+$id = 0;
+
+unset($m);
+if (!preg_match('/^([a-z0-9\-]+)\-([0-9]+)$/i', $lawalias, $m) or isset($array_op[2])) {
+    nv_redirect_location($base_url);
+}
+$id = intval($m[2]);
+if ($id <= 0) {
+    nv_redirect_location($base_url);
+}
+$sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id=' . $id . ' AND status=1';
+$row = $db->query($sql)->fetch();
+if (empty($row)) {
+    nv_redirect_location($base_url);
 }
 
-$sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE alias=' . $db->quote($alias) . ' AND status=1';
-if (($result = $db->query($sql)) === false) {
-    nv_redirect_location($base_url, true);
-}
-
-if (($row = $result->fetch()) === false) {
-    nv_redirect_location($base_url, true);
-}
-
-if (isset($array_op[2])) {
-    nv_redirect_location($base_url . '&' . NV_OP_VARIABLE . '=detail/' . $array_op[1], true);
-}
+$base_url .= '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $row['alias'];
+$page_url = $base_url;
+$canonicalUrl = getCanonicalUrl($page_url);
 
 $row['edit_link'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;edit=1&amp;id=" . $row['id'];
 
@@ -42,10 +45,6 @@ while (list ($area_id) = $result->fetch(3)) {
 if (!nv_user_in_groups($row['groups_view'])) {
     nv_info_die($lang_module['info_no_allow'], $lang_module['info_no_allow'], $lang_module['info_no_allow_detail']);
 }
-
-$page_url = $base_url . "&amp;" . NV_OP_VARIABLE . "=" . $module_info['alias']['detail'] . "/" . $row['alias'];
-
-$canonicalUrl = getCanonicalUrl($page_url);
 
 if ($nv_Request->isset_request('download', 'get')) {
     $fileid = $nv_Request->get_int('id', 'get', 0);
