@@ -585,7 +585,7 @@ function nv_theme_viewpdf($file_url)
     $xtpl->assign('LANG', $lang_module);
     $xtpl->assign('GLANG', $lang_global);
     $xtpl->assign('PDF_JS_DIR', NV_STATIC_URL . NV_ASSETS_DIR . '/js/pdf.js/');
-    $xtpl->assign('PDF_URL', $file_url);
+    $xtpl->assign('PDF_URL', nv_url_rewrite(str_replace('&amp;', '&', $file_url), true));
     $xtpl->parse('main');
     return $xtpl->text('main');
 }
