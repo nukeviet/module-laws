@@ -1,4 +1,5 @@
 <!-- BEGIN: main -->
+<h1 class="m-bottom">{MODULE_TITLE}</h1>
 <div class="flex-table-laws-inline">
     <div class="flex-table-laws">
         <div class="table-rows table-head">
@@ -17,7 +18,7 @@
     </div>
     <!-- BEGIN: loop -->
     <div class="flex-table-heading">
-        <strong><a rel="dofollow" href="{DATA.url_subject}">{DATA.title}</a> <span class="text-danger">({DATA.numcount})</span></strong>
+        <strong><a rel="dofollow" href="{DATA.url_subject}"><h2>{DATA.title} <span class="text-danger">({DATA.numcount})</span> </h2></a></strong>
     </div>
     <!-- BEGIN: rows -->
     {HTML}

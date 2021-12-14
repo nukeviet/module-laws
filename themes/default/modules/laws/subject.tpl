@@ -1,4 +1,4 @@
 <!-- BEGIN: main -->
-<h3 class="pagetitle"><span class="big-icon bcat">&nbsp;</span>{LANG.view_subject} {CAT.title}</h3>
+<h1 class="pagetitle"><span class="big-icon bcat">&nbsp;</span>{LANG.view_subject} {CAT.title}</h1>
 {HTML}
 <!-- END: main -->

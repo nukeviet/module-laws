@@ -1,5 +1,5 @@
 <!-- BEGIN: main -->
-<h3 class="lawh3">{DATA.title}</h3>
+<h1 class="lawh3">{DATA.title}</h1>
 <p>{DATA.introtext}</p>
 
 <!-- BEGIN: field -->
@@ -130,13 +130,13 @@
 <!-- END: field -->
 
 <!-- BEGIN: bodytext -->
-<h3 class="lawh3">{LANG.bodytext}</h3>
+<h2 class="lawh3">{LANG.bodytext}</h2>
 <p class="m-bottom">{DATA.bodytext}</p>
 <!-- END: bodytext -->
 
 <div id="comment"></div>
 <!-- BEGIN: files -->
-<h3 class="lawh3"><em class="fa fa-download">&nbsp;</em>{LANG.files}</h3>
+<h2 class="lawh3"><em class="fa fa-download">&nbsp;</em>{LANG.files}</h2>
 <div class="list-group laws-download-file">
     <!-- BEGIN: loop -->
     <div class="list-group-item">
@@ -157,7 +157,7 @@
 <!-- END: files -->
 
 <!-- BEGIN: nodownload -->
-<h3 class="lawh3">{LANG.files}</h3>
+<h2 class="lawh3">{LANG.files}</h2>
 <p class="text-center m-bottom">{LANG.info_download_no}</p>
 <!-- END: nodownload -->
 
@@ -177,22 +177,22 @@
 <!-- END: comment -->
 
 <!-- BEGIN: other_cat -->
-<h3 class="subtitle">{LANG.other_cat} <a rel="dofollow" href="{DATA.cat_url}" title="{DATA.cat}">"{DATA.cat}"</a></h3>
+<h2 class="subtitle">{LANG.other_cat} <a rel="dofollow" href="{DATA.cat_url}" title="{DATA.cat}">"{DATA.cat}"</a></h2>
 {OTHER_CAT}
 <!-- END: other_cat -->
 
 <!-- BEGIN: other_area -->
-<h3 class="subtitle">{LANG.other_area}</h3>
+<h2 class="subtitle">{LANG.other_area}</h2>
 {OTHER_AREA}
 <!-- END: other_area -->
 
 <!-- BEGIN: other_subject -->
-<h3 class="subtitle">{LANG.other_subject} <a rel="dofollow" href="{DATA.subject_url}" title="{DATA.subject}">"{DATA.subject}"</a></h3>
+<h2 class="subtitle">{LANG.other_subject} <a rel="dofollow" href="{DATA.subject_url}" title="{DATA.subject}">"{DATA.subject}"</a></h2>
 {OTHER_SUBJECT}
 <!-- END: other_subject -->
 
 <!-- BEGIN: other_signer -->
-<h3 class="subtitle">{LANG.other_signer} <a rel="dofollow" href="{DATA.signer_url}" title="{DATA.signer}">"{DATA.signer}"</a></h3>
+<h2 class="subtitle">{LANG.other_signer} <a rel="dofollow" href="{DATA.signer_url}" title="{DATA.signer}">"{DATA.signer}"</a></h2>
 {OTHER_SIGNER}
 <!-- END: other_signer -->
 
