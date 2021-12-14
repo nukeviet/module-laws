@@ -1,5 +1,5 @@
 <!-- BEGIN: main -->
-<h1 class="m-bottom">{MODULE_TITLE}</h1>
+<h1 class="m-bottom hidden">{MODULE_TITLE}</h1>
 <div class="flex-table-laws-inline">
     <div class="flex-table-laws">
         <div class="table-rows table-head">
