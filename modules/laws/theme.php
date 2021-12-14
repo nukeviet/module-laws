@@ -152,7 +152,6 @@ function nv_theme_laws_main($array_data, $generate_page)
 
     $xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
     $xtpl->assign('LANG', $lang_module);
-    $xtpl->assign('MODULE_TITLE', $module_info['custom_title']);
     $xtpl->assign('GLANG', $lang_global);
     $xtpl->assign('HTML', nv_theme_laws_list($array_data, $generate_page));
     $xtpl->parse('main');
@@ -172,8 +171,7 @@ function nv_theme_laws_maincat($mod, $array_data)
 
     $xtpl = new XTemplate('main_' . $mod . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
     $xtpl->assign('LANG', $lang_module);
-    $xtpl->assign('MODULE_TITLE', $module_info['custom_title']);
-
+    
     foreach ($array_data as $data) {
         $data['url_subject'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=subject/' . $data['alias'];
         $data['numcount'] = sprintf($lang_module['s_result_num'], $data['numcount']);
