@@ -379,8 +379,18 @@ function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = a
     }
 
     if (!empty($other_area)) {
-        $xtpl->assign('OTHER_AREA', nv_theme_laws_list_other($other_area));
-        $xtpl->parse('main.other_area');
+        foreach ($other_area as $key => $data) {
+            if (isset($nv_laws_listarea[$key])) {
+                $data_area['area'] = $nv_laws_listarea[$key]['title'];
+                $data_area['area_url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=area/' . $nv_laws_listarea[$key]['alias'];
+            } else {
+                $data_area['area'] = '';
+                $data_area['area_url'] = '#';
+            }
+            $xtpl->assign('AREA_TITLE', $data_area);
+            $xtpl->assign('OTHER_AREA', nv_theme_laws_list_other($data));
+            $xtpl->parse('main.other_area');
+        }
     }
 
     if (!empty($other_subject)) {

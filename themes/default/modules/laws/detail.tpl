@@ -182,7 +182,7 @@
 <!-- END: other_cat -->
 
 <!-- BEGIN: other_area -->
-<h2 class="subtitle">{LANG.other_area}</h2>
+<h2 class="subtitle">{LANG.other_area} <a href="{AREA_TITLE.area_url}" title="{AREA_TITLE.area}">"{AREA_TITLE.area}"</a></h2>
 {OTHER_AREA}
 <!-- END: other_area -->
 
