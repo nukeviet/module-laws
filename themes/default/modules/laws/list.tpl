@@ -18,7 +18,7 @@
         <div class="c-time"><span class="label-name">{LANG.publtime}:</span>{ROW.publtime}</div>
         <!-- END: publtime -->
         <div class="c-intro">
-            <a rel="dofollow" href="{ROW.url}">{LAW_TITLE}<!-- BEGIN: shownumbers --> ({ROW.number_comm})<!-- END: shownumbers --></a>
+            <a rel="dofollow" href="{ROW.url}"><strong>{LAW_TITLE}</strong><!-- BEGIN: shownumbers --> ({ROW.number_comm})<!-- END: shownumbers --></a>
             <!-- BEGIN: introtext -->
             <div class="l-intro margin-top-sm">
                 {ROW.introtext}
