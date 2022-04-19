@@ -96,7 +96,7 @@ if ($nv_Request->isset_request('pdf', 'get')) {
     }
 
     $file_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $lawalias . '&download=1&id=' . $fileid;
-    $contents = nv_theme_viewpdf($file_url);
+    $contents = nv_theme_viewpdf(nv_url_rewrite($file_url, true));
     nv_htmlOutput($contents);
 }
 
