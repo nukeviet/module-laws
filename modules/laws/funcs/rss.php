@@ -38,25 +38,25 @@ if (!empty($nv_laws_listcat)) {
         $channel['link'] = NV_MY_DOMAIN . NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;cat=" . $nv_laws_listcat[$cid]['alias'];
         $channel['description'] = $nv_laws_listcat[$cid]['introduction'];
 
-        $sql = "SELECT id, title, alias, introtext, addtime
+        $sql = "SELECT id, title, code, alias, introtext, publtime
         FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE cid=" . $cid . "
         AND status=1 ORDER BY edittime DESC LIMIT 30";
     } else {
         $in = array_keys($nv_laws_listcat);
         $in = implode(",", $in);
-        $sql = "SELECT id, title, code, alias, introtext, addtime
+        $sql = "SELECT id, title, code, alias, introtext, publtime
         FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE cid IN (" . $in . ")
         AND status=1 ORDER BY edittime DESC LIMIT 30";
     }
     if ($module_info['rss']) {
         if (($result = $db->query($sql)) !== false) {
-            while (list ($id, $title, $code, $alias, $introtext, $addtime) = $result->fetch(3)) {
+            while (list ($id, $title, $code, $alias, $introtext, $publtime) = $result->fetch(3)) {
                 $items[] = [
-                    'title' => '['. $code .']' . $title,
+                    'title' => '[' . $code . ']' . $title,
                     'link' => NV_MY_DOMAIN . NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=detail/" . $alias,
                     'guid' => $module_name . '_' . $id,
                     'description' => $introtext,
-                    'pubdate' => $addtime
+                    'pubdate' => $publtime
                 ];
             }
         }
