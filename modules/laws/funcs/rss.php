@@ -52,7 +52,7 @@ if (!empty($nv_laws_listcat)) {
         if (($result = $db->query($sql)) !== false) {
             while (list ($id, $title, $code, $alias, $introtext, $addtime, $publtime) = $result->fetch(3)) {
                 $items[] = [
-                    'title' => '[' . $code . ']' . $title,
+                    'title' => '[' . $code . '] ' . $title,
                     'link' => NV_MY_DOMAIN . NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=detail/" . $alias,
                     'guid' => $module_name . '_' . $id,
                     'description' => $lang_module['publtime'] . ': ' . nv_date('d/m/Y', $publtime) . '. ' . $lang_module['introtext'] . ': ' . $introtext,
