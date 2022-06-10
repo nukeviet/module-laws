@@ -30,9 +30,9 @@ if ($nv_Request->isset_request('cWeight, id', 'post')) {
     $id = $nv_Request->get_int('id', 'post');
     $cWeight = $nv_Request->get_int('cWeight', 'post');
     if (!isset($sList[$id])) die("ERROR");
-    
+
     if ($cWeight > $scount) $cWeight = $scount;
-    
+
     $sql = "SELECT id FROM " . NV_PREFIXLANG . "_" . $module_data . "_subject WHERE id!=" . $id . " ORDER BY weight ASC";
     $result = $db->query($sql);
     $weight = 0;
@@ -56,13 +56,30 @@ if ($nv_Request->isset_request('del', 'post')) {
     $result = $db->query($sql);
     $row = $result->fetch();
     if ($row['count']) die($lang_module['errorSubjectYesRow']);
-    
+
     $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_subject WHERE id = " . $id;
     $db->query($query);
     fix_subjectWeight();
     $nv_Cache->delMod($module_name);
     nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['logDelSubject'], "Id: " . $id, $admin_info['userid']);
     nv_htmlOutput('OK');
+}
+
+// Delete subject
+$array_actions = array('delete' => $lang_global['delete'],);
+
+$actions =  $nv_Request->get_int('delete_actions', 'post', 0);
+if ($actions == 1) {
+    $arrid = $nv_Request->get_array('arr', 'post', []);
+    $status = 'ERR';
+    if ($arrid != []){
+        $sql = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_subject WHERE id IN(" . implode(',', $arrid).')';
+        $exe = $db->query($sql);
+        if ($exe) {
+            $status = 'OK';
+        }
+    }
+    die($status);
 }
 
 $xtpl = new XTemplate($op . ".tpl", NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file);
@@ -78,7 +95,7 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
         if (empty($post['id']) or !isset($sList[$post['id']])) {
             nv_redirect_location(NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=subject");
         }
-        
+
         $xtpl->assign('PTITLE', $lang_module['editSubject']);
         $xtpl->assign('ACTION_URL', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=subject&edit&id=" . $post['id']);
         $log_title = $lang_module['editSubject'];
@@ -87,7 +104,7 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
         $xtpl->assign('ACTION_URL', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=subject&add");
         $log_title = $lang_module['addSubject'];
     }
-    
+
     if ($nv_Request->isset_request('save', 'post')) {
         $post['title'] = $nv_Request->get_title('title', 'post', '', 1);
         $post['introduction'] = $nv_Request->get_title('introduction', 'post', '', 1);
@@ -99,29 +116,29 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
             $post['keywords'] = array_unique($post['keywords']);
             $post['keywords'] = implode(",", $post['keywords']);
         }
-        
+
         $post['alias'] = $nv_Request->get_title('alias', 'post', '', 1);
         if (empty($post['alias'])) {
             $post['alias'] = change_alias($post['title']);
-            
+
             $stmt = $db->prepare('SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_subject WHERE id !=' . $post['id'] . ' AND alias = :alias');
             $stmt->bindParam(':alias', $post['alias'], PDO::PARAM_STR);
             $stmt->execute();
-            
+
             if ($stmt->fetchColumn()) {
                 $weight = $db->query('SELECT MAX(id) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_subject')->fetchColumn();
                 $weight = intval($weight) + 1;
                 $post['alias'] = $post['alias'] . '-' . $weight;
             }
         }
-        
+
         if (empty($post['title'])) {
             die($lang_module['errorIsEmpty'] . ": " . $lang_module['title']);
         }
-        
+
         $_sList = $sList;
         if (isset($post['id'])) unset($_sList[$post['id']]);
-        
+
         if (isset($post['id'])) {
             $query = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_subject SET
                     alias=" . $db->quote($post['alias']) . ",
@@ -132,19 +149,19 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
             $db->query($query);
         } else {
             $weight = $scount + 1;
-            
+
             $query = "INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_subject
                 VALUES (NULL, " . $db->quote($post['alias']) . ", " . $db->quote($post['title']) . ",
                 " . $db->quote($post['introduction']) . ", " . $db->quote($post['keywords']) . ",
                 0, 5, " . NV_CURRENTTIME . ", " . $weight . ");";
             $db->query($query);
         }
-        
+
         $nv_Cache->delMod($module_name);
         nv_insert_logs(NV_LANG_DATA, $module_name, $log_title, "Id: " . $post['id'], $admin_info['userid']);
         nv_htmlOutput('OK');
     }
-    
+
     if ($nv_Request->isset_request('edit', 'get')) {
         $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_subject WHERE id=" . $post['id'];
         $result = $db->query($sql);
@@ -159,16 +176,16 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
         $post['introduction'] = "";
         $post['keywords'] = "";
     }
-    
+
     $xtpl->assign('CAT', $post);
-    
+
     if (empty($post['id'])) {
         $xtpl->parse('action.auto_get_alias');
     }
-    
+
     $xtpl->parse('action');
     $contents = $xtpl->text('action');
-    
+
     include NV_ROOTDIR . '/includes/header.php';
     echo nv_admin_theme($contents);
     include NV_ROOTDIR . '/includes/footer.php';
@@ -183,7 +200,8 @@ if ($nv_Request->isset_request('list', 'get')) {
             'title' => $values['title']
         );
         $xtpl->assign('LOOP', $loop);
-        
+        $xtpl->parse('list.loop.checkrow');
+
         for ($i = 1; $i <= $scount; $i++) {
             $opt = array(
                 'value' => $i,
@@ -192,7 +210,7 @@ if ($nv_Request->isset_request('list', 'get')) {
             $xtpl->assign('NEWWEIGHT', $opt);
             $xtpl->parse('list.loop.option');
         }
-        
+
         for ($i = 0; $i <= 20; ++$i) {
             $xtpl->assign('NUMLINKS', array(
                 'key' => $i,
@@ -201,10 +219,22 @@ if ($nv_Request->isset_request('list', 'get')) {
             ));
             $xtpl->parse('list.loop.numlinks');
         }
-        
+
         $xtpl->parse('list.loop');
         $a++;
     }
+
+    foreach ($array_actions as $catid_i  => $title_i) {
+
+        $actions_assign = [
+            'value' => $catid_i,
+            'title' => $title_i
+        ];
+        $xtpl->assign('ACTIONS', $actions_assign);
+        $xtpl->parse('list.actions');
+
+    }
+
     $xtpl->parse('list');
     $xtpl->out('list');
     exit();

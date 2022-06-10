@@ -119,9 +119,11 @@
 <!-- END: action -->
 
 <!-- BEGIN: list -->
+<form class="form-inline">
 <table class="table table-striped table-bordered table-hover" summary="{PARENTID}">
 	<thead>
 		<tr>
+            <th class="text-center w50"><input name="check_all[]" type="checkbox" value="yes" onclick="nv_checkAll(this.form, 'idcheck[]', 'check_all[]',this.checked);" /></th>
 			<th style="width:100px"> {LANG.pos} </th>
 			<th> {LANG.title} </th>
 			<th class="w100"> {LANG.numlink} </th>
@@ -131,6 +133,11 @@
 	<tbody>
 		<!-- BEGIN: loop -->
 		<tr>
+            <td class="text-center">
+                    <!-- BEGIN: checkrow -->
+                    <input type="checkbox" onclick="nv_UncheckAll(this.form, 'idcheck[]', 'check_all[]', this.checked);" value="{LOOP.id}" class="idcheck" name="idcheck[]" />
+                    <!-- END: checkrow -->
+            </td>
 			<td>
 				<select name="p_{LOOP.id}" class="form-control newWeight">
 					<!-- BEGIN: option -->
@@ -150,7 +157,20 @@
 		</tr>
 		<!-- END: loop -->
 	</tbody>
+    <tfoot>
+            <tr class="text-left">
+                <td colspan="12">
+                    <select class="form-control w150" name="action1" id="action1">
+                        <!-- BEGIN: actions -->
+                        <option value="{ACTIONS.value}">{ACTIONS.title}</option>
+                        <!-- END: actions -->
+                    </select>
+                    <input type="button" class="btn btn-primary"  onclick="nv_main_action(this.form, '{NV_CHECK_SESSION}', '{LANG.msgnocheck}')" value="{LANG.action}" />
+                </td>
+            </tr>
+    </tfoot>
 </table>
+</form>
 <script type="text/javascript">
 	//<![CDATA[
 	$("a.del").click(function() {
@@ -179,5 +199,46 @@
 		return !1;
 	});
 	//]]>
+    
+    function nv_main_action(e, session, msg){
+        var action = $('#action1').val();
+        if  (action === 'delete'){
+           var arr = [];
+           var i = 0;
+           $('.idcheck:checked').each(function () {
+               arr[i++] = $(this).val();
+           });  
+
+            if  (arr != []){
+                ajax_delete(arr);
+           
+            }
+      }   
+    }
+    
+    function ajax_delete(arr){
+        data = {
+            'delete_actions': 1,
+            'arr': arr
+        }
+        $.ajax({
+            type: "POST",
+            url: "",
+            cache: !1,
+            data: data,
+            success: function (res) {
+               if (res == 'OK'){
+                    var result = confirm("Bạn thực sự muốn xóa? Nếu đồng ý, tất cả dữ liệu liên quan sẽ bị xóa. Bạn sẽ không thể phục hồi lại chúng sau này");
+                    if (result == true){
+                        alert('Lệnh Xóa đã được thực hiện');
+                    }
+                }else{
+                alert('Vì một lý do nào đó lệnh Xóa đã không được thực hiện');
+                }
+                location.reload();
+            }
+        })
+    }
+    
 </script>
 <!-- END: list -->
