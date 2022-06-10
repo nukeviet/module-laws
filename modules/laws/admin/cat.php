@@ -79,6 +79,25 @@ if ($nv_Request->isset_request('del', 'post')) {
     nv_htmlOutput('OK');
 }
 
+// Delete cat
+$array_actions = array('delete' => $lang_global['delete'],);
+
+$actions =  $nv_Request->get_int('delete_actions', 'post', 0);
+if ($actions == 1) {
+    $arrid = $nv_Request->get_array('arr', 'post', []);
+    $status = 'ERR';
+    if ($arrid != []){
+        $sql = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_cat WHERE id IN(" . implode(',', $arrid).')';
+        $exe = $db->query($sql);
+        if ($exe) {
+            $status = 'OK';
+        }
+    }
+    die($status);
+}
+
+
+
 $xtpl = new XTemplate($op . ".tpl", NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file);
 $xtpl->assign('LANG', $lang_module);
 $xtpl->assign('GLANG', $lang_global);
@@ -262,6 +281,7 @@ if ($nv_Request->isset_request('list', 'get')) {
                 'count' => $values['count']
             ];
             $xtpl->assign('LOOP', $loop);
+            $xtpl->parse('list.loop.checkrow');
 
             for ($i = 1; $i <= $values['pcount']; $i++) {
                 $opt = [
@@ -290,10 +310,25 @@ if ($nv_Request->isset_request('list', 'get')) {
             $a++;
         }
     }
+
+    foreach ($array_actions as $catid_i  => $title_i) {
+
+        $actions_assign = [
+            'value' => $catid_i,
+            'title' => $title_i
+        ];
+        $xtpl->assign('ACTIONS', $actions_assign);
+        $xtpl->parse('list.actions');
+
+    }
+
     $xtpl->parse('list');
     $xtpl->out('list');
     exit();
 }
+
+
+
 
 $xtpl->parse('main');
 $contents = $xtpl->text('main');
