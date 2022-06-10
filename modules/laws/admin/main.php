@@ -46,6 +46,24 @@ $sql_sub = "SELECT subjectid FROM " . NV_PREFIXLANG . "_" . $module_data . "_adm
 $result = $db->query($sql_sub);
 $num_sub = $result->rowCount();
 
+// Xóa nhiều văn bản
+$array_actions = array('delete' => $lang_global['delete'],);
+
+$actions =  $nv_Request->get_int('delete_actions', 'post', 0);
+if ($actions == 1) {
+    $arrid = $nv_Request->get_array('arr', 'post', []);
+    $status = 'ERR';
+    if ($arrid != []){
+        $sql = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id IN(" . implode(',', $arrid).')';
+        $exe = $db->query($sql);
+        if ($exe) {
+            $status = 'OK';
+        }
+    }
+    die($status);
+}
+
+
 $xtpl = new XTemplate($op . ".tpl", NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file);
 $xtpl->assign('LANG', $lang_module);
 $xtpl->assign('GLANG', $lang_global);
@@ -700,6 +718,7 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
 
                 $xtpl->assign('CLASS', $a % 2 ? " class=\"second\"" : "");
                 $xtpl->assign('DATA', $row);
+                $xtpl->parse('list.loop.checkrow');
                 if ($module_config[$module_name]['activecomm']) {
                     $xtpl->parse('list.loop.view_comm_time');
                     $xtpl->parse('list.loop.view_comm');
@@ -736,6 +755,18 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
             if ($check) {
                 $xtpl->parse('list.view_tlfeature');
             }
+
+            foreach ($array_actions as $catid_i  => $title_i) {
+
+                $actions_assign = [
+                    'value' => $catid_i,
+                    'title' => $title_i
+                ];
+                $xtpl->assign('ACTIONS', $actions_assign);
+                $xtpl->parse('list.actions');
+
+            }
+
             $xtpl->parse('list');
             $xtpl->out('list');
         }
