@@ -86,6 +86,23 @@ while ($row = $result->fetch()) {
 
 $generate_page = nv_generate_page($base_url, $all_page, $per_page, $page);
 
+// Delete signer
+$array_action = array('delete' => $lang_global['delete'],);
+
+$action =  $nv_Request->get_int('delete_action', 'post', 0);
+if ($action == 1) {
+    $arrid = $nv_Request->get_array('arr', 'post', []);
+    $status = 'ERR';
+    if ($arrid != []){
+        $sql = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_signer WHERE id IN(" . implode(',', $arrid).')';
+        $exe = $db->query($sql);
+        if ($exe) {
+            $status = 'OK';
+        }
+    }
+    die($status);
+}
+
 $xtpl = new XTemplate("signer_list.tpl", NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file);
 $xtpl->assign('LANG', $lang_module);
 $xtpl->assign('GLANG', $lang_global);
@@ -94,12 +111,24 @@ $xtpl->assign('LINK_ADD', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '
 
 foreach ($array as $row) {
     $xtpl->assign('ROW', $row);
+    $xtpl->parse('main.row.checkrow');
     $xtpl->parse('main.row');
 }
 
 if (!empty($generate_page)) {
     $xtpl->assign('GENERATE_PAGE', $generate_page);
     $xtpl->parse('main.generate_page');
+}
+
+foreach ($array_action as $catid_i  => $title_i) {
+
+    $action_assign = [
+        'value' => $catid_i,
+        'title' => $title_i
+    ];
+    $xtpl->assign('ACTION', $action_assign);
+    $xtpl->parse('main.action');
+
 }
 
 $xtpl->parse('main');
