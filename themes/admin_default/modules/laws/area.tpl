@@ -38,7 +38,8 @@
 					<col class="w200" />
 				</colgroup>
 				<tbody>
-					<tr>
+					<tr>                    
+                        
 						<td>{LANG.title} <span style="color:red">*</span></td>
 						<td>
 							<input title="{LANG.title}" class="form-control" style="width: 300px" type="text" name="title" value="{CAT.title}" maxlength="255" />
@@ -140,10 +141,12 @@
 <!-- END: action -->
 
 <!-- BEGIN: list -->
+<form class="form-inline">
 <div class="table-responsive">
 	<table class="table table-striped table-bordered table-hover" summary="{PARENTID}">
 		<thead>
 			<tr>
+                <th class="text-center w50"><input name="check_all[]" type="checkbox" value="yes" onclick="nv_checkAll(this.form, 'idcheck[]', 'check_all[]',this.checked);" /></th>
 				<th style="width:100px"> {LANG.pos} </th>
 				<th>{LANG.title}</th>
 				<th style="width:130px">{LANG.feature}</th>
@@ -152,6 +155,11 @@
 		<tbody>
 			<!-- BEGIN: loop -->
 			<tr>
+                <td class="text-center">
+                    <!-- BEGIN: checkrow -->
+                    <input type="checkbox" value="{LOOP.id}" onclick="nv_UncheckAll(this.form, 'idcheck[]', 'check_all[]', this.checked);" class="idcheck" name="idcheck[]" />
+                    <!-- END: checkrow -->
+                </td>
 				<td>
 				<select name="p_{LOOP.id}" class="form-control newWeight">
 					<!-- BEGIN: option -->
@@ -171,10 +179,74 @@
 			</tr>
 			<!-- END: loop -->
 		</tbody>
+        <tfoot>
+                <tr class="text-left">
+                    <td colspan="12">
+                        <select class="form-control w150" name="action1" id="action1">
+                            <!-- BEGIN: action -->
+                            <option value="{ACTION.value}">{ACTION.title}</option>
+                            <!-- END: action -->
+                        </select>
+                        <input type="button" class="btn btn-primary"  onclick="nv_main_action(this.form, '{NV_CHECK_SESSION}', '{LANG.msgnocheck}')" value="{LANG.action}" />
+                    </td>
+                </tr>
+        </tfoot>
 	</table>
 </div>
-
+</form>
 <script type="text/javascript">
+
+function nv_checkAll(oForm, cbName, caName, check_value) {
+    if (typeof oForm == 'undefined' || typeof oForm[cbName] == 'undefined') {
+        return false;
+    }
+    if (oForm[cbName].length) {
+        for (var i = 0; i < oForm[cbName].length; i++) {
+            oForm[cbName][i].checked = check_value;
+        }
+    } else {
+        oForm[cbName].checked = check_value;
+    }
+
+    if (oForm[caName].length) {
+        for (var j = 0; j < oForm[caName].length; j++) {
+            oForm[caName][j].checked = check_value;
+        }
+    } else {
+        oForm[caName].checked = check_value;
+    }
+}
+
+function nv_UncheckAll(oForm, cbName, caName, check_value) {
+    if (typeof oForm == 'undefined' || typeof oForm[cbName] == 'undefined') {
+        return false;
+    }
+    var ts = 0;
+
+    if (oForm[cbName].length) {
+        for (var i = 0; i < oForm[cbName].length; i++) {
+            if (oForm[cbName][i].checked != check_value) {
+                ts = 1;
+                break;
+            }
+        }
+    }
+
+    var chck = false;
+    if (ts == 0) {
+        chck = check_value;
+    }
+
+    if (oForm[caName].length) {
+        for (var j = 0; j < oForm[caName].length; j++) {
+            oForm[caName][j].checked = chck;
+        }
+    } else {
+        oForm[caName].checked = chck;
+    }
+}
+
+
 //<![CDATA[
 $("a.yessub").click(function() {
 	var a = $(this).attr("href");
@@ -216,5 +288,45 @@ $("select.newWeight").change(function() {
 	return !1;
 });
 //]]>
+
+function nv_main_action(e, session, msg){
+        var action = $('#action1').val();
+        if  (action === 'delete'){
+           var arr = [];
+           var i = 0;
+           $('.idcheck:checked').each(function () {
+               arr[i++] = $(this).val();
+           });  
+
+            if  (arr != []){
+                ajax_delete(arr);
+           
+            }
+      }   
+    }
+    
+    function ajax_delete(arr){
+        data = {
+            'delete_action': 1,
+            'arr': arr
+        }
+        $.ajax({
+            type: "POST",
+            url: "",
+            cache: !1,
+            data: data,
+            success: function (res) {
+                if (res == 'OK'){
+                    var result = confirm("Bạn thực sự muốn xóa? Nếu đồng ý, tất cả dữ liệu liên quan sẽ bị xóa. Bạn sẽ không thể phục hồi lại chúng sau này");
+                    if (result == true){
+                        alert('Lệnh Xóa đã được thực hiện');
+                    }
+                }else{
+                alert('Vì một lý do nào đó lệnh Xóa đã không được thực hiện');
+                }
+                location.reload();
+            }
+        })
+    }
 </script>
 <!-- END: list -->
