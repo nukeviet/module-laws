@@ -128,3 +128,180 @@ function check_admin_second() {
     $(this).one("dblclick", check_admin_first);
     $("input[name='admin_content[]']:checkbox").prop("checked", false);
 }
+
+// Xử lý các select tool tại trang danh sách văn bản
+function nv_main_action(oForm, checkss, msgnocheck) {
+    var fa = oForm['idcheck[]'];
+    var listid = '';
+    if (fa.length) {
+        for (var i = 0; i < fa.length; i++) {
+            if (fa[i].checked) {
+                listid = listid + fa[i].value + ',';
+            }
+        }
+    } else {
+        if (fa.checked) {
+            listid = listid + fa.value + ',';
+        }
+    }
+
+    if (listid != '') {
+        var action = document.getElementById('action-of-main').value;
+        if (action == 'delete') {
+            if (confirm(nv_is_del_confirm[0])) {
+                $.post(
+                    script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=main&nocache=' + new Date().getTime(),
+                    'del=1&listid=' + listid, function(res) {
+                    if (res == 'OK') {
+                        location.reload();
+                    } else {
+                        alert(nv_is_del_confirm[2]);
+                    }
+                });
+            }
+        }
+    } else {
+        alert(msgnocheck);
+    }
+}
+
+// Xử lý các select tool tại trang danh sách người kí
+function nv_signer_action(oForm, checkss, msgnocheck) {
+    var fa = oForm['idcheck[]'];
+    var listid = '';
+    if (fa.length) {
+        for (var i = 0; i < fa.length; i++) {
+            if (fa[i].checked) {
+                listid = listid + fa[i].value + ',';
+            }
+        }
+    } else {
+        if (fa.checked) {
+            listid = listid + fa.value + ',';
+        }
+    }
+
+    if (listid != '') {
+        var action = document.getElementById('action-of-signer').value;
+        if (action == 'delete') {
+            if (confirm(nv_is_del_confirm[0])) {
+                $.post(
+                    script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=signer&nocache=' + new Date().getTime(),
+                    'del=1&listid=' + listid, function(res) {
+                    if (res == 'OK') {
+                        location.reload();
+                    } else {
+                        alert(nv_is_del_confirm[2]);
+                    }
+                });
+            }
+        }
+    } else {
+        alert(msgnocheck);
+    }
+}
+
+// Xử lý các select tool tại trang danh sách lĩnh vực
+function nv_area_action(oForm, checkss, msgnocheck) {
+    var fa = oForm['idcheck[]'];
+    var listid = '';
+    if (fa.length) {
+        for (var i = 0; i < fa.length; i++) {
+            if (fa[i].checked) {
+                listid = listid + fa[i].value + ',';
+            }
+        }
+    } else {
+        if (fa.checked) {
+            listid = listid + fa.value + ',';
+        }
+    }
+
+    if (listid != '') {
+        var action = document.getElementById('action-of-list').value;
+        if (action == 'delete') {
+            if (confirm(nv_is_del_confirm[0])) {
+                $.post(
+                    script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=area&nocache=' + new Date().getTime(),
+                    'del=0&listid=' + listid, function(res) {
+                    if (res != 'OK') {
+                        alert(res);
+                    }
+                    location.reload();
+                });
+            }
+        }
+    } else {
+        alert(msgnocheck);
+    }
+}
+
+// Xử lý các select tool tại trang danh sách thể loại
+function nv_cat_action(oForm, checkss, msgnocheck) {
+    var fa = oForm['idcheck[]'];
+    var listid = '';
+    if (fa.length) {
+        for (var i = 0; i < fa.length; i++) {
+            if (fa[i].checked) {
+                listid = listid + fa[i].value + ',';
+            }
+        }
+    } else {
+        if (fa.checked) {
+            listid = listid + fa.value + ',';
+        }
+    }
+
+    if (listid != '') {
+        var action = document.getElementById('action-of-list').value;
+        if (action == 'delete') {
+            if (confirm(nv_is_del_confirm[0])) {
+                $.post(
+                    script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=cat&nocache=' + new Date().getTime(),
+                    'del=0&listid=' + listid, function(res) {
+                    if (res != 'OK') {
+                        alert(res);
+                    }
+                    location.reload();
+                });
+            }
+        }
+    } else {
+        alert(msgnocheck);
+    }
+}
+
+// Xử lý các select tool tại trang danh sách cơ quan ban hành
+function nv_subject_action(oForm, checkss, msgnocheck) {
+    var fa = oForm['idcheck[]'];
+    var listid = '';
+    if (fa.length) {
+        for (var i = 0; i < fa.length; i++) {
+            if (fa[i].checked) {
+                listid = listid + fa[i].value + ',';
+            }
+        }
+    } else {
+        if (fa.checked) {
+            listid = listid + fa.value + ',';
+        }
+    }
+
+    if (listid != '') {
+        var action = document.getElementById('action-of-list').value;
+        if (action == 'delete') {
+            if (confirm(nv_is_del_confirm[0])) {
+                $.post(
+                    script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=subject&nocache=' + new Date().getTime(),
+                    'del=0&listid=' + listid, function(res) {
+                    if (res != 'OK') {
+                        alert(res);
+                    }
+                    location.reload();
+                });
+            }
+        }
+    } else {
+        alert(msgnocheck);
+    }
+}

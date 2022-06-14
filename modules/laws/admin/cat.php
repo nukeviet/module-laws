@@ -64,18 +64,64 @@ if ($nv_Request->isset_request('newday', 'post')) {
 
 if ($nv_Request->isset_request('del', 'post')) {
     $id = $nv_Request->get_int('del', 'post', 0);
-    if (!isset($catList[$id])) die($lang_module['errorCatNotExists']);
-    if ($catList[$id]['count'] > 0) die($lang_module['errorCatYesSub']);
-    $sql = "SELECT COUNT(*) as count FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE cid=" . $id;
-    $result = $db->query($sql);
-    $row = $result->fetch();
-    if ($row['count']) die($lang_module['errorCatYesRow']);
+    $listid = $nv_Request->get_title('listid', 'post', '');
+    $listid = $listid . ',' . $id;
+    $listid = array_filter(array_unique(array_map('intval', explode(',', $listid))));
 
-    $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_cat WHERE id = " . $id;
-    $db->query($query);
-    fix_catWeight($catList[$id]['parentid']);
+    $check_sub = 0;
+    $check_row = 0;
+
+    foreach ($listid as $id) {
+        if (!isset($catList[$id])) {
+            continue;
+        }
+
+        // Kiểm tra có thể loại con thì không xóa
+        if ($catList[$id]['count'] > 0) {
+            $check_sub++;
+            continue;
+        }
+
+        // Kiểm tra nếu có văn bản thì không xóa
+        $sql = "SELECT COUNT(*) as count FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE cid=" . $id;
+        $result = $db->query($sql);
+        $row = $result->fetch();
+        if ($row['count']) {
+            $check_row++;
+            continue;
+        }
+
+        nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['logDelCat'], "Id: " . $id, $admin_info['userid']);
+
+        $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_cat WHERE id = " . $id;
+        $db->query($query);
+
+        fix_catWeight($catList[$id]['parentid']);
+    }
+
     $nv_Cache->delMod($module_name);
-    nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['logDelCat'], "Id: " . $id, $admin_info['userid']);
+
+    if (sizeof($listid) == 1) {
+        if ($check_sub > 0) {
+            nv_htmlOutput($lang_module['errorCatYesSub']);
+        }
+        if ($check_row > 0) {
+            nv_htmlOutput($lang_module['errorCatYesRow']);
+        }
+    } else {
+        $error = [];
+        if ($check_sub > 0) {
+            $error[] = $lang_module['errorCatYesSub1'];
+        }
+        if ($check_row > 0) {
+            $error[] = $lang_module['errorCatYesRow1'];
+        }
+        if (!empty($error)) {
+            $error[] = $lang_module['errorCatDeleteList'];
+            nv_htmlOutput(implode("\n", $error));
+        }
+    }
+
     nv_htmlOutput('OK');
 }
 

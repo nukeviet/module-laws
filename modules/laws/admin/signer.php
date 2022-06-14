@@ -12,33 +12,36 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     die('Stop!!!');
 }
 
-// Delete
+// Xóa người kí
 if ($nv_Request->isset_request('del', 'post')) {
-    if (!defined('NV_IS_AJAX')) die('Wrong URL');
+    if (!defined('NV_IS_AJAX')) {
+        die('Wrong URL');
+    }
 
     $id = $nv_Request->get_int('id', 'post', 0);
+    $listid = $nv_Request->get_title('listid', 'post', '');
+    $listid = $listid . ',' . $id;
+    $listid = array_filter(array_unique(array_map('intval', explode(',', $listid))));
 
-    if (empty($id)) {
-        die('NO');
+    foreach ($listid as $id) {
+        $sql = "SELECT title FROM " . NV_PREFIXLANG . "_" . $module_data . "_signer WHERE id=" . $id;
+        $result = $db->query($sql);
+        $title = $result->fetchColumn();
+
+        if (empty($title)) {
+            continue;
+        }
+
+        nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['scontent_delete'], $title, $admin_info['userid']);
+
+        $sql = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_signer WHERE id=" . $id;
+        $db->query($sql);
+
+        $sql = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE sgid=" . $id;
+        $db->query($sql);
     }
-
-    $sql = "SELECT title FROM " . NV_PREFIXLANG . "_" . $module_data . "_signer WHERE id=" . $id;
-    $result = $db->query($sql);
-    $title = $result->fetchColumn();
-
-    if (empty($title)) {
-        die('NO');
-    }
-
-    $sql = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_signer WHERE id=" . $id;
-    $db->query($sql);
-
-    $sql = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE sgid=" . $id;
-    $db->query($sql);
 
     $nv_Cache->delMod($module_name);
-    nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['scontent_delete'], $title, $admin_info['userid']);
-
     nv_htmlOutput('OK');
 }
 
@@ -68,20 +71,17 @@ if ((!$all_page) and empty($data_search['type'])) {
 }
 
 // Build data
-$i = 1;
 $sql = "SELECT * " . $sql . " LIMIT " . $page . ", " . $per_page;
 $result = $db->query($sql);
 
 while ($row = $result->fetch()) {
-    $array[] = array(
+    $array[] = [
         "id" => $row['id'],
         "title" => $row['title'],
         "offices" => $row['offices'],
         "positions" => $row['positions'],
         "url_edit" => NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=scontent&amp;id=" . $row['id'],
-        "class" => ($i % 2 == 0) ? " class=\"second\"" : ""
-    );
-    $i++;
+    ];
 }
 
 $generate_page = nv_generate_page($base_url, $all_page, $per_page, $page);

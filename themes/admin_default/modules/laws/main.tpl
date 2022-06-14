@@ -8,62 +8,85 @@
 </div>
 <!-- END: msg -->
 <!-- BEGIN: list -->
-<div class="table-responsive">
-    <table class="table table-striped table-bordered table-hover">
-        <colgroup>
-            <col />
-            <col class="w100" />
-            <col span="5" class="w150" />
-        </colgroup>
-        <thead>
-            <tr>
-                <th>{LANG.title}</th>
-                <th>{LANG.code}</th>
-                <!-- BEGIN: view_time_title -->
-                <th>{LANG.publtime}</th>
-                <th>{LANG.exptime}</th>
-                <!-- END: view_time_title -->
-                <!-- BEGIN: view_comm_time_title -->
-                <th>{LANG.start_comm_time}</th>
-                <th>{LANG.end_comm_time}</th>
-                <!-- END: view_comm_time_title -->
-                <th class="text-center">{LANG.admin_add}</th>
-                <th class="text-center">{LANG.status}</th>
-                <!-- BEGIN: view_tlfeature -->
-                <th class="text-center">{LANG.feature}</th>
-                <!-- END: view_tlfeature -->
-            </tr>
-        </thead>
-        <tbody>
-            <!-- BEGIN: loop -->
-            <tr>
-                <td><a href="{DATA.url_view}" target="_blank" title="{DATA.title}">{DATA.title}</a></td>
-                <td><strong>{DATA.code}</strong></td>
-                <!-- BEGIN: view_time -->
-                <td>{DATA.publtime}</td>
-                <td>{DATA.exptime}</td>
-                <!-- END: view_time -->
-                <!-- BEGIN: view_comm_time -->
-                <td>{DATA.start_comm_time}</td>
-                <td>{DATA.end_comm_time}</td>
-                <!-- END: view_comm_time -->
-                <td>{DATA.admin_add}</td>
-                <td class="text-center"><select class="form-control" id="status_{DATA.id}" name="status[]" onchange="nv_change_status({DATA.id});"
-                        <!-- BEGIN: view_suspended -->disabled
-                        <!-- END: view_suspended -->>
-                        <option value="0">{LANG.status0}</option>
-                        <option value="1"{DATA.selected}>{LANG.status1}</option>
-                </select></td>
-                <!-- BEGIN: view_feature -->
-                <td class="text-center">
-                    <!-- BEGIN: view_edit --> <em class="fa fa-edit fa-lg">&nbsp;</em><a href="{DATA.url_edit}">{GLANG.edit}</a> <!-- END: view_edit --> <!-- BEGIN: view_delete --> <em class="fa fa-trash-o fa-lg">&nbsp;</em><a href="javascript:void(0);" onclick="nv_delete_law({DATA.id});">{GLANG.delete}</a> <!-- END: view_delete --> <!-- BEGIN: view_comm --> - <em class="fa fa-eye fa-lg">&nbsp;</em><a href="{DATA.url_view_comm}">{LANG.view_comm}</a> <!-- END: view_comm -->
-                </td>
-                <!-- END: view_feature -->
-            </tr>
-            <!-- END: loop -->
-        </tbody>
-    </table>
-</div>
+<form>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <colgroup>
+                <col />
+                <col />
+                <col class="w100" />
+                <col span="5" class="w150" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <!-- BEGIN: view_colcheck -->
+                    <th style="width: 1%" class="text-center"><input name="check_all[]" type="checkbox" value="yes" onclick="nv_checkAll(this.form, 'idcheck[]', 'check_all[]',this.checked);"></th>
+                    <!-- END: view_colcheck -->
+                    <th>{LANG.title}</th>
+                    <th>{LANG.code}</th>
+                    <!-- BEGIN: view_time_title -->
+                    <th>{LANG.publtime}</th>
+                    <th>{LANG.exptime}</th>
+                    <!-- END: view_time_title -->
+                    <!-- BEGIN: view_comm_time_title -->
+                    <th>{LANG.start_comm_time}</th>
+                    <th>{LANG.end_comm_time}</th>
+                    <!-- END: view_comm_time_title -->
+                    <th class="text-center">{LANG.admin_add}</th>
+                    <th class="text-center">{LANG.status}</th>
+                    <!-- BEGIN: view_tlfeature -->
+                    <th class="text-center">{LANG.feature}</th>
+                    <!-- END: view_tlfeature -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- BEGIN: loop -->
+                <tr>
+                    <!-- BEGIN: view_check -->
+                    <td class="text-center">
+                        <input type="checkbox" onclick="nv_UncheckAll(this.form, 'idcheck[]', 'check_all[]', this.checked);" value="{DATA.id}" name="idcheck[]">
+                    </td>
+                    <!-- END: view_check -->
+                    <td><a href="{DATA.url_view}" target="_blank" title="{DATA.title}">{DATA.title}</a></td>
+                    <td><strong>{DATA.code}</strong></td>
+                    <!-- BEGIN: view_time -->
+                    <td>{DATA.publtime}</td>
+                    <td>{DATA.exptime}</td>
+                    <!-- END: view_time -->
+                    <!-- BEGIN: view_comm_time -->
+                    <td>{DATA.start_comm_time}</td>
+                    <td>{DATA.end_comm_time}</td>
+                    <!-- END: view_comm_time -->
+                    <td>{DATA.admin_add}</td>
+                    <td class="text-center">
+                        <select class="form-control input-sm" id="status_{DATA.id}" name="status[]" onchange="nv_change_status({DATA.id});" <!-- BEGIN: view_suspended -->disabled<!-- END: view_suspended -->>
+                            <option value="0">{LANG.status0}</option>
+                            <option value="1"{DATA.selected}>{LANG.status1}</option>
+                        </select>
+                    </td>
+                    <!-- BEGIN: view_feature -->
+                    <td class="text-center">
+                        <!-- BEGIN: view_edit --><a href="{DATA.url_edit}" class="btn btn-xs btn-default"><i class="fa fa-edit"></i> {GLANG.edit}</a><!-- END: view_edit -->
+                        <!-- BEGIN: view_delete --><a href="javascript:void(0);" onclick="nv_delete_law({DATA.id});" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> {GLANG.delete}</a><!-- END: view_delete -->
+                        <!-- BEGIN: view_comm --><a href="{DATA.url_view_comm}" class="fa fa-eye" class="btn btn-xs btn-info"> {LANG.view_comm}</a><!-- END: view_comm -->
+                    </td>
+                    <!-- END: view_feature -->
+                </tr>
+                <!-- END: loop -->
+            </tbody>
+        </table>
+    </div>
+    <!-- BEGIN: actions -->
+    <div class="form-group form-inline">
+        <div class="form-group mt-0">
+            <select class="form-control" id="action-of-main">
+                <option value="delete">{GLANG.delete}</option>
+            </select>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="nv_main_action(this.form, '{NV_CHECK_SESSION}', '{LANG.msgnocheck}')">{GLANG.submit}</button>
+    </div>
+    <!-- END: actions -->
+</form>
 <div class="text-center">{NV_GENERATE_PAGE}</div>
 <!-- END: list -->
 <!-- BEGIN: main -->

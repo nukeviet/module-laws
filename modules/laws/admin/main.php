@@ -26,7 +26,7 @@ if (empty($sList)) {
     include NV_ROOTDIR . '/includes/footer.php';
 }
 
-$_arr_subject = array();
+$_arr_subject = [];
 foreach ($sList as $s_i => $array_value) {
     $_arr_subject[$array_value['id']] = $array_value['id'];
 }
@@ -562,29 +562,38 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
     // Xóa văn bản
     if ($nv_Request->isset_request('del', 'post')) {
         $id = $nv_Request->get_int('id', 'post', 0);
+        $listid = $nv_Request->get_title('listid', 'post', '');
+        $listid = $listid . ',' . $id;
+        $listid = array_filter(array_unique(array_map('intval', explode(',', $listid))));
 
-        $sql = "SELECT status FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id=" . $id;
-        $result = $db->query($sql);
-        $num = $result->rowCount();
-        $row = $result->fetch();
+        foreach ($listid as $id) {
+            $sql = "SELECT status FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id=" . $id;
+            $result = $db->query($sql);
+            $num = $result->rowCount();
+            $row = $result->fetch();
 
-        $data = $db->query('SELECT sid FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id=' . $id)->fetch();
-        if (!$num || (!defined('NV_IS_ADMIN_MODULE') and $array_cat_admin[$admin_id][$row['cid']]['admin'] != 1 and $array_cat_admin[$admin_id][$row['cid']]['del_content'] != 1)) nv_htmlOutput('NO');
-        $status = $row['status'];
-        if (!empty($data)) {
-            $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id = " . $id;
-            $db->query($query);
+            $data = $db->query('SELECT sid FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id=' . $id)->fetch();
 
-            $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_set_replace WHERE oid = " . $id;
-            $db->query($query);
+            // Kiểm tra tồn tại và kiểm tra quyền xóa
+            if (!$num or (!defined('NV_IS_ADMIN_MODULE') and $array_cat_admin[$admin_id][$row['cid']]['admin'] != 1 and $array_cat_admin[$admin_id][$row['cid']]['del_content'] != 1)) {
+                continue;
+            }
 
-            // Cap nhat lai so luong van ban o chu de
-            $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_subject SET numcount=(SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $data['sid'] . ' AND status=1) WHERE id=' . $data['sid']);
+            $status = $row['status'];
+            if (!empty($data)) {
+                $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id = " . $id;
+                $db->query($query);
 
-            $nv_Cache->delMod($module_name);
-            nv_htmlOutput('OK');
+                $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_set_replace WHERE oid = " . $id;
+                $db->query($query);
+
+                // Cap nhat lai so luong van ban o chu de
+                $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_subject SET numcount=(SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $data['sid'] . ' AND status=1) WHERE id=' . $data['sid']);
+            }
         }
-        nv_htmlOutput('NO');
+
+        $nv_Cache->delMod($module_name);
+        nv_htmlOutput('OK');
     }
 
     // Cập nhật trạng thái văn bản
@@ -681,6 +690,8 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
             $result = $db->query($sql);
             $a = 0;
             $check = 0;
+            $check_delete = 0;
+
             while ($row = $result->fetch()) {
                 $row['admin_add'] = $row['username'];
                 $row['publtime'] = date("d-m-Y", $row['publtime']);
@@ -711,6 +722,8 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
                 }
                 if (defined('NV_IS_ADMIN_MODULE') || $array_subject_admin[$admin_id][$row['sid']]['admin'] == 1 || $array_subject_admin[$admin_id][$row['sid']]['del_content'] == 1) {
                     $xtpl->parse('list.loop.view_feature.view_delete');
+                    $xtpl->parse('list.loop.view_check');
+                    $check_delete++;
                 }
 
                 if (!defined('NV_IS_ADMIN_MODULE') && $array_subject_admin[$admin_id][$row['sid']]['admin'] != 1 && $array_subject_admin[$admin_id][$row['sid']]['del_content'] != 1) {
@@ -725,17 +738,25 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
                 }
                 $a++;
             }
+
             if ($module_config[$module_name]['activecomm']) {
                 $xtpl->parse('list.view_comm_time_title');
             } else {
                 $xtpl->parse('list.view_time_title');
             }
+
             $generate_page = nv_generate_page($base_url, $all_page, $per_page, $page, true, true, "nv_load_laws", "data");
 
             $xtpl->assign('NV_GENERATE_PAGE', $generate_page);
+
             if ($check) {
                 $xtpl->parse('list.view_tlfeature');
             }
+            if ($check_delete > 0) {
+                $xtpl->parse('list.view_colcheck');
+                $xtpl->parse('list.actions');
+            }
+
             $xtpl->parse('list');
             $xtpl->out('list');
         }
