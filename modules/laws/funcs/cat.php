@@ -21,7 +21,6 @@ if (isset($array_op[1])) {
     nv_redirect_location($base_url);
 }
 
-
 // Set page title, keywords, description
 $page_title = $mod_title = $nv_laws_listcat[$catid]['title'];
 $key_words = empty($nv_laws_listcat[$catid]['keywords']) ? $module_info['keywords'] : $nv_laws_listcat[$catid]['keywords'];
@@ -47,7 +46,7 @@ if (!defined('NV_IS_MODADMIN') and $page < 5) {
 
 if (empty($contents)) {
     $cat = $nv_laws_listcat[$catid];
-    $in = "";
+    $in = '';
     if (empty($cat['subcats'])) {
         $in = " cid=" . $catid;
     } else {
@@ -59,24 +58,14 @@ if (empty($contents)) {
     $order = ($nv_laws_setting['typeview'] == 1 or $nv_laws_setting['typeview'] == 4) ? "ASC" : "DESC";
     $order_param = ($nv_laws_setting['typeview'] == 0 or $nv_laws_setting['typeview'] == 1) ? "publtime" : "addtime";
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE status=1 AND" . $in . " ORDER BY " .  $order_param . " " . $order . " LIMIT " . $page . "," . $per_page;
+    $db->sqlreset()->select('COUNT(id)')->from(NV_PREFIXLANG . "_" . $module_data . "_row");
+    $db->where("status=1 AND" . $in);
 
-    $result = $db->query($sql);
-    $query = $db->query("SELECT FOUND_ROWS()");
-    $all_page = $query->fetchColumn();
+    $all_page = $db->query($db->sql())->fetchColumn();
+    betweenURLs($page, ceil($all_page / $per_page), $base_url, '&amp;page=', $prevPage, $nextPage);
 
-    betweenURLs($page, ceil($all_page/$per_page), $base_url, '&amp;page=', $prevPage, $nextPage);
-
-    if (!$all_page or $page >= $all_page) {
-        if ($nv_Request->isset_request('page', 'get')) {
-            nv_redirect_location($base_url, true);
-        } else {
-            include NV_ROOTDIR . '/includes/header.php';
-            echo nv_site_theme('');
-            include NV_ROOTDIR . '/includes/footer.php';
-            exit();
-        }
-    }
+    $db->select('*')->order($order_param . ' ' . $order)->limit($per_page)->offset(($page - 1) * $per_page);
+    $result = $db->query($db->sql());
 
     $generate_page = nv_generate_page($base_url, $all_page, $per_page, $page);
     $array_data = raw_law_list_by_result($result, $page, $per_page);
