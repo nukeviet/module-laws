@@ -40,13 +40,13 @@ if (!empty($nv_laws_listcat)) {
 
         $sql = "SELECT id, title, code, alias, introtext, addtime, publtime
         FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE cid=" . $cid . "
-        AND status=1 ORDER BY edittime DESC LIMIT 30";
+        AND status=1 ORDER BY addtime DESC LIMIT 30";
     } else {
         $in = array_keys($nv_laws_listcat);
         $in = implode(",", $in);
         $sql = "SELECT id, title, code, alias, introtext, addtime, publtime
         FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE cid IN (" . $in . ")
-        AND status=1 ORDER BY edittime DESC LIMIT 30";
+        AND status=1 ORDER BY addtime DESC LIMIT 30";
     }
     if ($module_info['rss']) {
         if (($result = $db->query($sql)) !== false) {
