@@ -17,7 +17,7 @@ $page_title = $lang_module['config'];
 $array_config = [];
 $array_config_comm = $module_config[$module_name];
 
-if ($nv_Request->isset_request('submit', 'post')) {
+if ($nv_Request->isset_request('btnsubmit', 'post')) {
     $array_config['nummain'] = $nv_Request->get_int('nummain', 'post', 0);
     $array_config['numsub'] = $nv_Request->get_int('numsub', 'post', 0);
     $array_config['typeview'] = $nv_Request->get_int('typeview', 'post', 0);

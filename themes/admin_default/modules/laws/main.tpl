@@ -386,7 +386,7 @@
                 </table>
             </div>
         </div>
-        <input type="hidden" name="save" value="1" /> <input class="btn btn-primary" name="submit" type="submit" value="{LANG.save}" />
+        <input type="hidden" name="save" value="1" /> <input class="btn btn-primary" name="bntsubmit" type="submit" value="{LANG.save}" />
     </form>
 </div>
 <script type="text/javascript">
@@ -458,7 +458,7 @@
 
         a = $(this).serialize();
         var b = $(this).attr("action");
-        $("[type=submit]").attr("disabled", "disabled");
+        $("[type=bntsubmit]").attr("disabled", "disabled");
         $.ajax({
             type : "POST",
             url : b,
@@ -469,7 +469,7 @@
                 } else {
                     alert(c);
                 }
-                $("[type=submit]").removeAttr("disabled");
+                $("[type=bntsubmit]").removeAttr("disabled");
             }
         });
         return !1;

@@ -86,7 +86,7 @@
         </table>
     </div>
     <div class="text-center">
-        <input class="btn btn-primary" type="submit" name="submit" value="{LANG.save}" />
+        <input class="btn btn-primary" type="submit" name="btnsubmit" value="{LANG.save}" />
     </div>
 </form>
 <!-- END: main -->
