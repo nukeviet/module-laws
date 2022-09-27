@@ -115,12 +115,12 @@ if (!function_exists('nv_law_block_search')) {
         $scat = $nv_Request->get_int('cat', 'get', 0);
         $ssubject = $nv_Request->get_int('subject', 'get', 0);
         $sstatus = $nv_Request->get_int('status', 'get', 0);
-		$approval = $nv_Request->get_int('approval', 'get', 0);
-		$examineid = $nv_Request->get_int('examine', 'get', 0);
+        $approval = $nv_Request->get_int('approval', 'get', 2);
+        $examineid = $nv_Request->get_int('examine', 'get', 0);
         $ssigner = $nv_Request->get_int('signer', 'get', 0);
         $is_advance = $nv_Request->get_int('is_advance', 'get', 0);
 
-        $nv_laws_listarea = array(
+        $_nv_laws_listarea = array(
             0 => array(
                 "id" => 0,
                 "name" => $lang_module['search_area'],
@@ -128,10 +128,10 @@ if (!function_exists('nv_law_block_search')) {
             )
         ) + $nv_laws_listarea;
 
-		if($module_config[$module_name]['activecomm']==0){
-			$xtpl->parse('main.pubtime');
-		}
-        foreach ($nv_laws_listarea as $area) {
+        if($module_config[$module_name]['activecomm']==0){
+            $xtpl->parse('main.pubtime');
+        }
+        foreach ($_nv_laws_listarea as $area) {
             $xtpl->assign('KEY', $area['id']);
             $xtpl->assign('TITLE', $area['name']);
 
@@ -155,8 +155,9 @@ if (!function_exists('nv_law_block_search')) {
             $xtpl->parse('main.cat');
         }
 
+        $_nv_laws_listsubject = [];
         if (!empty($nv_laws_listsubject)) {
-            $nv_laws_listsubject = array(
+            $_nv_laws_listsubject = array(
                 0 => array(
                     "id" => 0,
                     "title" => $lang_module['search_subject'],
@@ -165,7 +166,7 @@ if (!function_exists('nv_law_block_search')) {
             ) + $nv_laws_listsubject;
         }
 
-        foreach ($nv_laws_listsubject as $area) {
+        foreach ($_nv_laws_listsubject as $area) {
             $xtpl->assign('KEY', $area['id']);
             $xtpl->assign('TITLE', $area['title']);
 
@@ -174,11 +175,11 @@ if (!function_exists('nv_law_block_search')) {
         }
 
         $nv_list_status = array();
-		$arr_approval = array(
-			2 => $lang_module['s_status_all'],
-			0 => $lang_module['e0'],
-			1 => $lang_module['e1']
-		);
+        $arr_approval = array(
+            2 => $lang_module['s_app_status_all'],
+            0 => $lang_module['e0'],
+            1 => $lang_module['e1']
+        );
 
         $nv_list_status[] = array(
             "id" => 0,
@@ -195,42 +196,42 @@ if (!function_exists('nv_law_block_search')) {
             "title" => $lang_module['s_status_2'],
             "selected" => 2 == $sstatus ? " selected=\"selected\"" : ""
         );
-		if($module_config[$module_name]['activecomm']){
-			foreach($arr_approval as $key => $app){
-				$xtpl->assign('APP', array(
-		            'key' => $key,
-		            'title' => $app,
-		            'selected' => $key==$approval ? ' selected="selected"' : ''
-		        ));
-				$xtpl->parse('main.approval.loop');
-			}
-			$xtpl->parse('main.approval');
-		}else{
-			foreach ($nv_list_status as $status) {
-	            $xtpl->assign('status', $status);
-	            $xtpl->parse('main.exptime.status');
-	        }
-			$xtpl->parse('main.exptime');
-		}
+        if ($module_config[$module_name]['activecomm']) {
+            foreach ($arr_approval as $key => $app) {
+                $xtpl->assign('APP', array(
+                    'key' => $key,
+                    'title' => $app,
+                    'selected' => $key == $approval ? ' selected="selected"' : ''
+                ));
+                $xtpl->parse('main.approval.loop');
+            }
+            $xtpl->parse('main.approval');
+        } else {
+            foreach ($nv_list_status as $status) {
+                $xtpl->assign('status', $status);
+                $xtpl->parse('main.exptime.status');
+            }
+            $xtpl->parse('main.exptime');
+        }
 
-		$list_examine = array();
-		if($module_config[$module_name]['activecomm']){
-			$sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_examine ORDER BY weight ASC";//print_r($sql);die('ok');
-			$_query = $db->query( $sql );
-			while( $_row = $_query->fetch() )
-			{
-				$list_examine[$_row['id']] = $_row['title'];
-			}
-			foreach($list_examine as $key => $examine){
-				$xtpl->assign('EXAMINE', array(
-		            'key' => $key,
-		            'title' => $examine,
-		            'selected' => $key==$examineid ? ' selected="selected"' : ''
-		        ));
-				$xtpl->parse('main.examine.loop');
-			}
-			$xtpl->parse('main.examine');
-		}
+        $list_examine = array();
+        if ($module_config[$module_name]['activecomm']) {
+            $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_examine ORDER BY weight ASC"; //print_r($sql);die('ok');
+            $_query = $db->query($sql);
+            while ($_row = $_query->fetch()) {
+                $list_examine[$_row['id']] = $_row['title'];
+            }
+            foreach ($list_examine as $key => $examine) {
+                $xtpl->assign('EXAMINE', array(
+                    'key' => $key,
+                    'title' => $examine,
+                    'selected' => $key == $examineid ? ' selected="selected"' : ''
+                ));
+                $xtpl->parse('main.examine.loop');
+            }
+            $xtpl->parse('main.examine');
+        }
+
         $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_signer ORDER BY title ASC";
         $list = array(
             0 => array(

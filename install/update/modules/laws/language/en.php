@@ -9,7 +9,9 @@
  * @Createdate Jul 27, 2011, 07:55:00 AM
  */
 
-if (!defined('NV_MAINFILE')) die('Stop!!!');
+if (!defined('NV_MAINFILE')) {
+    die('Stop!!!');
+}
 
 $lang_translator['author'] = 'VINADES.,JSC <contact@vinades.vn>';
 $lang_translator['createdate'] = '27/07/2011, 14:55';
@@ -64,6 +66,7 @@ $lang_module['view_signer'] = 'Writing under the sign:';
 $lang_module['s_key'] = 'Keywords';
 $lang_module['s_status'] = 'Status';
 $lang_module['s_status_all'] = 'All status';
+$lang_module['s_app_status_all'] = "-- All --";
 $lang_module['s_status_1'] = 'Enable';
 $lang_module['s_status_2'] = 'Unenable';
 $lang_module['s_signer'] = 'Signer';

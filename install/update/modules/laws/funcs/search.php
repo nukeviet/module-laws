@@ -8,14 +8,16 @@
  * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
  */
 
-if (!defined('NV_IS_MOD_LAWS')) die('Stop!!!');
+if (!defined('NV_IS_MOD_LAWS')) {
+    die('Stop!!!');
+}
 
 $page_title = $module_info['site_title'];
 $key_words = $module_info['keywords'];
 
 $per_page = $nv_laws_setting['numsub'];
 
-$array_search = array();
+$array_search = [];
 $key = $nv_Request->get_title('q', 'get,post', '');
 $key = str_replace('+', ' ', $key);
 $key = trim(nv_substr($key, 0, NV_MAX_SEARCH_LENGTH));
@@ -55,7 +57,7 @@ if (preg_match("/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/", $sto, $m)) {
     $sto1 = 0;
 }
 
-$base_url_rewrite = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&q=' . htmlspecialchars(nv_unhtmlspecialchars($key));
+$base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=' . $op . '&q=' . htmlspecialchars(nv_unhtmlspecialchars($key));
 $where = '';
 $search = false;
 if (!empty($key) or !empty($area) or !empty($cat) or !empty($subject) or !empty($sstatus) or !empty($ssigner) or !empty($sfrom1) or !empty($sto1) or !empty($approval) or !empty($examine)) {
@@ -68,7 +70,7 @@ if (!empty($key) or !empty($area) or !empty($cat) or !empty($subject) or !empty(
     }
 
     if (!empty($area)) {
-        $base_url_rewrite .= "&area=" . $area;
+        $base_url .= "&area=" . $area;
 
         $tmp = $nv_laws_listarea[$area];
         $in = "";
@@ -84,7 +86,7 @@ if (!empty($key) or !empty($area) or !empty($cat) or !empty($subject) or !empty(
     }
 
     if (!empty($cat)) {
-        $base_url_rewrite .= "&cat=" . $cat;
+        $base_url .= "&cat=" . $cat;
 
         $tmp = $nv_laws_listcat[$cat];
         $in = "";
@@ -101,54 +103,56 @@ if (!empty($key) or !empty($area) or !empty($cat) or !empty($subject) or !empty(
 
     if (!empty($subject)) {
         $where .= " AND sid=" . $subject;
-        $base_url_rewrite .= "&subject=" . $subject;
+        $base_url .= "&subject=" . $subject;
     }
 
-	if ($approval != 2 && $module_config[$module_name]['activecomm']==1) {
+    if ($approval != 2 && $module_config[$module_name]['activecomm']==1) {
         $where .= " AND approval=" . $approval;
-        $base_url_rewrite .= "&approval=" . $approval;
+        $base_url .= "&approval=" . $approval;
     }
 
-	if (!empty($examine) && $module_config[$module_name]['activecomm']==1) {
+    if (!empty($examine) && $module_config[$module_name]['activecomm']==1) {
         $where .= " AND eid=" . $examine;
-        $base_url_rewrite .= "&examine=" . $examine;
+        $base_url .= "&examine=" . $examine;
     }
 
     if (!empty($sfrom1)) {
         $where .= " AND publtime>=" . $sfrom1;
-        $base_url_rewrite .= "&sfrom=" . $sfrom;
+        $base_url .= "&sfrom=" . $sfrom;
     }
 
     if (!empty($sto1)) {
         $where .= " AND publtime<=" . $sto1;
-        $base_url_rewrite .= "&sto=" . $sto;
+        $base_url .= "&sto=" . $sto;
     }
 
     if (!empty($sstatus)) {
         if ($sstatus == 1) {
             $where .= " AND ( exptime=0 OR exptime>=" . NV_CURRENTTIME . ")";
-            $base_url_rewrite .= "&status=" . $sstatus;
+            $base_url .= "&status=" . $sstatus;
         } else {
             $where .= " AND ( exptime!=0 AND exptime<" . NV_CURRENTTIME . ")";
-            $base_url_rewrite .= "&status=" . $sstatus;
+            $base_url .= "&status=" . $sstatus;
         }
     }
 
     if ($is_advance) {
-        $base_url_rewrite .= "&is_advance=" . $is_advance;
+        $base_url .= "&is_advance=" . $is_advance;
     }
 }
 
+$page_url = $base_url;
 $page = $nv_Request->get_int('page', 'get', 1);
 if ($page > 1) {
-    $base_url_rewrite .= '&page=' . $page;
+    $page_url .= '&page=' . $page;
 }
+
+$canonicalUrl = getCanonicalUrl($page_url);
 
 if (!$search) {
     include NV_ROOTDIR . '/includes/header.php';
-    echo nv_site_theme(nv_theme_laws_search(array(), "", 0));
+    echo nv_site_theme(nv_theme_laws_search([], "", 0));
     include NV_ROOTDIR . '/includes/footer.php';
-    exit();
 }
 
 $db->sqlreset()
@@ -157,10 +161,9 @@ $db->sqlreset()
     ->join('INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row_area t2 ON (t1.id=t2.row_id)')
     ->where('status=1' . $where);
 
-$all_page = $db->query($db->sql())
-    ->fetchColumn();
+$all_page = $db->query($db->sql())->fetchColumn();
 
-$array_data = array();
+betweenURLs($page, ceil($all_page/$per_page), $base_url, '&page=', $prevPage, $nextPage);
 
 $_order = ($nv_laws_setting['typeview'] == 1 or $nv_laws_setting['typeview'] == 4) ? 'ASC' : 'DESC';
 $_order_param = ($nv_laws_setting['typeview'] == 0 or $nv_laws_setting['typeview'] == 1) ? 'publtime' : 'addtime';
@@ -172,21 +175,7 @@ $db->select('*')
 
 $result = $db->query($db->sql());
 
-$number = $page > 1 ? ($per_page * ($page - 1)) + 1 : 1;
-while ($row = $result->fetch()) {
-    $row['areatitle'] = array();
-    $_result = $db->query('SELECT area_id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row_area WHERE row_id=' . $row['id']);
-    while (list ($area_id) = $_result->fetch(3)) {
-        $row['areatitle'][] = $nv_laws_listarea[$area_id]['title'];
-    }
-    $row['areatitle'] = !empty($row['areatitle']) ? implode(', ', $row['areatitle']) : '';
-    $row['subjecttitle'] = $nv_laws_listsubject[$row['sid']]['title'];
-    $row['cattitle'] = $nv_laws_listcat[$row['cid']]['title'];
-    $row['url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=detail/' . $row['alias'];
-    $row['stt'] = $number++;
-
-    $array_data[] = $row;
-}
+$array_data = raw_law_list_by_result($result, $page, $per_page);
 
 $generate_page = '';
 if ($all_page > $per_page) {

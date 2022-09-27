@@ -1,6 +1,6 @@
 <!-- BEGIN: main -->
-<link rel="stylesheet" type="text/css" href="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/jquery-ui/jquery-ui.min.css">
-
+<link rel="stylesheet" type="text/css" href="{NV_STATIC_URL}{NV_ASSETS_DIR}/js/jquery-ui/jquery-ui.min.css">
+<link rel="stylesheet" href="{NV_STATIC_URL}{NV_ASSETS_DIR}/js/select2/select2.min.css">
 <form id="ltablesearch{BLOCKID}" action="{FORM_ACTION}" method="get" onsubmit="return nv_check_search_laws(this);">
     <!-- BEGIN: no_rewrite -->
     <input type="hidden" name="{NV_LANG_VARIABLE}" value="{NV_LANG_DATA}"/>
@@ -15,7 +15,7 @@
             <div class="col-xs-19"><input class="form-control" id="ls_key" type="text" name="q" value="{Q}"/></div>
             <!-- BEGIN: is_advance_btn -->
             <div class="col-xs-5">
-                <a class="<!-- BEGIN: is_advance_class -->advance<!-- END: is_advance_class -->" id="btn-search"><em class="fa fa-search">&nbsp;</em>{LANG_ADVANCE}</a>
+                <a rel="dofollow" class="<!-- BEGIN: is_advance_class -->advance<!-- END: is_advance_class -->" id="btn-search"><em class="fa fa-search">&nbsp;</em>{LANG_ADVANCE}</a>
             </div>
             <!-- END: is_advance_btn -->
         </div>
@@ -25,12 +25,12 @@
         <!-- BEGIN: pubtime -->
         <div class="form-group form-inline">
             <label class="control-label">{LANG.s_pubtime}</label>
-            <input class="form-control" id="ls_from" style="width: 90%" type="text" name="sfrom" value="{FROM}" readonly="readonly"/>
+            <input class="form-control" id="ls_from" style="width: 150px" type="text" name="sfrom" value="{FROM}" readonly="readonly"/>
         </div>
 
         <div class="form-group form-inline">
             <label class="control-label">{LANG.to}</label>
-            <input class="form-control" id="ls_to" style="width: 90%" type="text" name="sto" value="{TO}" readonly="readonly"/>
+            <input class="form-control" id="ls_to" style="width: 150px" type="text" name="sto" value="{TO}" readonly="readonly"/>
         </div>
         <!-- END: pubtime -->
         <div class="form-group">
@@ -111,8 +111,10 @@
         <input class="btn btn-primary" type="submit" value="{LANG.search}"/>
     </div>
 </form>
-<script type="text/javascript" src="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/jquery-ui/jquery-ui.min.js"></script>
-<script type="text/javascript" src="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/language/jquery.ui.datepicker-{NV_LANG_INTERFACE}.js"></script>
+<script type="text/javascript" src="{NV_STATIC_URL}{NV_ASSETS_DIR}/js/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{NV_STATIC_URL}{NV_ASSETS_DIR}/js/language/jquery.ui.datepicker-{NV_LANG_INTERFACE}.js"></script>
+<script type="text/javascript" src="{NV_STATIC_URL}{NV_ASSETS_DIR}/js/select2/select2.min.js"></script>
+<script type="text/javascript" src="{NV_STATIC_URL}{NV_ASSETS_DIR}/js/select2/i18n/{NV_LANG_INTERFACE}.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $('#lclearform{BLOCKID}').click(function() {
@@ -133,7 +135,9 @@ $(document).ready(function() {
         e.preventDefault();
         var a = $(this);
         if( a.hasClass('advance')){
-            $('#advance').slideDown();
+            $('#advance').slideDown(function() {
+            	select2search();
+            });
             a.html('<em class="fa fa-search">&nbsp;</em>{LANG.search_simple}');
             a.removeClass('advance');
             $('input[name="is_advance"]').val(1);
@@ -144,7 +148,14 @@ $(document).ready(function() {
             $('input[name="is_advance"]').val(0);
         }
     });
+    select2search();
 });
+function select2search() {
+	var form = $('#ltablesearch{BLOCKID}');
+	if ($('#advance', form).is(':visible')) {
+	    $('[name="area"],[name="cat"],[name="approval"],[name="status"],[name="signer"],[name="subject"],[name="examine"]', form).select2();
+	}
+}
 function nv_check_search_laws(data) {
     if (($('#ls_key').val() == '' ) && ($('#ls_cat').val() == 0 ) && ($('#ls_area').val() == 0 ) && ($('#ls_subject').val() == 0 ) && ($('#ls_signer').val() == 0 ) && ($('#ls_status').val() == 0 ) && ($('#ls_from').val() == '' ) && ($('#ls_to').val() == '' )) {
         alert('{LANG.search_alert}');
