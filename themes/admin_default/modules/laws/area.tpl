@@ -75,7 +75,7 @@ $(function() {
             </table>
         </div>
         <input type="hidden" name="save" value="1" />
-        <input class="btn btn-primary" name="submit" type="submit" value="{LANG.save}" />
+        <input class="btn btn-primary" name="btnsubmit" type="submit" value="{LANG.save}" />
     </form>
 </div>
 
@@ -112,7 +112,7 @@ $(function() {
         }
         a = $(this).serialize();
         var c = $(this).attr("action");
-        $("input[name=submit]").attr("disabled", "disabled");
+        $("input[name=btnsubmit]").attr("disabled", "disabled");
         $.ajax({
             type : "POST",
             url : c,
@@ -122,7 +122,7 @@ $(function() {
                     window.location.href = "{MODULE_URL}=area";
                 } else {
                     alert(b);
-                    $("input[name=submit]").removeAttr("disabled");
+                    $("input[name=btnsubmit]").removeAttr("disabled");
                 }
             }
         });
