@@ -8,7 +8,9 @@
  * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
  */
 
-if (!defined('NV_IS_FILE_ADMIN')) die('Stop!!!');
+if (!defined('NV_IS_FILE_ADMIN')) {
+    die('Stop!!!');
+}
 
 $page_title = $lang_module['main'];
 
@@ -16,17 +18,33 @@ $contents = "";
 $groups_list = nv_groups_list();
 $catList = nv_catList();
 $aList = nv_aList();
+
 $sList = nv_sList();
+if (empty($sList)) {
+    include NV_ROOTDIR . '/includes/header.php';
+    echo nv_admin_theme('');
+    include NV_ROOTDIR . '/includes/footer.php';
+}
+
+$_arr_subject = [];
+foreach ($sList as $s_i => $array_value) {
+    $_arr_subject[$array_value['id']] = $array_value['id'];
+}
+$subject_str = implode(',', $_arr_subject);
 $eList = nv_eList();
 $scount = count($sList);
 $ecount = count($eList);
 $sgList = nv_sgList();
 $scount = count($sgList);
 
-$sql = "SELECT COUNT(*) as ccount FROM " . NV_PREFIXLANG . "_" . $module_data . "_row";
+$sql = "SELECT COUNT(*) as ccount FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE sid IN (" . $subject_str . ")";
 $result = $db->query($sql);
 $all_page = $result->fetch();
 $all_page = $all_page['ccount'];
+
+$sql_sub = "SELECT subjectid FROM " . NV_PREFIXLANG . "_" . $module_data . "_admins WHERE userid=" . $admin_id . " AND add_content = 1";
+$result = $db->query($sql_sub);
+$num_sub = $result->rowCount();
 
 $xtpl = new XTemplate($op . ".tpl", NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file);
 $xtpl->assign('LANG', $lang_module);
@@ -71,18 +89,22 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
     $contents = $xtpl->text('msg');
     $contents .= '<meta http-equiv="refresh" content="5;url=' . $href . '">';
 } else {
+    // Thêm, sửa văn bản
     if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit, id', 'get')) {
-        $row = array();
+        if ($num_sub <= 0 && !defined('NV_IS_ADMIN_MODULE') && $nv_Request->isset_request('add', 'get')) {
+            nv_redirect_location(NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=" . $op);
+        }
+        $row = [];
         if ($nv_Request->isset_request('edit, id', 'get')) {
             $post['id'] = $nv_Request->get_int('id', 'get', 0);
 
-            $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id=" . $post['id'];
+            $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id=" . $post['id'] . " AND sid IN(" . $subject_str . ")";
             $result = $db->query($sql);
             $num = $result->rowCount();
-            if ($num != 1) {
+            $row = $result->fetch();
+            if ($num != 1 || (!defined('NV_IS_ADMIN_MODULE') and $array_subject_admin[$admin_id][$row['sid']]['admin'] != 1 and $array_subject_admin[$admin_id][$row['sid']]['edit_content'] != 1)) {
                 nv_redirect_location(NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=" . $op);
             }
-            $row = $result->fetch();
 
             $post['area_id'] = array();
             $result = $db->query('SELECT area_id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row_area WHERE row_id=' . $row['id']);
@@ -95,35 +117,31 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
         }
 
         if ($nv_Request->isset_request('save', 'post')) {
-            $post['title'] = $nv_Request->get_title('title', 'post', '', 1);
+            $post['title'] = nv_substr($nv_Request->get_title('title', 'post', ''), 0, 250);
             if (empty($post['title'])) {
-                die($lang_module['errorIsEmpty'] . ": " . $lang_module['title']);
+                nv_htmlOutput($lang_module['errorIsEmpty'] . ": " . $lang_module['title']);
             }
 
             $post['cid'] = $nv_Request->get_int('cid', 'post', 0);
             if (!isset($catList[$post['cid']])) {
-                die($lang_module['erroNotSelectCat']);
+                nv_htmlOutput($lang_module['erroNotSelectCat']);
             }
 
             $post['area_id'] = $nv_Request->get_typed_array('aid', 'post', 'int', array());
             if (empty($post['area_id'])) {
-                die($lang_module['erroNotSelectArea']);
+                nv_htmlOutput($lang_module['erroNotSelectArea']);
             }
 
             $post['sid'] = $nv_Request->get_int('sid', 'post', 0);
             if (!isset($sList[$post['sid']])) {
-                die($lang_module['erroNotSelectSubject']);
+                nv_htmlOutput($lang_module['erroNotSelectSubject']);
             }
 
-			$post['eid'] = $nv_Request->get_int('eid', 'post', 0);
-            if (!isset($eList[$post['eid']]) && $module_config[$module_name]['activecomm']==1) {
-                die($lang_module['erroNotSelectExamine']);
-            }
-
+            $post['eid'] = $nv_Request->get_int('eid', 'post', 0);
             $post['introtext'] = $nv_Request->get_title('introtext', 'post', '', 1);
             $post['introtext'] = nv_nl2br($post['introtext'], "<br />");
             if (empty($post['introtext'])) {
-                die($lang_module['errorIsEmpty'] . ": " . $lang_module['introtext']);
+                nv_htmlOutput($lang_module['errorIsEmpty'] . ": " . $lang_module['introtext']);
             }
 
             $post['note'] = $nv_Request->get_title('note', 'post', '', 1);
@@ -204,8 +222,8 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
                         if (file_exists(NV_UPLOADS_REAL_DIR . '/' . $module_upload . '/' . $_file)) {
                             $post['files'][] = $_file;
                         }
-                    }elseif(preg_match("/^http*/",$_file)){
-                    	$post['files'][] = $_file;
+                    } elseif (preg_match("/^http*/", $_file)) {
+                        $post['files'][] = $_file;
                     }
                 }
             }
@@ -216,7 +234,7 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
             } else {
                 $post['publtime'] = 0;
             }
-            if (empty($post['publtime']) && $module_config[$module_name]['activecomm']==0) {
+            if (empty($post['publtime']) && $module_config[$module_name]['activecomm'] == 0) {
                 die($lang_module['erroNotSelectPubtime']);
             }
 
@@ -227,21 +245,21 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
                 $post['exptime'] = 0;
             }
 
-			//Nếu là module lấy ý kiến thì lấy thời gian bắt đầu-kết thúc lấy ý kiến, trang thái thông qua của văn bản
-			$post['start_comm_time'] = $nv_Request->get_title('start_comm_time', 'post', '');
+            //Nếu là module lấy ý kiến thì lấy thời gian bắt đầu-kết thúc lấy ý kiến, trang thái thông qua của văn bản
+            $post['start_comm_time'] = $nv_Request->get_title('start_comm_time', 'post', '');
             if (preg_match("/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/", $post['start_comm_time'], $m)) {
                 $post['start_comm_time'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
             } else {
                 $post['start_comm_time'] = 0;
             }
 
-			$post['end_comm_time'] = $nv_Request->get_title('end_comm_time', 'post', '');
+            $post['end_comm_time'] = $nv_Request->get_title('end_comm_time', 'post', '');
             if (preg_match("/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/", $post['end_comm_time'], $m)) {
                 $post['end_comm_time'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
             } else {
                 $post['end_comm_time'] = 0;
             }
-			$post['approval'] = $nv_Request->get_int('approval', 'post', 0);
+            $post['approval'] = $nv_Request->get_int('approval', 'post', 0);
 
             $post['startvalid'] = $nv_Request->get_title('startvalid', 'post', '');
             if (preg_match("/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/", $post['startvalid'], $m)) {
@@ -250,18 +268,18 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
                 $post['startvalid'] = 0;
             }
 
-			//Nếu là module văn bản bình thường(k cho góp ý) thì bắt lỗi ngày ban hành <= Ngày có hiệu lực <=ngày hết hiệu lực
-			if($module_config[$module_name]['activecomm']==0){
-				if($post['startvalid']>0){
-					if($post['startvalid'] < $post['publtime']){
-						die($lang_module['erroStartvalid']);
-					}elseif($post['exptime']>0 && ($post['exptime'] <= $post['publtime'] || $post['exptime'] <= $post['startvalid'])){
-						die($lang_module['erroExptime']);
-					}
-				}
-			}
+            //Nếu là module văn bản bình thường(k cho góp ý) thì bắt lỗi ngày ban hành <= Ngày có hiệu lực <=ngày hết hiệu lực
+            if ($module_config[$module_name]['activecomm'] == 0) {
+                if ($post['startvalid'] > 0) {
+                    if ($post['startvalid'] < $post['publtime']) {
+                        die($lang_module['erroStartvalid']);
+                    } elseif ($post['exptime'] > 0 && ($post['exptime'] <= $post['publtime'] || $post['exptime'] <= $post['startvalid'])) {
+                        die($lang_module['erroExptime']);
+                    }
+                }
+            }
 
-			$post['sgid'] = $nv_Request->get_title('sgid', 'post', '');
+            $post['sgid'] = $nv_Request->get_title('sgid', 'post', '');
             if (!is_numeric($post['sgid']) and !empty($post['sgid'])) {
                 $result = $db->query("SELECT id FROM " . NV_PREFIXLANG . "_" . $module_data . "_signer WHERE title=" . $db->quote($post['title']) . " AND offices='' AND positions=''");
                 if ($result->rowCount() == 0) {
@@ -276,31 +294,31 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
 
             if (isset($post['id'])) {
                 $query = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_row SET
-	                replacement=" . $db->quote($post['replacement']) . ",
-	                relatement=" . $db->quote($post['relatement']) . ",
-	                title=" . $db->quote($post['title']) . ",
-	                alias=" . $db->quote($alias . "-" . $post['id']) . ",
-	                code=" . $db->quote($post['code']) . ",
-	                cid=" . $post['cid'] . ",
-	                sid=" . $post['sid'] . ",
-	                eid=" . $post['eid'] . ",
-	                sgid=" . $post['sgid'] . ",
-	                approval=" . $post['approval'] . ",
-	                note=" . $db->quote($post['note']) . ",
-	                introtext=" . $db->quote($post['introtext']) . ",
-	                bodytext=" . $db->quote($post['bodytext']) . ",
-	                keywords=" . $db->quote($post['keywords']) . ",
-	                groups_view=" . $db->quote($post['groups_view']) . ",
-	                groups_download=" . $db->quote($post['groups_download']) . ",
-	                files=" . $db->quote($post['files']) . ",
-	                edittime=" . NV_CURRENTTIME . ",
-	                publtime=" . $post['publtime'] . ",
-	                exptime=" . $post['exptime'] . ",
-	                start_comm_time=" . $post['start_comm_time'] . ",
-	                end_comm_time=" . $post['end_comm_time'] . ",
-	                startvalid=" . $post['startvalid'] . ",
-	                admin_edit=" . $admin_info['userid'] . "
-	                WHERE id=" . $post['id'];
+                    replacement=" . $db->quote($post['replacement']) . ",
+                    relatement=" . $db->quote($post['relatement']) . ",
+                    title=" . $db->quote($post['title']) . ",
+                    alias=" . $db->quote($alias . "-" . $post['id']) . ",
+                    code=" . $db->quote($post['code']) . ",
+                    cid=" . $post['cid'] . ",
+                    sid=" . $post['sid'] . ",
+                    eid=" . $post['eid'] . ",
+                    sgid=" . $post['sgid'] . ",
+                    approval=" . $post['approval'] . ",
+                    note=" . $db->quote($post['note']) . ",
+                    introtext=" . $db->quote($post['introtext']) . ",
+                    bodytext=" . $db->quote($post['bodytext']) . ",
+                    keywords=" . $db->quote($post['keywords']) . ",
+                    groups_view=" . $db->quote($post['groups_view']) . ",
+                    groups_download=" . $db->quote($post['groups_download']) . ",
+                    files=" . $db->quote($post['files']) . ",
+                    edittime=" . NV_CURRENTTIME . ",
+                    publtime=" . $post['publtime'] . ",
+                    exptime=" . $post['exptime'] . ",
+                    start_comm_time=" . $post['start_comm_time'] . ",
+                    end_comm_time=" . $post['end_comm_time'] . ",
+                    startvalid=" . $post['startvalid'] . ",
+                    admin_edit=" . $admin_info['userid'] . "
+                    WHERE id=" . $post['id'];
                 $db->query($query);
 
                 $_id = $post['id'];
@@ -316,38 +334,38 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
                 }
 
                 // Cap nhat lai so luong van ban o chu de
-                $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_subject SET numcount=(SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $post['sid'] . ') WHERE id=' . $post['sid']);
+                $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_subject SET numcount=(SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $post['sid'] . ' AND status=1) WHERE id=' . $post['sid']);
 
                 nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['editRow'], "Id: " . $post['id'], $admin_info['userid']);
             } else {
                 $query = "INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_row
                     (id, replacement, relatement, title, alias, code, cid, sid, eid, sgid, note, introtext, bodytext, keywords, groups_view, groups_download, files, status, approval, addtime, edittime, publtime, start_comm_time, end_comm_time, startvalid, exptime, view_hits, download_hits, admin_add, admin_edit)
                 VALUES
-	                (NULL,
-	                " . $db->quote($post['replacement']) . ",
-	                " . $db->quote($post['relatement']) . ",
-	                " . $db->quote($post['title']) . ",
-	                '',
-	                " . $db->quote($post['code']) . ",
-	                " . $post['cid'] . ",
-	                " . $post['sid'] . ",
-	                " . $post['eid'] . ",
-	                " . $post['sgid'] . ",
-	                " . $db->quote($post['note']) . ",
-	                " . $db->quote($post['introtext']) . ",
-	                " . $db->quote($post['bodytext']) . ",
-	                " . $db->quote($post['keywords']) . ",
-	                " . $db->quote($post['groups_view']) . ",
-	                " . $db->quote($post['groups_download']) . ",
-	                " . $db->quote($post['files']) . ",
-	                1,  " . $post['approval'] . ",
-	                " . NV_CURRENTTIME . ", 0,
-	                " . $post['publtime'] . ",
-	                " . $post['start_comm_time'] . ",
-	                " . $post['end_comm_time'] . ",
-	                " . $post['startvalid'] . ",
-	                " . $post['exptime'] . ",
-	                0, 0, " . $admin_info['userid'] . ", 0);";
+                    (NULL,
+                    " . $db->quote($post['replacement']) . ",
+                    " . $db->quote($post['relatement']) . ",
+                    " . $db->quote($post['title']) . ",
+                    '',
+                    " . $db->quote($post['code']) . ",
+                    " . $post['cid'] . ",
+                    " . $post['sid'] . ",
+                    " . $post['eid'] . ",
+                    " . $post['sgid'] . ",
+                    " . $db->quote($post['note']) . ",
+                    " . $db->quote($post['introtext']) . ",
+                    " . $db->quote($post['bodytext']) . ",
+                    " . $db->quote($post['keywords']) . ",
+                    " . $db->quote($post['groups_view']) . ",
+                    " . $db->quote($post['groups_download']) . ",
+                    " . $db->quote($post['files']) . ",
+                    1,  " . $post['approval'] . ",
+                    " . NV_CURRENTTIME . ", 0,
+                    " . $post['publtime'] . ",
+                    " . $post['start_comm_time'] . ",
+                    " . $post['end_comm_time'] . ",
+                    " . $post['startvalid'] . ",
+                    " . $post['exptime'] . ",
+                    0, 0, " . $admin_info['userid'] . ", 0);";
                 $_id = $db->insert_id($query);
 
                 $alias .= "-" . $_id;
@@ -362,7 +380,7 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
                 }
 
                 // Cap nhat lai so luong van ban o chu de
-                $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_subject SET numcount=(SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $post['sid'] . ') WHERE id=' . $post['sid']);
+                $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_subject SET numcount=(SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $post['sid'] . ' AND status=1) WHERE id=' . $post['sid']);
 
                 nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['addRow'], "Id: " . $_id, $admin_info['userid']);
             }
@@ -397,8 +415,8 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
 
             $post['select0'] = ($post['exptime'] == 0 or $post['exptime'] > NV_CURRENTTIME) ? " selected=\"selected\"" : "";
             $post['select1'] = ($post['exptime'] != 0 and $post['exptime'] <= NV_CURRENTTIME) ? " selected=\"selected\"" : "";
-			$post['e0'] = ($post['approval'] == 0 ) ? " selected=\"selected\"" : "";
-            $post['e1'] = ($post['approval'] == 1 ) ? " selected=\"selected\"" : "";
+            $post['e0'] = ($post['approval'] == 0) ? " selected=\"selected\"" : "";
+            $post['e1'] = ($post['approval'] == 1) ? " selected=\"selected\"" : "";
             $post['display'] = ($post['exptime'] == 0 or $post['exptime'] > NV_CURRENTTIME) ? "none" : "block";
 
             $post['groups_view'] = !empty($post['groups_view']) ? explode(",", $post['groups_view']) : array();
@@ -406,14 +424,14 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
             $post['files'] = !empty($post['files']) ? explode(",", $post['files']) : array();
             $post['publtime'] = !empty($post['publtime']) ? date("d.m.Y", $post['publtime']) : "";
             $post['exptime'] = !empty($post['exptime']) ? date("d.m.Y", $post['exptime']) : "";
-			$post['start_comm_time'] = !empty($post['start_comm_time']) ? date("d.m.Y", $post['start_comm_time']) : "";
-			$post['end_comm_time'] = !empty($post['end_comm_time']) ? date("d.m.Y", $post['end_comm_time']) : "";
+            $post['start_comm_time'] = !empty($post['start_comm_time']) ? date("d.m.Y", $post['start_comm_time']) : "";
+            $post['end_comm_time'] = !empty($post['end_comm_time']) ? date("d.m.Y", $post['end_comm_time']) : "";
             $post['startvalid'] = !empty($post['startvalid']) ? date("d.m.Y", $post['startvalid']) : "";
 
             $post['ptitle'] = $lang_module['editRow'];
             $post['action_url'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=main&edit&id=" . $post['id'];
         } else {
-        	$post['publtime'] = date("d.m.Y", NV_CURRENTTIME);
+            $post['publtime'] = date("d.m.Y", NV_CURRENTTIME);
             $post['relatement'] = $post['replacement'] = $post['title'] = $post['code'] = $post['introtext'] = $post['bodytext'] = $post['keywords'] = $post['author'] = $post['exptime'] = "";
             $post['groups_view'] = $post['groups_download'] = array(
                 6
@@ -421,7 +439,7 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
             $post['cid'] = $post['sid'] = $post['sgid'] = $post['eid'] = $post['who_view'] = $post['who_download'] = 0;
 
             $post['groupcss'] = $post['groupcss2'] = "groupcss0";
-            $post['files'] = '';
+            $post['files'] = array();
 
             $post['select0'] = " selected=\"selected\"";
             $post['select1'] = "";
@@ -449,19 +467,20 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
         }
 
         foreach ($sList as $_s) {
+            if ($_s['add'] != 1 and $nv_Request->isset_request('add', 'get')) continue;
             $_s['selected'] = $_s['id'] == $post['sid'] ? " selected=\"selected\"" : "";
             $xtpl->assign('SUBOPT', $_s);
             $xtpl->parse('add.subopt');
         }
 
-		if($module_config[$module_name]['activecomm']){
-			foreach ($eList as $_s) {
-	            $_s['selected'] = $_s['id'] == $post['eid'] ? " selected=\"selected\"" : "";
-	            $xtpl->assign('EXBOPT', $_s);
-	            $xtpl->parse('add.loop.exbopt');
-	        }
-			$xtpl->parse('add.loop');
-		}
+        if ($module_config[$module_name]['activecomm']) {
+            foreach ($eList as $_s) {
+                $_s['selected'] = $_s['id'] == $post['eid'] ? " selected=\"selected\"" : "";
+                $xtpl->assign('EXBOPT', $_s);
+                $xtpl->parse('add.loop.exbopt');
+            }
+            $xtpl->parse('add.loop');
+        }
 
         foreach ($sgList as $_sg) {
             $_sg['selected'] = $_sg['id'] == $post['sgid'] ? " selected=\"selected\"" : "";
@@ -522,12 +541,12 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
             $xtpl->parse('add.files');
         }
 
-		//Kiểm tra nếu là module cho phép góp ý thì hiển thị trường thời gian góp ý
-		if($module_config[$module_name]['activecomm']){
-			$xtpl->parse('add.comment');
-		}else{
-			$xtpl->parse('add.normal_laws');
-		}
+        //Kiểm tra nếu là module cho phép góp ý thì hiển thị trường thời gian góp ý
+        if ($module_config[$module_name]['activecomm']) {
+            $xtpl->parse('add.comment');
+        } else {
+            $xtpl->parse('add.normal_laws');
+        }
 
         $xtpl->assign('NUMFILE', count($post['files']));
         $xtpl->assign('IS_EDITOR', $is_editor);
@@ -538,53 +557,85 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
         include NV_ROOTDIR . '/includes/header.php';
         echo nv_admin_theme($contents);
         include NV_ROOTDIR . '/includes/footer.php';
-        die();
     }
 
+    // Xóa văn bản
     if ($nv_Request->isset_request('del', 'post')) {
         $id = $nv_Request->get_int('id', 'post', 0);
+        $listid = $nv_Request->get_title('listid', 'post', '');
+        $listid = $listid . ',' . $id;
+        $listid = array_filter(array_unique(array_map('intval', explode(',', $listid))));
 
-        $data = $db->query('SELECT sid FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id=' . $id)->fetch();
-        if (!empty($data)) {
-            $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id = " . $id;
-            $db->query($query);
+        foreach ($listid as $id) {
+            $sql = "SELECT status FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id=" . $id;
+            $result = $db->query($sql);
+            $num = $result->rowCount();
+            $row = $result->fetch();
 
-            $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_set_replace WHERE oid = " . $id;
-            $db->query($query);
+            $data = $db->query('SELECT sid FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id=' . $id)->fetch();
 
-            // Cap nhat lai so luong van ban o chu de
-            $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_subject SET numcount=(SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $data['sid'] . ') WHERE id=' . $data['sid']);
+            // Kiểm tra tồn tại và kiểm tra quyền xóa
+            if (!$num or (!defined('NV_IS_ADMIN_MODULE') and $array_cat_admin[$admin_id][$row['cid']]['admin'] != 1 and $array_cat_admin[$admin_id][$row['cid']]['del_content'] != 1)) {
+                continue;
+            }
 
-            $nv_Cache->delMod($module_name);
-            nv_htmlOutput('OK');
+            $status = $row['status'];
+            if (!empty($data)) {
+                $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id = " . $id;
+                $db->query($query);
+
+                $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_set_replace WHERE oid = " . $id;
+                $db->query($query);
+
+                // Cap nhat lai so luong van ban o chu de
+                $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_subject SET numcount=(SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $data['sid'] . ' AND status=1) WHERE id=' . $data['sid']);
+            }
         }
-        nv_htmlOutput('NO');
+
+        $nv_Cache->delMod($module_name);
+        nv_htmlOutput('OK');
     }
 
+    // Cập nhật trạng thái văn bản
     if ($nv_Request->isset_request('changestatus', 'post')) {
         $id = $nv_Request->get_int('id', 'post', 0);
 
-        $sql = "SELECT status FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id=" . $id;
+        $sql = "SELECT status, sid FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id=" . $id;
         $result = $db->query($sql);
         $num = $result->rowCount();
-        if (!$num) die("ERROR");
         $row = $result->fetch();
+        if (!$num or (!defined('NV_IS_ADMIN_MODULE') and $array_cat_admin[$admin_id][$row['cid']]['admin'] != 1 and $array_cat_admin[$admin_id][$row['cid']]['del_content'] != 1)) {
+            nv_htmlOutput("ERROR");
+        }
         $status = $row['status'];
-        if ($status != 1)
+        if ($status != 1) {
             $status = 1;
-        else
+        } else {
             $status = 0;
-        $query = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_row SET status=" . $status . " WHERE id=" . $id;
-        if ($db->query($query) === false) die("ERROR");
+        }
+
+        $sql = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_row SET status=" . $status . " WHERE id=" . $id;
+        if ($db->query($sql) === false) {
+            nv_htmlOutput("ERROR");
+        }
+
+        // Cập nhật lại thống kê số văn bản của cơ quan ban hành
+        if (!empty($row['sid'])) {
+            $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_subject SET numcount=(SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $row['sid'] . ' AND status=1) WHERE id=' . $row['sid']);
+        }
+
+        // Ghi log
+        nv_insert_logs(NV_LANG_DATA, $module_name, 'Log change Status', "Id: " . $id, $admin_info['userid']);
 
         $nv_Cache->delMod($module_name);
 
         nv_htmlOutput('OK');
     }
 
+    // Danh sách văn bản
     if ($nv_Request->isset_request('list', 'get')) {
         $base_url = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=" . $op . "&list";
-        $join = 'INNER JOIN ' . NV_USERS_GLOBALTABLE . ' u1 ON t1.admin_add=u1.userid';
+        $join = 'INNER JOIN ' . NV_USERS_GLOBALTABLE . ' u1 ON t1.admin_add=u1.userid ';
         $where = array();
         if ($nv_Request->isset_request('cat', 'get')) {
             $keywords = $nv_Request->get_title('keywords', 'get', '');
@@ -617,7 +668,7 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
                 $base_url .= "&sid=" . $sid;
             }
 
-			if (!empty($eid) and isset($eList[$eid]) && $module_config[$module_name]['activecomm']==1) {
+            if (!empty($eid) and isset($eList[$eid]) && $module_config[$module_name]['activecomm'] == 1) {
                 $where[] = "t1.eid=" . $eid;
                 $base_url .= "&eid=" . $eid;
             }
@@ -628,53 +679,84 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
             }
         }
 
-        $sql = "SELECT COUNT(*) FROM " . NV_PREFIXLANG . "_" . $module_data . "_row t1 " . $join . ($where ? " WHERE " . implode(" AND ", $where) : "");
+        $sql = "SELECT COUNT(*) FROM " . NV_PREFIXLANG . "_" . $module_data . "_row t1 " . $join . ($where ? " WHERE " . implode(" AND ", $where) : "") . " AND sid IN (" . $subject_str . ")";
         $all_page = $db->query($sql)->fetchColumn();
 
         $page = $nv_Request->get_int('page', 'get', 1);
         $per_page = 30;
 
         if ($all_page) {
-            $sql = "SELECT t1.*, u1.username FROM " . NV_PREFIXLANG . "_" . $module_data . "_row t1 " . $join . ($where ? " WHERE " . implode(" AND ", $where) : "") . " ORDER BY t1.addtime DESC LIMIT " . (($page - 1) * $per_page) . "," . $per_page;
+            $sql = "SELECT t1.*, u1.username FROM " . NV_PREFIXLANG . "_" . $module_data . "_row t1 " . $join . ($where ? " WHERE " . implode(" AND ", $where) : "") . " AND sid IN (" . $subject_str . ") ORDER BY t1.addtime DESC LIMIT " . (($page - 1) * $per_page) . "," . $per_page;
             $result = $db->query($sql);
             $a = 0;
+            $check = 0;
+            $check_delete = 0;
+
             while ($row = $result->fetch()) {
-            	$row['admin_add'] = $row['username'];
+                $row['admin_add'] = $row['username'];
                 $row['publtime'] = date("d-m-Y", $row['publtime']);
                 $row['exptime'] = $row['exptime'] ? date("d-m-Y", $row['exptime']) : "N/A";
-				$row['start_comm_time'] = $row['start_comm_time'] ? date("d/m/Y", $row['start_comm_time']) : "";
+                $row['start_comm_time'] = $row['start_comm_time'] ? date("d/m/Y", $row['start_comm_time']) : "";
                 $row['end_comm_time'] = $row['end_comm_time'] ? date("d/m/Y", $row['end_comm_time']) : "";
                 $row['selected'] = $row['status'] == 1 ? " selected=\"selected\"" : "";
                 $row['url_edit'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $op . "&amp;edit=1&amp;id=" . $row['id'];
                 $row['url_view'] = nv_url_rewrite(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $module_info['alias']['detail'] . "/" . $row['alias'], true);
                 $row['url_view_comm'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=comment&amp;" . NV_OP_VARIABLE . "=main&module=" . $module_name . "&q=" . $row['id'] . "&stype=content_id&sstatus=2&per_page=20";
-                if($row['start_comm_time']!=''){
-                	$row['url_view_comm'].= "&from_date=" . $row['start_comm_time'];
+                if ($row['start_comm_time'] != '') {
+                    $row['url_view_comm'] .= "&from_date=" . $row['start_comm_time'];
                 }
-				if($row['end_comm_time']!=''){
-                	$row['url_view_comm'].= "&to_date=" . $row['end_comm_time'];
+                if ($row['end_comm_time'] != '') {
+                    $row['url_view_comm'] .= "&to_date=" . $row['end_comm_time'];
                 }
 
                 $xtpl->assign('CLASS', $a % 2 ? " class=\"second\"" : "");
                 $xtpl->assign('DATA', $row);
-				if($module_config[$module_name]['activecomm']){
-					 $xtpl->parse('list.loop.view_comm_time');
-					 $xtpl->parse('list.loop.view_comm');
-				}else{
-					$xtpl->parse('list.loop.view_time');
-				}
+                if ($module_config[$module_name]['activecomm']) {
+                    $xtpl->parse('list.loop.view_comm_time');
+                    $xtpl->parse('list.loop.view_comm');
+                } else {
+                    $xtpl->parse('list.loop.view_time');
+                }
+                if (defined('NV_IS_ADMIN_MODULE') || $array_subject_admin[$admin_id][$row['sid']]['admin'] == 1 || $array_subject_admin[$admin_id][$row['sid']]['edit_content'] == 1) {
+                    $xtpl->parse('list.loop.view_feature.view_edit');
+                }
+                if (defined('NV_IS_ADMIN_MODULE') || $array_subject_admin[$admin_id][$row['sid']]['admin'] == 1 || $array_subject_admin[$admin_id][$row['sid']]['del_content'] == 1) {
+                    $xtpl->parse('list.loop.view_feature.view_delete');
+                    $xtpl->parse('list.loop.view_check');
+                    $check_delete++;
+                }
+
+                if (!defined('NV_IS_ADMIN_MODULE') && $array_subject_admin[$admin_id][$row['sid']]['admin'] != 1 && $array_subject_admin[$admin_id][$row['sid']]['del_content'] != 1) {
+                    $xtpl->parse('list.loop.view_suspended');
+                }
+                if (defined('NV_IS_ADMIN_MODULE') || $array_subject_admin[$admin_id][$row['sid']]['admin'] == 1 || $array_subject_admin[$admin_id][$row['sid']]['del_content'] == 1 || $array_subject_admin[$admin_id][$row['sid']]['edit_content'] == 1) {
+                    $xtpl->parse('list.loop.view_feature');
+                }
                 $xtpl->parse('list.loop');
+                if (defined('NV_IS_ADMIN_MODULE') || $array_subject_admin[$admin_id][$row['sid']]['admin'] == 1 || $array_subject_admin[$admin_id][$row['sid']]['del_content'] == 1 || $array_subject_admin[$admin_id][$row['sid']]['edit_content'] == 1) {
+                    $check = 1;
+                }
                 $a++;
             }
-			if($module_config[$module_name]['activecomm']){
-				 $xtpl->parse('list.view_comm_time_title');
-			}else{
-				$xtpl->parse('list.view_time_title');
-			}
+
+            if ($module_config[$module_name]['activecomm']) {
+                $xtpl->parse('list.view_comm_time_title');
+            } else {
+                $xtpl->parse('list.view_time_title');
+            }
 
             $generate_page = nv_generate_page($base_url, $all_page, $per_page, $page, true, true, "nv_load_laws", "data");
 
             $xtpl->assign('NV_GENERATE_PAGE', $generate_page);
+
+            if ($check) {
+                $xtpl->parse('list.view_tlfeature');
+            }
+            if ($check_delete > 0) {
+                $xtpl->parse('list.view_colcheck');
+                $xtpl->parse('list.actions');
+            }
+
             $xtpl->parse('list');
             $xtpl->out('list');
         }
@@ -703,13 +785,13 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
         $xtpl->parse('main.slist');
     }
 
-	if($module_config[$module_name]['activecomm']){
-		foreach ($eList as $_eList) {
-	        $xtpl->assign('ELIST', $_eList);
-	        $xtpl->parse('main.elist_loop.elist');
-	    }
-		$xtpl->parse('main.elist_loop');
-	}
+    if ($module_config[$module_name]['activecomm']) {
+        foreach ($eList as $_eList) {
+            $xtpl->assign('ELIST', $_eList);
+            $xtpl->parse('main.elist_loop.elist');
+        }
+        $xtpl->parse('main.elist_loop');
+    }
 
     foreach ($sgList as $_sgList) {
         $xtpl->assign('SGLIST', $_sgList);
@@ -718,6 +800,10 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
 
     $xtpl->assign('BASE_LOAD', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=" . $op . "&list");
     $xtpl->assign('ADD_LINK', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=" . $op . "&add");
+
+    if ($num_sub > 0 || defined('NV_IS_ADMIN_MODULE')) {
+        $xtpl->parse('main.view_add');
+    }
 
     $xtpl->parse('main');
     $contents = $xtpl->text('main');

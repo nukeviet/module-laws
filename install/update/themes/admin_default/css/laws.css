@@ -5,6 +5,10 @@
  * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
  */
 
+.mt-0 {
+    margin-top: 0!important;
+}
+
 .myh3 {
     background: url('../images/arrows/arrow3_red.gif') no-repeat left center;
     margin: 10px 0;
@@ -117,5 +121,13 @@
 }
 
 .form-inline .form-group{
-	margin-top: 5px;
+    margin-top: 5px;
+}
+
+#id_admin_module > tr > td {
+    padding: 0;
+}
+
+#id_admin_module > tr > td table {
+    margin: 0;
 }

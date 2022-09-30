@@ -47,7 +47,7 @@ if ($id) {
     );
 }
 
-if ($nv_Request->isset_request('submit', 'post')) {
+if ($nv_Request->isset_request('bntsubmit', 'post')) {
     $array['title'] = nv_substr($nv_Request->get_title('title', 'post', '', 1), 0, 255);
     $array['offices'] = nv_substr($nv_Request->get_title('offices', 'post', '', 1), 0, 255);
     $array['positions'] = nv_substr($nv_Request->get_title('positions', 'post', '', 1), 0, 255);
