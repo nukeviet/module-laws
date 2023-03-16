@@ -14,10 +14,9 @@ if (!defined('NV_IS_FILE_ADMIN')) {
 
 $page_title = $lang_module['main'];
 
-$contents = "";
+$contents = '';
 $groups_list = nv_groups_list();
 $catList = nv_catList();
-$aList = nv_aList();
 
 $sList = nv_sList();
 if (empty($sList)) {
@@ -462,6 +461,16 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
 
         foreach ($aList as $_a) {
             $_a['checked'] = in_array($_a['id'], $post['area_id']) ? " checked=\"checked\"" : "";
+            $xtitle_i = '';
+            if ($_a['lev'] > 0) {
+                $xtitle_i .= '&nbsp;&nbsp;&nbsp;|';
+                for ($i = 1; $i <= $_a['lev']; ++$i) {
+                    $xtitle_i .= '---';
+                }
+                $xtitle_i .= '>&nbsp;';
+            }
+            $xtitle_i .= $_a['title'];
+            $_a['name'] = $xtitle_i;
             $xtpl->assign('AREAOPT', $_a);
             $xtpl->parse('add.areaopt');
         }
@@ -776,6 +785,16 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
     }
 
     foreach ($aList as $_aList) {
+        $xtitle_i = '';
+        if ($_aList['lev'] > 0) {
+            $xtitle_i .= '&nbsp;&nbsp;&nbsp;|';
+            for ($i = 1; $i <= $_aList['lev']; ++$i) {
+                $xtitle_i .= '---';
+            }
+            $xtitle_i .= '>&nbsp;';
+        }
+        $xtitle_i .= $_aList['title'];
+        $_aList['name'] = $xtitle_i;
         $xtpl->assign('ALIST', $_aList);
         $xtpl->parse('main.alist');
     }

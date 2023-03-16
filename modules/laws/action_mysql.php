@@ -34,9 +34,14 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   keywords varchar(255) NOT NULL,
   addtime int(11) unsigned NOT NULL DEFAULT '0',
   weight smallint(4) unsigned NOT NULL DEFAULT '0',
+  sort smallint(5) unsigned NOT NULL DEFAULT '1' COMMENT 'Thứ tự tổng thể',
+  lev tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Cấp bậc',
+  numsubcat tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Số lĩnh vực con',
+  subcatid varchar(255) NOT NULL DEFAULT '' COMMENT 'Danh sách ID lĩnh vực con, phân cách bởi dấu phảy',
   PRIMARY KEY (id),
   UNIQUE KEY alias (alias,parentid),
-  KEY weight (weight)
+  KEY weight (weight),
+  KEY sort (sort)
 ) ENGINE=MyISAM";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_cat(

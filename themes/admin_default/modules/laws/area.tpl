@@ -135,7 +135,7 @@ $(function() {
 <!-- BEGIN: list -->
 <form>
     <div class="table-responsive">
-        <table class="table table-striped table-bordered table-hover" summary="{PARENTID}">
+        <table class="table table-striped table-bordered table-hover tab1" summary="{PARENTID}">
             <thead>
                 <tr>
                     <th style="width: 1%" class="text-center"><input name="check_all[]" type="checkbox" value="yes" onclick="nv_checkAll(this.form, 'idcheck[]', 'check_all[]',this.checked);"></th>
@@ -166,7 +166,10 @@ $(function() {
                         {LOOP.title}
                         <!-- END: countempty -->
                     </td>
-                    <td><em class="fa fa-edit fa-lg">&nbsp;</em><a href="{MODULE_URL}=area&edit&id={LOOP.id}">{GLANG.edit}</a> - <em class="fa fa-trash-o fa-lg">&nbsp;</em><a class="del" href="{LOOP.id}">{GLANG.delete}</a></td>
+                    <td>
+                        <a href="{MODULE_URL}=area&amp;edit&amp;id={LOOP.id}" class="btn btn-xs btn-default"><i class="fa fa-edit"></i> {GLANG.edit}</a>
+                        <a class="del btn btn-danger btn-xs" href="{LOOP.id}"><i class="fa fa-trash"></i> {GLANG.delete}</a>
+                    </td>
                 </tr>
                 <!-- END: loop -->
             </tbody>

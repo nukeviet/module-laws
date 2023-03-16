@@ -39,12 +39,9 @@ if ($NV_IS_ADMIN_FULL_MODULE) {
 }
 define('NV_IS_FILE_ADMIN', true);
 
-// xóa hai cái này đi
-if ($NV_IS_ADMIN_FULL_MODULE) { // lệnh này y chang thì em bê lên
-
-}
-if ($NV_IS_ADMIN_MODULE) {
-}
+// Lĩnh vực
+$sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_area ORDER BY sort ASC";
+$aList = $nv_Cache->db($sql, 'id', $module_name);
 
 function nv_setCats($list2, $id, $list, $num = 0)
 {
@@ -118,53 +115,48 @@ function fix_catWeight($parentid)
     }
 }
 
-function nv_aList()
+/**
+ * @param number $parentid
+ * @param number $order
+ * @param number $lev
+ * @return number
+ */
+function fix_aWeight($parentid = 0, $order = 0, $lev = 0)
 {
     global $db, $module_data;
 
-    $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_area ORDER BY parentid,weight ASC";
+    $sql = "SELECT id, parentid FROM " . NV_PREFIXLANG . "_" . $module_data . "_area WHERE parentid=" . $parentid . " ORDER BY weight ASC";
     $result = $db->query($sql);
-    $list = array();
+    $array_cat_order = [];
     while ($row = $result->fetch()) {
-        $list[$row['parentid']][] = array( //
-            'id' => (int) $row['id'], //
-            'parentid' => (int) $row['parentid'], //
-            'title' => $row['title'], //
-            'alias' => $row['alias'], //
-            'weight' => (int) $row['weight'], //
-            'name' => $row['title'] //
-        );
+        $array_cat_order[] = $row['id'];
     }
-
-    if (empty($list)) {
-        return $list;
-    }
-
-    $list2 = array();
-    foreach ($list[0] as $value) {
-        $list2[$value['id']] = $value;
-        $list2[$value['id']]['count'] = isset($list[$value['id']]) ? count($list[$value['id']]) : 0;
-        $list2[$value['id']]['pcount'] = count($list[$list2[$value['id']]['parentid']]);
-        if (isset($list[$value['id']])) {
-            $list2 = nv_setCats($list2, $value['id'], $list);
-        }
-    }
-
-    return $list2;
-}
-
-function fix_aWeight($parentid)
-{
-    global $db, $module_data;
-
-    $sql = "SELECT id FROM " . NV_PREFIXLANG . "_" . $module_data . "_area WHERE parentid=" . intval($parentid) . " ORDER BY weight ASC";
-    $result = $db->query($sql);
+    $result->closeCursor();
     $weight = 0;
-    while ($row = $result->fetch()) {
-        $weight++;
-        $query = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_area SET weight=" . $weight . " WHERE id=" . $row['id'];
-        $db->query($query);
+    if ($parentid > 0) {
+        ++$lev;
+    } else {
+        $lev = 0;
     }
+    foreach ($array_cat_order as $id_i) {
+        ++$order;
+        ++$weight;
+        $sql = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_area SET weight=" . $weight . ", sort=" . $order . ", lev=" . $lev . " WHERE id=" . intval($id_i);
+        $db->query($sql);
+        $order = fix_aWeight($id_i, $order, $lev);
+    }
+    $numsubcat = $weight;
+    if ($parentid > 0) {
+        $sql = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_area SET numsubcat=" . $numsubcat;
+        if ($numsubcat == 0) {
+            $sql .= ", subcatid=''";
+        } else {
+            $sql .= ", subcatid='" . implode(',', $array_cat_order) . "'";
+        }
+        $sql .= " WHERE id=" . intval($parentid);
+        $db->query($sql);
+    }
+    return $order;
 }
 
 function nv_sList()
@@ -260,9 +252,14 @@ function fix_examineWeight()
     }
 }
 
+/**
+ * @param int $id
+ * @param array $array_cat
+ * @return array
+ */
 function nv_GetCatidInParent($id, $array_cat)
 {
-    $array_id = array();
+    $array_id = [];
     $array_id[] = $id;
 
     if (!empty($array_cat)) {

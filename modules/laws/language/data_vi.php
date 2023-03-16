@@ -12,9 +12,11 @@ if (!defined('NV_ADMIN')) {
     die('Stop!!!');
 }
 
-$db->query("INSERT INTO " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_area VALUES
-    (1, 0, 'Giao-duc-1', 'Giáo dục', '', '', 1412265295, 1),
-    (2, 0, 'Phap-quy-2', 'Pháp quy', '', '', 1412265295, 2)");
+$db->query("INSERT INTO " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_area (
+    id, parentid, alias, title, introduction, keywords, addtime, weight, sort, lev, numsubcat, subcatid
+) VALUES
+    (1, 0, 'Giao-duc-1', 'Giáo dục', '', '', 1412265295, 1, 1, 0, 0, ''),
+    (2, 0, 'Phap-quy-2', 'Pháp quy', '', '', 1412265295, 2, 2, 0, 0, '')");
 
 $db->query("INSERT INTO " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_cat VALUES
     (1, 0, 'Cong-van', 'Công văn', '', '', 5, 1412265295, 1),
