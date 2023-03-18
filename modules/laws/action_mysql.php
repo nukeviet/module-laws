@@ -146,6 +146,7 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_admins(
   userid mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
   subjectid smallint(4) NOT NULL DEFAULT '0',
+  areaid smallint(4) unsigned NOT NULL DEFAULT '0',
   admin tinyint(4) NOT NULL DEFAULT '0',
   add_content tinyint(4) NOT NULL DEFAULT '0',
   edit_content tinyint(4) NOT NULL DEFAULT '0',

@@ -12,45 +12,48 @@ if (!defined('NV_ADMIN')) {
     die('Stop!!!');
 }
 
-global $module_config, $array_subject_admin, $admin_id;
+global $module_config, $array_subject_admin, $admin_id, $array_area_admin, $array_configed_admin;
 
-if (!function_exists('nv_laws_array_subject_admin')) {
-
+if (!function_exists('nv_laws_get_admins')) {
     /**
-     * nv_laws_array_subject_admin()
-     *
-     * @return
+     * @param string $module_data
+     * @return array
      */
-    function nv_laws_array_subject_admin($module_data)
+    function nv_laws_get_admins($module_data)
     {
         global $db_slave;
 
-        $array_subject_admin = [];
+        $array_subject_admin = $array_area_admin = $array_configed_admin = [];
         $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_admins ORDER BY userid ASC';
         $result = $db_slave->query($sql);
 
         while ($row = $result->fetch()) {
-            $array_subject_admin[$row['userid']][$row['subjectid']] = $row;
+            if (!empty($row['areaid'])) {
+                $array_area_admin[$row['userid']][$row['areaid']] = $row;
+            } else {
+                $array_subject_admin[$row['userid']][$row['subjectid']] = $row;
+            }
+            $array_configed_admin[$row['userid']] = $row['userid'];
         }
 
-        return $array_subject_admin;
+        return [$array_subject_admin, $array_area_admin, $array_configed_admin];
     }
 }
 
 $is_refresh = false;
-$array_subject_admin = nv_laws_array_subject_admin($module_data);
+list($array_subject_admin, $array_area_admin, $array_configed_admin) = nv_laws_get_admins($module_data);
 
 if (!empty($module_info['admins'])) {
     $module_admin = explode(',', $module_info['admins']);
     foreach ($module_admin as $userid_i) {
-        if (!isset($array_subject_admin[$userid_i])) {
+        if (!isset($array_configed_admin[$userid_i])) {
             $db->query('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_admins (userid, subjectid, admin, add_content, edit_content, del_content) VALUES (' . $userid_i . ', 0, 1, 1, 1, 1)');
             $is_refresh = true;
         }
     }
 }
 if ($is_refresh) {
-    $array_subject_admin = nv_laws_array_subject_admin($module_data);
+    list($array_subject_admin, $array_area_admin, $array_configed_admin) = nv_laws_get_admins($module_data);
 }
 
 $admin_id = $admin_info['admin_id'];
@@ -79,6 +82,6 @@ if ($NV_IS_ADMIN_FULL_MODULE) {
     $submenu['admins'] = $lang_module['admins'];
     $submenu['config'] = $lang_module['config'];
 }
-if ($module_config[$module_name]['activecomm']) {
+if ($module_config[$module_name]['activecomm'] and $NV_IS_ADMIN_MODULE) {
     $submenu['examine'] = $lang_module['examine'];
 }

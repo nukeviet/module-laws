@@ -9,6 +9,10 @@
     margin-top: 0!important;
 }
 
+.mt-3 {
+    margin-top: 15px!important;
+}
+
 .myh3 {
     background: url('../images/arrows/arrow3_red.gif') no-repeat left center;
     margin: 10px 0;

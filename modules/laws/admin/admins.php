@@ -1,6 +1,6 @@
 <?php
 
-use OAuth\Common\Exception\Exception;
+use NukeViet\Module\laws\Shared\Admins;
 
 /**
  * @Project NUKEVIET 4.x
@@ -14,83 +14,102 @@ if (!defined('NV_IS_ADMIN_FULL_MODULE')) {
     die('Stop!!!');
 }
 
-$module_admin = explode(',', $module_info['admins']);
-// Xoa cac dieu hanh vien khong co quyen tai module
-foreach ($array_subject_admin as $userid_i => $value) {
+// Xóa quản trị module đã cấu hình trước đó mà giờ không còn nữa
+$module_admin = empty($module_info['admins']) ? [] : array_filter(explode(',', $module_info['admins']));
+foreach ($array_configed_admin as $userid_i) {
     if (!in_array($userid_i, $module_admin)) {
         $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_admins WHERE userid = ' . $userid_i);
         $is_refresh = true;
     }
 }
-// Het Xoa cac dieu hanh vien khong co quyen tai module
 
+// Không có quản trị module
 if (empty($module_info['admins'])) {
-    // Thong bao khong co nguoi dieu hanh chung
     $contents = nv_theme_alert($lang_module['admin_no_user_title'], $lang_module['admin_no_user_content']);
 }
 
-$orders = array(
+$orders = [
     'userid',
     'username',
     'full_name',
     'email'
-);
+];
 
-$orderby = $nv_Request->get_string('sortby', 'get', 'userid'); //die($orderby);
+$orderby = $nv_Request->get_string('sortby', 'get', 'userid');
 $ordertype = $nv_Request->get_string('sorttype', 'get', 'DESC');
 if ($ordertype != 'ASC') {
     $ordertype = 'DESC';
 }
-
 $base_url = NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op;
-
-$userid = $nv_Request->get_int('userid', 'get', 0);
-
-$array_permissions_mod = array(
+$userid = $nv_Request->get_absint('userid', 'get', 0);
+$array_permissions_mod = [
     $lang_module['admin_cat'],
+    $lang_module['admin_area'],
     $lang_module['admin_module'],
     $lang_module['admin_full_module']
-);
+];
 $error = '';
-if ($nv_Request->isset_request('submit', 'post') and $userid > 0) {
+
+if ($nv_Request->isset_request('saveform', 'post') and $userid > 0) {
     try {
         $admin_module = $nv_Request->get_int('admin_module', 'post', 0);
-        if ($admin_module == 1 or $admin_module == 2) {
+        $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_admins WHERE userid = ' . $userid);
+
+        if ($admin_module == Admins::TYPE_ADMIN or $admin_module == Admins::TYPE_FULL) {
+            // Admin hoặc admin full
             if (!defined('NV_IS_SPADMIN')) {
-                $admin_module = 1;
+                $admin_module = Admins::TYPE_ADMIN;
             }
-            $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_admins WHERE userid = ' . $userid);
-            $db->query("INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_admins (userid, subjectid, admin, add_content, edit_content, del_content) VALUES ('" . $userid . "', '0', '" . $admin_module . "', '1', '1', '1')");
-        } else {
-            $db->query('DELETE FROM ' . NV_PREFIXLANG . '_' . $module_data . '_admins WHERE userid = ' . $userid);
-            $array_admin = $nv_Request->get_typed_array('admin_content', 'post', 'int', array());
-            $array_add_content = $nv_Request->get_typed_array('add_content', 'post', 'int', array());
-            $array_edit_content = $nv_Request->get_typed_array('edit_content', 'post', 'int', array());
-            $array_del_content = $nv_Request->get_typed_array('del_content', 'post', 'int', array());
+            $db->query("INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_admins (
+                userid, subjectid, admin, add_content, edit_content, del_content
+            ) VALUES (
+                '" . $userid . "', '0', '" . $admin_module . "', '1', '1', '1'
+            )");
+        } elseif ($admin_module == Admins::TYPE_SUBJECT) {
+            // Quản lý văn bản của cơ quan ban hành
+            $array_add = $nv_Request->get_typed_array('subject_add', 'post', 'int', []);
+            $array_edit = $nv_Request->get_typed_array('subject_edit', 'post', 'int', []);
+            $array_del = $nv_Request->get_typed_array('subject_del', 'post', 'int', []);
+            $array_admin = $nv_Request->get_typed_array('subject_admin', 'post', 'int', []);
 
             $sql = 'SELECT id, title FROM ' . NV_PREFIXLANG . '_' . $module_data . '_subject ORDER BY weight ASC';
             $result_cat = $db->query($sql);
             while ($row = $result_cat->fetch()) {
                 $admin_i = (in_array($row['id'], $array_admin)) ? 1 : 0;
                 if ($admin_i) {
-                    $add_content_i = $edit_content_i = $del_content_i = 1;
-                    $array_admin[] = $row['id'];
+                    $add_i = $edit_i = $del_i = 1;
                 } else {
-                    $add_content_i = (in_array($row['id'], $array_add_content)) ? 1 : 0;
-                    $edit_content_i = (in_array($row['id'], $array_edit_content)) ? 1 : 0;
-                    $del_content_i = (in_array($row['id'], $array_del_content)) ? 1 : 0;
-
-                    if (!empty($add_content_i)) {
-                        $array_add_content[] = $row['id'];
-                    }
-                    if (!empty($edit_content_i)) {
-                        $array_edit_content[] = $row['id'];
-                    }
-                    if (!empty($del_content_i)) {
-                        $array_del_content[] = $row['id'];
-                    }
+                    $add_i = (in_array($row['id'], $array_add)) ? 1 : 0;
+                    $edit_i = (in_array($row['id'], $array_edit)) ? 1 : 0;
+                    $del_i = (in_array($row['id'], $array_del)) ? 1 : 0;
                 }
-                $db->query("INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_admins (userid, subjectid, admin, add_content,edit_content, del_content) VALUES ('" . $userid . "', '" . $row['id'] . "', '" . $admin_i . "', '" . $add_content_i . "', '" . $edit_content_i . "', '" . $del_content_i . "')");
+                $db->query("INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_admins (
+                    userid, subjectid, admin, add_content,edit_content, del_content
+                ) VALUES (
+                    '" . $userid . "', '" . $row['id'] . "', '" . $admin_i . "', '" . $add_i . "', '" . $edit_i . "', '" . $del_i . "'
+                )");
+            }
+        } elseif ($admin_module == Admins::TYPE_AREA) {
+            // Quản lý văn bản của cơ quan ban hành
+            $array_add = $nv_Request->get_typed_array('area_add', 'post', 'int', []);
+            $array_edit = $nv_Request->get_typed_array('area_edit', 'post', 'int', []);
+            $array_del = $nv_Request->get_typed_array('area_del', 'post', 'int', []);
+            $array_admin = $nv_Request->get_typed_array('area_admin', 'post', 'int', []);
+
+            foreach ($aList as $row) {
+                $admin_i = (in_array($row['id'], $array_admin)) ? 1 : 0;
+                if ($admin_i) {
+                    $add_i = $edit_i = $del_i = 1;
+                } else {
+                    $add_i = (in_array($row['id'], $array_add)) ? 1 : 0;
+                    $edit_i = (in_array($row['id'], $array_edit)) ? 1 : 0;
+                    $del_i = (in_array($row['id'], $array_del)) ? 1 : 0;
+                }
+                $db->query("INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_admins (
+                    userid, areaid, admin, add_content,edit_content, del_content
+                ) VALUES (
+                    '" . $userid . "', '" . $row['id'] . "', '" . $admin_i . "', '" . $add_i . "', '" . $edit_i . "', '" . $del_i . "'
+                )");
             }
         }
     } catch (Exception $e) {
@@ -101,11 +120,11 @@ if ($nv_Request->isset_request('submit', 'post') and $userid > 0) {
         $base_url = str_replace('&amp;', '&', $base_url) . '&userid=' . $userid;
         nv_redirect_location($base_url);
     }
-
 }
-$users_list = array();
+
+$users_list = [];
 if (!empty($module_info['admins'])) {
-    $sql = 'SELECT * FROM ' . NV_USERS_GLOBALTABLE . ' where userid IN (' . $module_info['admins'] . ')';
+    $sql = 'SELECT * FROM ' . NV_USERS_GLOBALTABLE . ' WHERE userid IN (' . $module_info['admins'] . ')';
     if (!empty($orderby) and in_array($orderby, $orders)) {
         $orderby_sql = $orderby != 'full_name' ? $orderby : ($global_config['name_show'] == 0 ? "concat(first_name,' ',last_name)" : "concat(last_name,' ',first_name)");
         $sql .= ' ORDER BY ' . $orderby_sql . ' ' . $ordertype;
@@ -133,7 +152,7 @@ if (!empty($module_info['admins'])) {
 }
 
 if (!empty($users_list)) {
-    $head_tds = array();
+    $head_tds = [];
     $head_tds['userid']['title'] = $lang_module['admin_userid'];
     $head_tds['userid']['href'] = NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;sortby=userid&amp;sorttype=ASC';
     $head_tds['username']['title'] = $lang_module['admin_username'];
@@ -187,11 +206,11 @@ if (!empty($users_list)) {
             }
 
             foreach ($array_permissions_mod as $value => $text) {
-                $u = array(
+                $u = [
                     'value' => $value,
                     'text' => $text,
-                    'checked' => ($value == $admin_module) ? ' checked="checked"' : ''
-                );
+                    'selected' => ($value == $admin_module) ? ' selected="selected"' : ''
+                ];
                 $xtpl->assign('ADMIN_MODULE', $u);
                 $xtpl->parse('main.edit.admin_module');
             }
@@ -205,17 +224,34 @@ if (!empty($users_list)) {
             $result_cat = $db->query($sql);
 
             while ($row = $result_cat->fetch()) {
-                $u = array();
+                $u = [];
                 $u['subjectid'] = $row['id'];
                 $u['title'] = $row['title'];
+                $u['checked_add'] = (isset($array_subject_admin[$userid][$row['id']]) and $array_subject_admin[$userid][$row['id']]['add_content'] == 1) ? ' checked="checked"' : '';
+                $u['checked_edit'] = (isset($array_subject_admin[$userid][$row['id']]) and $array_subject_admin[$userid][$row['id']]['edit_content'] == 1) ? ' checked="checked"' : '';
+                $u['checked_del'] = (isset($array_subject_admin[$userid][$row['id']]) and $array_subject_admin[$userid][$row['id']]['del_content'] == 1) ? ' checked="checked"' : '';
                 $u['checked_admin'] = (isset($array_subject_admin[$userid][$row['id']]) and $array_subject_admin[$userid][$row['id']]['admin'] == 1) ? ' checked="checked"' : '';
-                $u['checked_add_content'] = (isset($array_subject_admin[$userid][$row['id']]) and $array_subject_admin[$userid][$row['id']]['add_content'] == 1) ? ' checked="checked"' : '';
-                $u['checked_edit_content'] = (isset($array_subject_admin[$userid][$row['id']]) and $array_subject_admin[$userid][$row['id']]['edit_content'] == 1) ? ' checked="checked"' : '';
-                $u['checked_del_content'] = (isset($array_subject_admin[$userid][$row['id']]) and $array_subject_admin[$userid][$row['id']]['del_content'] == 1) ? ' checked="checked"' : '';
                 $xtpl->assign('CONTENT', $u);
                 $xtpl->parse('main.edit.catid');
             }
             $xtpl->assign('CAPTION_EDIT', $lang_module['admin_edit_user'] . ': ' . $users_list[$userid]['username']);
+
+            // Xuất lĩnh vực
+            foreach ($aList as $area) {
+                $area['name'] = '';
+                if ($area['lev'] > 0) {
+                    $area['name'] .= '&nbsp;&nbsp;&nbsp;|';
+                    for ($i = 1; $i <= $area['lev']; ++$i) {
+                        $area['name'] .= '---';
+                    }
+                    $area['name'] .= '>&nbsp;';
+                }
+                $area['name'] .= $area['title'];
+
+                $xtpl->assign('AREA', $area);
+                $xtpl->parse('main.edit.area');
+            }
+
             $xtpl->parse('main.edit');
         }
     }
