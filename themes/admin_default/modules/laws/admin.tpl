@@ -45,6 +45,8 @@
                 </select>
             </div>
             <div id="note_admin_area" class="mt-3 text-primary" style="display: none;">{LANG.admin_area_note}</div>
+            <div id="note_admin_full" class="mt-3 text-primary" style="display: none;">{LANG.admin_full_note}</div>
+            <div id="note_admin" class="mt-3 text-primary" style="display: none;">{LANG.admin_note}</div>
         </div>
         <div class="table-responsive">
             <table class="table table-striped table-hover" id="id_admin_subject" style="display: none;">
@@ -104,14 +106,26 @@ function controlView() {
         $("#id_admin_subject").show();
         $("#id_admin_area").hide();
         $("#note_admin_area").hide();
+        $("#note_admin_full").hide();
+        $("#note_admin").hide();
     } else if (tp == 1) {
         $("#id_admin_subject").hide();
         $("#id_admin_area").show();
         $("#note_admin_area").show();
+        $("#note_admin_full").hide();
+        $("#note_admin").hide();
     } else {
         $("#id_admin_subject").hide();
         $("#id_admin_area").hide();
         $("#note_admin_area").hide();
+
+        if (tp == 2) {
+            $("#note_admin_full").hide();
+            $("#note_admin").show();
+        } else {
+            $("#note_admin_full").show();
+            $("#note_admin").hide();
+        }
     }
 }
 

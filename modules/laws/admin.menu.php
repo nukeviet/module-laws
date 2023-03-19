@@ -12,6 +12,8 @@ if (!defined('NV_ADMIN')) {
     die('Stop!!!');
 }
 
+use NukeViet\Module\laws\Shared\Admins;
+
 global $module_config, $array_subject_admin, $admin_id, $array_area_admin, $array_configed_admin;
 
 if (!function_exists('nv_laws_get_admins')) {
@@ -47,7 +49,11 @@ if (!empty($module_info['admins'])) {
     $module_admin = explode(',', $module_info['admins']);
     foreach ($module_admin as $userid_i) {
         if (!isset($array_configed_admin[$userid_i])) {
-            $db->query('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_admins (userid, subjectid, admin, add_content, edit_content, del_content) VALUES (' . $userid_i . ', 0, 1, 1, 1, 1)');
+            $db->query('INSERT INTO ' . NV_PREFIXLANG . '_' . $module_data . '_admins (
+                userid, subjectid, admin, add_content, edit_content, del_content
+            ) VALUES (
+                ' . $userid_i . ', 0, ' . Admins::TYPE_ADMIN . ', 1, 1, 1
+            )');
             $is_refresh = true;
         }
     }
@@ -65,7 +71,7 @@ if (defined('NV_IS_SPADMIN')) {
 } else {
     if (isset($array_subject_admin[$admin_id][0])) {
         $NV_IS_ADMIN_MODULE = true;
-        if (intval($array_subject_admin[$admin_id][0]['admin']) == 2) {
+        if (intval($array_subject_admin[$admin_id][0]['admin']) == Admins::TYPE_FULL) {
             $NV_IS_ADMIN_FULL_MODULE = true;
         }
     }

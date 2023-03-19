@@ -81,6 +81,7 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   title varchar(255) NOT NULL,
   alias varchar(255) NOT NULL,
   code varchar(50) NOT NULL,
+  area_ids varchar(191) NOT NULL DEFAULT '' COMMENT 'Danh sách lĩnh vực phân cách bởi dấu phảy',
   cid smallint(4) unsigned NOT NULL DEFAULT '0',
   sid smallint(4) unsigned NOT NULL DEFAULT '0',
   eid smallint(4) unsigned NOT NULL DEFAULT '0',
@@ -105,7 +106,12 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   download_hits mediumint(8) unsigned NOT NULL DEFAULT '0',
   admin_add mediumint(8) unsigned NOT NULL DEFAULT '0',
   admin_edit mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  KEY area_ids (area_ids),
+  KEY cid (cid),
+  KEY sid (sid),
+  KEY eid (eid),
+  KEY sgid (sgid)
 ) ENGINE=MyISAM";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_row_area (
@@ -151,7 +157,7 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   add_content tinyint(4) NOT NULL DEFAULT '0',
   edit_content tinyint(4) NOT NULL DEFAULT '0',
   del_content tinyint(4) NOT NULL DEFAULT '0',
-  UNIQUE KEY userid (userid,subjectid)
+  UNIQUE KEY userid (userid,subjectid,areaid)
 ) ENGINE=MyISAM";
 
 $sql_create_module[] = "INSERT INTO " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_config VALUES

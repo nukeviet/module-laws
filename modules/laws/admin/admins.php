@@ -1,7 +1,5 @@
 <?php
 
-use NukeViet\Module\laws\Shared\Admins;
-
 /**
  * @Project NUKEVIET 4.x
  * @Author VINADES.,JSC <contact@vinades.vn>
@@ -13,6 +11,8 @@ use NukeViet\Module\laws\Shared\Admins;
 if (!defined('NV_IS_ADMIN_FULL_MODULE')) {
     die('Stop!!!');
 }
+
+use NukeViet\Module\laws\Shared\Admins;
 
 // Xóa quản trị module đã cấu hình trước đó mà giờ không còn nữa
 $module_admin = empty($module_info['admins']) ? [] : array_filter(explode(',', $module_info['admins']));
@@ -58,6 +58,7 @@ if ($nv_Request->isset_request('saveform', 'post') and $userid > 0) {
         if ($admin_module == Admins::TYPE_ADMIN or $admin_module == Admins::TYPE_FULL) {
             // Admin hoặc admin full
             if (!defined('NV_IS_SPADMIN')) {
+                // Điều hành chung trở lên mới phân quyền full được
                 $admin_module = Admins::TYPE_ADMIN;
             }
             $db->query("INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_admins (
@@ -133,21 +134,21 @@ if (!empty($module_info['admins'])) {
     $result = $db->query($sql);
     while ($row = $result->fetch()) {
         $userid_i = (int) $row['userid'];
-        $admin_module = (isset($array_subject_admin[$userid_i][0])) ? intval($array_subject_admin[$userid_i][0]['admin']) : 0;
+        $admin_module = (isset($array_subject_admin[$userid_i][0])) ? intval($array_subject_admin[$userid_i][0]['admin']) : (!empty($array_area_admin) ? Admins::TYPE_AREA : Admins::TYPE_SUBJECT);
         $admin_module_cat = $array_permissions_mod[$admin_module];
         $is_edit = true;
-        if ($admin_module == 2 and !defined('NV_IS_SPADMIN')) {
+        if ($admin_module == Admins::TYPE_FULL and !defined('NV_IS_SPADMIN')) {
             $is_edit = false;
         }
 
-        $users_list[$row['userid']] = array(
+        $users_list[$row['userid']] = [
             'userid' => $userid_i,
             'username' => (string) $row['username'],
             'full_name' => nv_show_name_user($row['first_name'], $row['last_name'], $row['username']),
             'email' => (string) $row['email'],
             'admin_module_cat' => $admin_module_cat,
             'is_edit' => $is_edit
-        );
+        ];
     }
 }
 
@@ -194,15 +195,15 @@ if (!empty($users_list)) {
     }
 
     if ($userid > 0 and $userid != $admin_id) {
-        $admin_module = (isset($array_subject_admin[$userid][0])) ? intval($array_subject_admin[$userid][0]['admin']) : 0;
+        $admin_module = (isset($array_subject_admin[$userid][0])) ? intval($array_subject_admin[$userid][0]['admin']) : (!empty($array_area_admin) ? Admins::TYPE_AREA : Admins::TYPE_SUBJECT);
         $is_edit = true;
-        if ($admin_module == 2 and !defined('NV_IS_SPADMIN')) {
+        if ($admin_module == Admins::TYPE_FULL and !defined('NV_IS_SPADMIN')) {
             $is_edit = false;
         }
 
         if ($is_edit) {
             if (!defined('NV_IS_SPADMIN')) {
-                unset($array_permissions_mod[2]);
+                unset($array_permissions_mod[Admins::TYPE_FULL]);
             }
 
             foreach ($array_permissions_mod as $value => $text) {
@@ -247,6 +248,11 @@ if (!empty($users_list)) {
                     $area['name'] .= '>&nbsp;';
                 }
                 $area['name'] .= $area['title'];
+
+                $area['checked_add'] = (isset($array_area_admin[$userid][$area['id']]) and $array_area_admin[$userid][$area['id']]['add_content'] == 1) ? ' checked="checked"' : '';
+                $area['checked_edit'] = (isset($array_area_admin[$userid][$area['id']]) and $array_area_admin[$userid][$area['id']]['edit_content'] == 1) ? ' checked="checked"' : '';
+                $area['checked_del'] = (isset($array_area_admin[$userid][$area['id']]) and $array_area_admin[$userid][$area['id']]['del_content'] == 1) ? ' checked="checked"' : '';
+                $area['checked_admin'] = (isset($array_area_admin[$userid][$area['id']]) and $array_area_admin[$userid][$area['id']]['admin'] == 1) ? ' checked="checked"' : '';
 
                 $xtpl->assign('AREA', $area);
                 $xtpl->parse('main.edit.area');

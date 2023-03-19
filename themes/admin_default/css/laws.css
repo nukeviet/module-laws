@@ -5,6 +5,10 @@
  * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
  */
 
+.mb-0 {
+    margin-bottom: 0!important;
+}
+
 .mt-0 {
     margin-top: 0!important;
 }
@@ -31,6 +35,28 @@
 .bold {
     font-weight: bold;
     color: red
+}
+
+.btn-space {
+    margin: 2px!important;
+}
+
+.law-item-title {
+    display: flex;
+}
+
+.law-item-title .i-l {
+    margin-right: 5px;
+    padding-top: 1px;
+}
+
+.law-item-title .i-l input[type='checkbox'] {
+    margin-right: 0!important;
+}
+
+.law-item-title .i-r {
+    flex-grow: 1;
+    flex-shrink: 1;
 }
 
 #ablist {
@@ -124,14 +150,16 @@
     cursor: pointer;
 }
 
-.form-inline .form-group{
-    margin-top: 5px;
-}
-
 #id_admin_module > tr > td {
     padding: 0;
 }
 
 #id_admin_module > tr > td table {
     margin: 0;
+}
+
+@media (max-width: 767.98px) {
+    .mt-xs-2 {
+        margin-top: 10px!important;
+    }
 }

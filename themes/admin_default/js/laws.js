@@ -18,11 +18,11 @@ function nv_delete_datacontent(content) {
 }
 
 function nv_change_status(id) {
-    var nv_timer = nv_settimeout_disable('status_' + id, 4000);
+    var nv_timer = nv_settimeout_disable('change_status' + id, 4000);
     $.post(script_name + '?' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=main&nocache=' + new Date().getTime(), 'changestatus=1&id=' + id, function(res) {
         if (res != 'OK') {
             alert(nv_is_change_act_confirm[2]);
-            window.location.href = window.location.href;
+            location.reload();
         }
         return;
     });
@@ -46,7 +46,7 @@ function nv_delete_signer(id) {
     if (confirm(nv_is_del_confirm[0])) {
         $.post(script_name + '?' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=signer&nocache=' + new Date().getTime(), 'del=1&id=' + id, function(res) {
             if (res == 'OK') {
-                window.location.href = window.location.href;
+                location.reload();
             } else {
                 alert(nv_is_del_confirm[2]);
             }
@@ -63,7 +63,7 @@ function nv_chang_cat(catid, mod) {
             alert(nv_is_change_act_confirm[2]);
         }
         clearTimeout(nv_timer);
-        window.location.href = window.location.href;
+        location.reload();
         return;
     });
     return;
