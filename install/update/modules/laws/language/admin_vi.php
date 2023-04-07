@@ -18,9 +18,12 @@ $lang_translator['copyright'] = '@Copyright (C) 2011 VINADES.,JSC. All rights re
 $lang_translator['info'] = '';
 $lang_translator['langtype'] = 'lang_module';
 
+$lang_module['info'] = 'Thông tin';
+$lang_module['info_no_permission'] = 'Bạn chưa được cấp quyền để quản lý văn bản, vui lòng liên hệ với cấp trên để được cấp quyền';
 $lang_module['msgnocheck'] = 'Vui lòng chọn ít nhất một dòng để thực hiện';
 $lang_module['main'] = 'Quản lý Văn bản';
 $lang_module['area'] = 'Quản lý Lĩnh vực';
+$lang_module['area_name'] = 'Lĩnh vực';
 $lang_module['cat'] = 'Quản lý Thể loại';
 $lang_module['subject'] = 'Cơ quan ban hành';
 $lang_module['save'] = 'Thực hiện';
@@ -30,6 +33,8 @@ $lang_module['status1'] = 'Hoạt động';
 $lang_module['status0'] = 'Đình chỉ';
 $lang_module['feature'] = 'Chức năng';
 $lang_module['day'] = 'Ngày';
+$lang_module['there_is_num'] = 'Số kết quả';
+$lang_module['is_required'] = 'Là mục bắt buộc';
 
 $lang_module['hl0'] = 'Còn hiệu lực';
 $lang_module['hl1'] = 'Hết hiệu lực';
@@ -183,6 +188,8 @@ $lang_module['wait'] = 'Vui lòng đợi...';
 $lang_module['numlink'] = 'Số liên kết';
 
 $lang_module['search_error'] = 'Chọn ít nhất một điều kiện tìm kiếm';
+$lang_module['search_cat'] = 'Thể loại';
+$lang_module['search_all'] = 'Tất cả';
 
 $lang_module['msg1'] = 'Bạn cần thêm';
 $lang_module['msg2'] = 'truớc';
@@ -212,13 +219,15 @@ $lang_module['admin_no_user_content'] = 'Chức năng phân quyền cho module n
 
 $lang_module['content_subject'] = 'Cơ quan ban hành văn bản';
 $lang_module['permissions_admin'] = 'Quản lý cơ quan ban hành';
+$lang_module['permissions_admin_area'] = 'Quản lý lĩnh vực';
 $lang_module['permissions_add_content'] = 'Tạo văn bản';
 $lang_module['permissions_edit_content'] = 'Sửa văn bản';
 $lang_module['permissions_del_content'] = 'Xóa văn bản';
 $lang_module['permissions_pub_error'] = 'Lỗi: Bạn không được đăng văn bản tại cơ quan ban hành: %1$s';
 $lang_module['permissions_sendspadmin_error'] = 'Lỗi: Bạn không được phép chuyển văn bản cho tổng biên tập tại cơ quan ban hành: %1$s';
 $lang_module['permissions_pub_show_error'] = 'Lỗi: Bạn không được cho hiển thị văn bản tại cơ quan ban hành: %1$s';
-$lang_module['admin_cat'] = 'Quản lý cơ quan ban hành';
+$lang_module['admin_cat'] = 'Quản lý văn bản theo cơ quan ban hành';
+$lang_module['admin_area'] = 'Quản lý văn bản theo lĩnh vực';
 $lang_module['admin_module'] = 'Quản lý module';
 $lang_module['admin_full_module'] = 'Toàn quyền module';
 $lang_module['admin_userid'] = 'ID';
@@ -231,5 +240,8 @@ $lang_module['lastname_firstname'] = 'Họ và Tên';
 $lang_module['admin_permissions'] = 'Quyền hạn';
 $lang_module['admin_edit'] = 'Sửa quyền hạn';
 $lang_module['admin_edit_user'] = 'Sửa quyền hạn thành viên';
+$lang_module['admin_area_note'] = 'Lưu ý: Có quyền quản lý lĩnh vực cha thì cũng có quyền quản lý lĩnh vực con trong nó';
+$lang_module['admin_full_note'] = 'Toàn quyền module có quyền của quản lý module, thêm quyền chỉnh cấu hình module và phân quyền các tài khoản khác';
+$lang_module['admin_note'] = 'Quản lý module được quyền quản lý mọi văn bản, lĩnh vực, cơ quan ban hành, cơ quan thẩm tra (nếu lấy ý kiến), người ý, thể loại';
 
 $lang_module['admin_add'] = 'Người đăng';

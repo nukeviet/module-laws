@@ -18,11 +18,11 @@ function nv_delete_datacontent(content) {
 }
 
 function nv_change_status(id) {
-    var nv_timer = nv_settimeout_disable('status_' + id, 4000);
+    var nv_timer = nv_settimeout_disable('change_status' + id, 4000);
     $.post(script_name + '?' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=main&nocache=' + new Date().getTime(), 'changestatus=1&id=' + id, function(res) {
         if (res != 'OK') {
             alert(nv_is_change_act_confirm[2]);
-            window.location.href = window.location.href;
+            location.reload();
         }
         return;
     });
@@ -46,7 +46,7 @@ function nv_delete_signer(id) {
     if (confirm(nv_is_del_confirm[0])) {
         $.post(script_name + '?' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=signer&nocache=' + new Date().getTime(), 'del=1&id=' + id, function(res) {
             if (res == 'OK') {
-                window.location.href = window.location.href;
+                location.reload();
             } else {
                 alert(nv_is_del_confirm[2]);
             }
@@ -63,70 +63,10 @@ function nv_chang_cat(catid, mod) {
             alert(nv_is_change_act_confirm[2]);
         }
         clearTimeout(nv_timer);
-        window.location.href = window.location.href;
+        location.reload();
         return;
     });
     return;
-}
-
-function check_add_first() {
-    $(this).one("dblclick", check_add_second);
-    $("input[name='add_content[]']:checkbox").prop("checked", true);
-}
-
-function check_add_second() {
-    $(this).one("dblclick", check_add_first);
-    $("input[name='add_content[]']:checkbox").prop("checked", false);
-}
-
-function check_app_first() {
-    $(this).one("dblclick", check_app_second);
-    $("input[name='app_content[]']:checkbox").prop("checked", true);
-}
-
-function check_app_second() {
-    $(this).one("dblclick", check_app_first);
-    $("input[name='app_content[]']:checkbox").prop("checked", false);
-}
-
-function check_pub_first() {
-    $(this).one("dblclick", check_pub_second);
-    $("input[name='pub_content[]']:checkbox").prop("checked", true);
-}
-
-function check_pub_second() {
-    $(this).one("dblclick", check_pub_first);
-    $("input[name='pub_content[]']:checkbox").prop("checked", false);
-}
-
-function check_edit_first() {
-    $(this).one("dblclick", check_edit_second);
-    $("input[name='edit_content[]']:checkbox").prop("checked", true);
-}
-
-function check_edit_second() {
-    $(this).one("dblclick", check_edit_first);
-    $("input[name='edit_content[]']:checkbox").prop("checked", false);
-}
-
-function check_del_first() {
-    $(this).one("dblclick", check_del_second);
-    $("input[name='del_content[]']:checkbox").prop("checked", true);
-}
-
-function check_del_second() {
-    $(this).one("dblclick", check_del_first);
-    $("input[name='del_content[]']:checkbox").prop("checked", false);
-}
-
-function check_admin_first() {
-    $(this).one("dblclick", check_admin_second);
-    $("input[name='admin_content[]']:checkbox").prop("checked", true);
-}
-
-function check_admin_second() {
-    $(this).one("dblclick", check_admin_first);
-    $("input[name='admin_content[]']:checkbox").prop("checked", false);
 }
 
 // Xử lý các select tool tại trang danh sách văn bản
