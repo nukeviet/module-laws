@@ -398,11 +398,11 @@ function nv_up_s6()
 
             try {
                 $db->query("ALTER TABLE `" . $table_prefix . "_row` ADD `area_ids` varchar(191) NOT NULL DEFAULT '' COMMENT 'Danh sách lĩnh vực phân cách bởi dấu phảy' AFTER `code`;");
-                $db->query("CREATE INDEX sgid ON " . $table_prefix . "_row` (sgid);");
-                $db->query("CREATE INDEX eid ON " . $table_prefix . "_row` (eid);");
-                $db->query("CREATE INDEX sid ON " . $table_prefix . "_row` (sid);");
-                $db->query("CREATE INDEX cid ON " . $table_prefix . "_row` (cid);");
-                $db->query("CREATE INDEX area_ids ON " . $table_prefix . "_row` (area_ids);");
+                $db->query("CREATE INDEX sgid ON `" . $table_prefix . "_row` (sgid);");
+                $db->query("CREATE INDEX eid ON `" . $table_prefix . "_row` (eid);");
+                $db->query("CREATE INDEX sid ON `" . $table_prefix . "_row` (sid);");
+                $db->query("CREATE INDEX cid ON `" . $table_prefix . "_row` (cid);");
+                $db->query("CREATE INDEX area_ids ON `" . $table_prefix . "_row` (area_ids);");
             } catch (PDOException $e) {
                 trigger_error($e->getMessage());
             }
