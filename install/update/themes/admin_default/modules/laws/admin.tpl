@@ -30,71 +30,135 @@
     </tbody>
 </table>
 <!-- BEGIN: edit -->
-<form method="post" enctype="multipart/form-data" action="">
-    <table class="table table-striped table-bordered table-hover">
-        <caption>{CAPTION_EDIT}</caption>
-        <tr>
-            <td>{LANG.admin_permissions}</td>
-            <td>
-                <!-- BEGIN: admin_module --> <input name="admin_module" value="{ADMIN_MODULE.value}" type="radio"{ADMIN_MODULE.checked}> {ADMIN_MODULE.text} <!-- END: admin_module -->
-            </td>
-        </tr>
-        <tbody id="id_admin_module">
-            <tr>
-                <td colspan="2">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th class="text-center">{LANG.content_subject}</th>
-                                <th class="text-center" id="check_add_content">{LANG.permissions_add_content}</th>
-                                <th class="text-center" id="check_edit_content">{LANG.permissions_edit_content}</th>
-                                <th class="text-center" id="check_del_content">{LANG.permissions_del_content}</th>
-                                <th class="text-center" id="check_admin_content">{LANG.permissions_admin}</th>
-                            </tr>
-                        </thead>
-                        <!-- BEGIN: catid -->
-                        <tbody>
-                            <tr>
-                                <td>{CONTENT.title}</td>
-                                <td class="text-center"><input type="checkbox" name="add_content[]" value="{CONTENT.subjectid}"{CONTENT.checked_add_content}></td>
-                                <td class="text-center"><input type="checkbox" name="edit_content[]" value="{CONTENT.subjectid}"{CONTENT.checked_edit_content}></td>
-                                <td class="text-center"><input type="checkbox" name="del_content[]" value="{CONTENT.subjectid}"{CONTENT.checked_del_content}></td>
-                                <td class="text-center"><input type="checkbox" name="admin_content[]" value="{CONTENT.subjectid}"{CONTENT.checked_admin}></td>
-                            </tr>
-                        </tbody>
-                        <!-- END: catid -->
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="2" class="text-center"><input class="btn btn-primary" type="submit" value="{LANG.save}" name="submit"></td>
-            </tr>
-        </tfoot>
-    </table>
+<form method="post" action="">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <strong>{CAPTION_EDIT}</strong>
+        </div>
+        <div class="panel-body">
+            <div class="form-inline">
+                <label>{LANG.admin_permissions}</label>
+                <select class="form-control" name="admin_module">
+                    <!-- BEGIN: admin_module -->
+                    <option value="{ADMIN_MODULE.value}"{ADMIN_MODULE.selected}>{ADMIN_MODULE.text}</option>
+                    <!-- END: admin_module -->
+                </select>
+            </div>
+            <div id="note_admin_area" class="mt-3 text-primary" style="display: none;">{LANG.admin_area_note}</div>
+            <div id="note_admin_full" class="mt-3 text-primary" style="display: none;">{LANG.admin_full_note}</div>
+            <div id="note_admin" class="mt-3 text-primary" style="display: none;">{LANG.admin_note}</div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover" id="id_admin_subject" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class="text-center">{LANG.content_subject}</th>
+                        <th class="text-center" data-toggle="alladd">{LANG.permissions_add_content}</th>
+                        <th class="text-center" data-toggle="alledit">{LANG.permissions_edit_content}</th>
+                        <th class="text-center" data-toggle="alldel">{LANG.permissions_del_content}</th>
+                        <th class="text-center" data-toggle="alladmin">{LANG.permissions_admin}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- BEGIN: catid -->
+                    <tr>
+                        <td>{CONTENT.title}</td>
+                        <td class="text-center"><input type="checkbox" data-toggle="iptadd" name="subject_add[]" value="{CONTENT.subjectid}"{CONTENT.checked_add}></td>
+                        <td class="text-center"><input type="checkbox" data-toggle="iptedit" name="subject_edit[]" value="{CONTENT.subjectid}"{CONTENT.checked_edit}></td>
+                        <td class="text-center"><input type="checkbox" data-toggle="iptdel" name="subject_del[]" value="{CONTENT.subjectid}"{CONTENT.checked_del}></td>
+                        <td class="text-center"><input type="checkbox" data-toggle="iptadmin" name="subject_admin[]" value="{CONTENT.subjectid}"{CONTENT.checked_admin}></td>
+                    </tr>
+                    <!-- END: catid -->
+                </tbody>
+            </table>
+            <table class="table table-striped table-hover" id="id_admin_area" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class="text-center">{LANG.area_name}</th>
+                        <th class="text-center" data-toggle="alladd">{LANG.permissions_add_content}</th>
+                        <th class="text-center" data-toggle="alledit">{LANG.permissions_edit_content}</th>
+                        <th class="text-center" data-toggle="alldel">{LANG.permissions_del_content}</th>
+                        <th class="text-center" data-toggle="alladmin">{LANG.permissions_admin_area}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- BEGIN: area -->
+                    <tr>
+                        <td>{AREA.name}</td>
+                        <td class="text-center"><input type="checkbox" data-toggle="iptadd" name="area_add[]" value="{AREA.id}"{AREA.checked_add}></td>
+                        <td class="text-center"><input type="checkbox" data-toggle="iptedit" name="area_edit[]" value="{AREA.id}"{AREA.checked_edit}></td>
+                        <td class="text-center"><input type="checkbox" data-toggle="iptdel" name="area_del[]" value="{AREA.id}"{AREA.checked_del}></td>
+                        <td class="text-center"><input type="checkbox" data-toggle="iptadmin" name="area_admin[]" value="{AREA.id}"{AREA.checked_admin}></td>
+                    </tr>
+                    <!-- END: area -->
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer text-center">
+            <input class="btn btn-primary" type="submit" value="{LANG.save}" name="saveform">
+        </div>
+    </div>
 </form>
 <script type="text/javascript">
-    $(document).ready(function() {
-        var tp = $('input[name=admin_module]:checked').val();
-        if (tp == 0) {
-            $("#id_admin_module").show();
+function controlView() {
+    var tp = $('[name=admin_module]').val();
+    if (tp == 0) {
+        $("#id_admin_subject").show();
+        $("#id_admin_area").hide();
+        $("#note_admin_area").hide();
+        $("#note_admin_full").hide();
+        $("#note_admin").hide();
+    } else if (tp == 1) {
+        $("#id_admin_subject").hide();
+        $("#id_admin_area").show();
+        $("#note_admin_area").show();
+        $("#note_admin_full").hide();
+        $("#note_admin").hide();
+    } else {
+        $("#id_admin_subject").hide();
+        $("#id_admin_area").hide();
+        $("#note_admin_area").hide();
+
+        if (tp == 2) {
+            $("#note_admin_full").hide();
+            $("#note_admin").show();
         } else {
-            $("#id_admin_module").hide();
+            $("#note_admin_full").show();
+            $("#note_admin").hide();
         }
-        $("#check_add_content").one("dblclick", check_add_first);
-        $("#check_edit_content").one("dblclick", check_edit_first);
-        $("#check_del_content").one("dblclick", check_del_first);
-        $("#check_admin_content").one("dblclick", check_admin_first);
-        $("input[name=admin_module]").click(function() {
-            var type = $(this).val();
-            if (type == 0) {
-                $("#id_admin_module").show();
-            } else {
-                $("#id_admin_module").hide();
-            }
-        });
+    }
+}
+
+function controlChecked(element, type) {
+    var ctn = $(element).parent().parent().parent();
+    type = 'ipt' + type;
+    if ($('[data-toggle="' + type + '"]:checked', ctn).length < 1 || $('[data-toggle="' + type + '"]:checked', ctn).length < $('[data-toggle="' + type + '"]', ctn).length) {
+        $('[data-toggle="' + type + '"]', ctn).prop('checked', true);
+    } else {
+        $('[data-toggle="' + type + '"]', ctn).prop('checked', false);
+    }
+}
+
+$(document).ready(function() {
+    controlView();
+
+    $('[data-toggle="alladd"]').on("dblclick", function() {
+        controlChecked(this, 'add');
     });
+    $('[data-toggle="alledit"]').on("dblclick", function() {
+        controlChecked(this, 'edit');
+    });
+    $('[data-toggle="alldel"]').on("dblclick", function() {
+        controlChecked(this, 'del');
+    });
+    $('[data-toggle="alladmin"]').on("dblclick", function() {
+        controlChecked(this, 'admin');
+    });
+
+    $("[name=admin_module]").on('change', function() {
+        controlView();
+    });
+});
 </script>
 <!-- END: edit -->
 <!-- END: main -->

@@ -20,8 +20,7 @@ if ($nv_Request->isset_request('get_alias_title', 'post')) {
     nv_htmlOutput($alias);
 }
 
-$contents = "";
-$aList = nv_aList();
+$contents = '';
 
 if (empty($aList) and !$nv_Request->isset_request('add', 'get')) {
     nv_redirect_location(NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=area&add");
@@ -30,11 +29,9 @@ if (empty($aList) and !$nv_Request->isset_request('add', 'get')) {
 if ($nv_Request->isset_request('cWeight, id', 'post')) {
     $id = $nv_Request->get_int('id', 'post');
     $cWeight = $nv_Request->get_int('cWeight', 'post');
-    if (!isset($aList[$id]))
+    if (!isset($aList[$id])) {
         die("ERROR");
-
-    if ($cWeight > $aList[$id]['pcount'])
-        $cWeight = $aList[$id]['pcount'];
+    }
 
     $sql = "SELECT id FROM " . NV_PREFIXLANG . "_" . $module_data . "_area WHERE parentid=" . intval($aList[$id]['parentid']) . " AND id!=" . $id . " ORDER BY weight ASC";
     $result = $db->query($sql);
@@ -48,6 +45,7 @@ if ($nv_Request->isset_request('cWeight, id', 'post')) {
     }
     $query = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_area SET weight=" . $cWeight . " WHERE id=" . $id;
     $db->query($query);
+    fix_aWeight();
     $nv_Cache->delMod($module_name);
     nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['logChangeaWeight'], "Id: " . $id, $admin_info['userid']);
     nv_htmlOutput('OK');
@@ -67,7 +65,7 @@ if ($nv_Request->isset_request('del', 'post')) {
             continue;
         }
 
-        if ($aList[$id]['count'] > 0) {
+        if ($aList[$id]['numsubcat'] > 0) {
             $check_sub++;
             continue;
         }
@@ -87,10 +85,8 @@ if ($nv_Request->isset_request('del', 'post')) {
 
         $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_area WHERE id = " . $id;
         $db->query($query);
-
-        fix_aWeight($aList[$id]['parentid']);
     }
-
+    fix_aWeight();
     $nv_Cache->delMod($module_name);
 
     if (sizeof($listid) == 1) {
@@ -179,8 +175,6 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
         if (!isset($aList[$post['parentid']]))
             $post['parentid'] = 0;
 
-        $if_fixWeight = false;
-
         if (!empty($post['id'])) {
             $weight = $aList[$post['id']]['weight'];
             if ($post['parentid'] != $aList[$post['id']]['parentid']) {
@@ -191,7 +185,6 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
                 } else {
                     $weight = 1;
                 }
-                $if_fixWeight = $aList[$post['id']]['parentid'];
             }
 
             $query = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_area SET
@@ -211,10 +204,13 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
                 $weight = 1;
             }
 
-            $query = "INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_area
-                VALUES (NULL, " . $post['parentid'] . ", '', " . $db->quote($post['title']) . ",
+            $query = "INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_area (
+                parentid, alias, title, introduction, keywords, addtime, weight, sort, lev, numsubcat, subcatid
+            ) VALUES (
+                " . $post['parentid'] . ", '', " . $db->quote($post['title']) . ",
                 " . $db->quote($post['introduction']) . ", " . $db->quote($post['keywords']) . ",
-                " . NV_CURRENTTIME . ", " . $weight . ");";
+                " . NV_CURRENTTIME . ", " . $weight . ", 0, 0, 0, ''
+            );";
             $post['id'] = $db->insert_id($query);
 
             $query = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_area SET
@@ -222,8 +218,7 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
             $db->query($query);
         }
 
-        if ($if_fixWeight !== false)
-            fix_aWeight($if_fixWeight);
+        fix_aWeight();
         $nv_Cache->delMod($module_name);
         nv_insert_logs(NV_LANG_DATA, $module_name, $log_title, "Id: " . $post['id'], $admin_info['userid']);
         nv_htmlOutput('OK');
@@ -257,12 +252,23 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
         if (!in_array($values['parentid'], $ig)) {
             $selected = $id == $post['parentid'] ? " selected=\"selected\"" : "";
             $style = $values['parentid'] == 0 ? " class=\"optmain\"" : "";
-            $option = array(
+
+            $xtitle_i = '';
+            if ($values['lev'] > 0) {
+                $xtitle_i .= '&nbsp;&nbsp;&nbsp;|';
+                for ($i = 1; $i <= $values['lev']; ++$i) {
+                    $xtitle_i .= '---';
+                }
+                $xtitle_i .= '>&nbsp;';
+            }
+            $xtitle_i .= $values['title'];
+
+            $option = [
                 'value' => $id,
-                'name' => $values['name'],
+                'name' => $xtitle_i,
                 'selected' => $selected,
                 'style' => $style
-            );
+            ];
 
             $xtpl->assign('OPTION', $option);
             $xtpl->parse('dListOption');
@@ -288,37 +294,41 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
     exit();
 }
 
+// Danh sách lĩnh vực theo parentid
 if ($nv_Request->isset_request('list', 'get')) {
     $parentid = $nv_Request->get_int('parentid', 'get', 0);
 
     $xtpl->assign('PARENTID', $parentid);
 
-    foreach ($aList as $id => $values) {
-        if ($values['parentid'] == $parentid) {
-            $loop = array(
-                'id' => $id,
-                'title' => $values['title'],
-                'count' => $values['count']
-            );
+    // Xuất các thể loại theo parentid
+    $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_area WHERE parentid = " . $parentid . " ORDER BY weight ASC";
+    $array_areas = $db->query($sql)->fetchAll();
+    $num = sizeof($array_areas);
 
-            $xtpl->assign('LOOP', $loop);
+    foreach ($array_areas as $values) {
+        $loop = [
+            'id' => $values['id'],
+            'title' => $values['title'],
+            'count' => $values['numsubcat']
+        ];
 
-            for ($i = 1; $i <= $values['pcount']; $i++) {
-                $opt = array(
-                    'value' => $i,
-                    'selected' => $i == $values['weight'] ? " selected=\"selected\"" : ""
-                );
-                $xtpl->assign('NEWWEIGHT', $opt);
-                $xtpl->parse('list.loop.option');
-            }
+        $xtpl->assign('LOOP', $loop);
 
-            if ($loop['count'] != 0) {
-                $xtpl->parse('list.loop.count');
-            } else {
-                $xtpl->parse('list.loop.countempty');
-            }
-            $xtpl->parse('list.loop');
+        for ($i = 1; $i <= $num; $i++) {
+            $opt = [
+                'value' => $i,
+                'selected' => $i == $values['weight'] ? " selected=\"selected\"" : ""
+            ];
+            $xtpl->assign('NEWWEIGHT', $opt);
+            $xtpl->parse('list.loop.option');
         }
+
+        if ($loop['count'] != 0) {
+            $xtpl->parse('list.loop.count');
+        } else {
+            $xtpl->parse('list.loop.countempty');
+        }
+        $xtpl->parse('list.loop');
     }
     $xtpl->parse('list');
     $xtpl->out('list');
