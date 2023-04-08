@@ -17,17 +17,17 @@ $nv_update_config = array();
 $nv_update_config['type'] = 1;
 
 // ID goi cap nhat
-$nv_update_config['packageID'] = 'NVULAWS4502';
+$nv_update_config['packageID'] = 'NVULAWS4503';
 
 // Cap nhat cho module nao, de trong neu la cap nhat NukeViet, ten thu muc module neu la cap nhat module
 $nv_update_config['formodule'] = 'laws';
 
 // Thong tin phien ban, tac gia, ho tro
-$nv_update_config['release_date'] = 1664249620;
+$nv_update_config['release_date'] = 1680920456;
 $nv_update_config['author'] = 'VINADES.,JSC <contact@vinades.vn>';
-$nv_update_config['support_website'] = 'https://github.com/nukeviet/module-laws/tree/to-4.5.02';
-$nv_update_config['to_version'] = '4.5.02';
-$nv_update_config['allow_old_version'] = array('4.1.02', '4.2.01', '4.2.02', '4.3.00', '4.3.01', '4.3.05', '4.5.00');
+$nv_update_config['support_website'] = 'https://github.com/nukeviet/module-laws/tree/to-4.5.03';
+$nv_update_config['to_version'] = '4.5.03';
+$nv_update_config['allow_old_version'] = array('4.1.02', '4.2.01', '4.2.02', '4.3.00', '4.3.01', '4.3.05', '4.5.00', '4.5.02');
 
 // 0:Nang cap bang tay, 1:Nang cap tu dong, 2:Nang cap nua tu dong
 $nv_update_config['update_auto_type'] = 1;
@@ -42,6 +42,7 @@ $nv_update_config['lang']['vi']['nv_up_s3'] = 'Sửa dữ liệu văn bản';
 $nv_update_config['lang']['vi']['nv_up_s4'] = 'Cập nhật CSDL phiên bản 4.3.01';
 $nv_update_config['lang']['vi']['nv_up_s5'] = 'Cập nhật CSDL phiên bản 4.3.05';
 $nv_update_config['lang']['vi']['nv_up_s6'] = 'Cập nhật CSDL phiên bản 4.5.00';
+$nv_update_config['lang']['vi']['nv_up_s7'] = 'Cập nhật CSDL phiên bản 4.5.03';
 $nv_update_config['lang']['vi']['nv_up_finish'] = 'Đánh dấu phiên bản mới';
 
 $nv_update_config['tasklist'] = array();
@@ -81,9 +82,15 @@ $nv_update_config['tasklist'][] = array(
     'l' => 'nv_up_s6',
     'f' => 'nv_up_s6'
 );
+$nv_update_config['tasklist'][] = array(
+    'r' => '4.5.03',
+    'rq' => 1,
+    'l' => 'nv_up_s7',
+    'f' => 'nv_up_s7'
+);
 
 $nv_update_config['tasklist'][] = array(
-    'r' => '4.5.02',
+    'r' => '4.5.03',
     'rq' => 1,
     'l' => 'nv_up_finish',
     'f' => 'nv_up_finish'
@@ -381,6 +388,62 @@ function nv_up_s6()
                     )";
                 $db->query($sql);
 
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+        }
+    }
+
+    return $return;
+}
+
+
+/**
+ * nv_up_s6()
+ *
+ * @return
+ *
+ */
+function nv_up_s7()
+{
+    global $nv_update_baseurl, $db, $db_config, $nv_Cache, $array_modlang_update;
+    $return = array(
+        'status' => 1,
+        'complete' => 1,
+        'next' => 1,
+        'link' => 'NO',
+        'lang' => 'NO',
+        'message' => ''
+    );
+    foreach ($array_modlang_update as $lang => $array_mod) {
+        foreach ($array_mod['mod'] as $module_info) {
+            $table_prefix = $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'];
+            try {
+                $db->query("ALTER TABLE `" . $table_prefix . "_area` ADD `subcatid` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'Danh sách ID lĩnh vực con, phân cách bởi dấu phảy' AFTER `weight`;");
+                $db->query("ALTER TABLE `" . $table_prefix . "_area` ADD `numsubcat` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Số lĩnh vực con' AFTER `weight`;");
+                $db->query("ALTER TABLE `" . $table_prefix . "_area` ADD `lev` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Cấp bậc' AFTER `weight`;");
+                $db->query("ALTER TABLE `" . $table_prefix . "_area` ADD `sort` smallint(5) unsigned NOT NULL DEFAULT '1' COMMENT 'Thứ tự tổng thể' AFTER `weight`;");
+                $db->query("CREATE INDEX weight ON " . $table_prefix . "_area` (weight);");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("ALTER TABLE `" . $table_prefix . "_row` ADD `area_ids` varchar(191) NOT NULL DEFAULT '' COMMENT 'Danh sách lĩnh vực phân cách bởi dấu phảy' AFTER `code`;");
+                $db->query("CREATE INDEX sgid ON `" . $table_prefix . "_row` (sgid);");
+                $db->query("CREATE INDEX eid ON `" . $table_prefix . "_row` (eid);");
+                $db->query("CREATE INDEX sid ON `" . $table_prefix . "_row` (sid);");
+                $db->query("CREATE INDEX cid ON `" . $table_prefix . "_row` (cid);");
+                $db->query("CREATE INDEX area_ids ON `" . $table_prefix . "_row` (area_ids);");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("ALTER TABLE `" . $table_prefix . "_admins` ADD `areaid` smallint(4) unsigned NOT NULL DEFAULT '0';");
+                $db->query("DROP INDEX userid ON `" . $table_prefix . "_admins`;");
+                $db->query("ALTER TABLE `" . $table_prefix . "_admins` ADD CONSTRAINT userid UNIQUE (userid,subjectid,areaid);");
+               
             } catch (PDOException $e) {
                 trigger_error($e->getMessage());
             }
