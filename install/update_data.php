@@ -146,6 +146,49 @@ while (list($_tmp) = $result->fetch(PDO::FETCH_NUM)) {
 }
 
 /**
+ * @param number $parentid
+ * @param number $order
+ * @param number $lev
+ * @return number
+ */
+function nv_fix_cat_order($parentid = 0, $order = 0, $lev = 0)
+{
+    global $db, $table_prefix;
+
+    $sql = "SELECT id, parentid FROM " . $table_prefix . "_area WHERE parentid=" . $parentid . " ORDER BY weight ASC";
+    $result = $db->query($sql);
+    $array_cat_order = [];
+    while ($row = $result->fetch()) {
+        $array_cat_order[] = $row['id'];
+    }
+    $result->closeCursor();
+    $weight = 0;
+    if ($parentid > 0) {
+        ++$lev;
+    } else {
+        $lev = 0;
+    }
+    foreach ($array_cat_order as $id_i) {
+        ++$order;
+        ++$weight;
+        $sql = "UPDATE " . $table_prefix . "_area SET weight=" . $weight . ", sort=" . $order . ", lev=" . $lev . " WHERE id=" . intval($id_i);
+        $db->query($sql);
+        $order = nv_fix_cat_order($id_i, $order, $lev);
+    }
+    $numsubcat = $weight;
+    if ($parentid > 0) {
+        $sql = "UPDATE " . $table_prefix . "_area SET numsubcat=" . $numsubcat;
+        if ($numsubcat == 0) {
+            $sql .= ", subcatid=''";
+        } else {
+            $sql .= ", subcatid='" . implode(',', $array_cat_order) . "'";
+        }
+        $sql .= " WHERE id=" . intval($parentid);
+        $db->query($sql);
+    }
+    return $order;
+}
+/**
  * nv_up_s1()
  *
  * @return
@@ -418,32 +461,109 @@ function nv_up_s7()
     foreach ($array_modlang_update as $lang => $array_mod) {
         foreach ($array_mod['mod'] as $module_info) {
             $table_prefix = $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'];
+
             try {
-                $db->query("ALTER TABLE `" . $table_prefix . "_area` ADD `subcatid` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'Danh sách ID lĩnh vực con, phân cách bởi dấu phảy' AFTER `weight`;");
-                $db->query("ALTER TABLE `" . $table_prefix . "_area` ADD `numsubcat` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Số lĩnh vực con' AFTER `weight`;");
-                $db->query("ALTER TABLE `" . $table_prefix . "_area` ADD `lev` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Cấp bậc' AFTER `weight`;");
-                $db->query("ALTER TABLE `" . $table_prefix . "_area` ADD `sort` smallint(5) unsigned NOT NULL DEFAULT '1' COMMENT 'Thứ tự tổng thể' AFTER `weight`;");
-                $db->query("CREATE INDEX weight ON " . $table_prefix . "_area` (weight);");
+                $db->query("ALTER TABLE `" . $table_prefix . "_area` 
+                ADD `sort` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Thứ tự tổng thể' AFTER `weight`, 
+                ADD `lev` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Cấp bậc' AFTER `sort`, 
+                ADD `numsubcat` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Số lĩnh vực con' AFTER `lev`, 
+                ADD `subcatid` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'Danh sách ID lĩnh vực con, phân cách bởi dấu phảy' AFTER `numsubcat`, 
+                ADD INDEX `sort` (`sort`);");
+                
             } catch (PDOException $e) {
                 trigger_error($e->getMessage());
             }
 
             try {
-                $db->query("ALTER TABLE `" . $table_prefix . "_row` ADD `area_ids` varchar(191) NOT NULL DEFAULT '' COMMENT 'Danh sách lĩnh vực phân cách bởi dấu phảy' AFTER `code`;");
-                $db->query("CREATE INDEX sgid ON `" . $table_prefix . "_row` (sgid);");
-                $db->query("CREATE INDEX eid ON `" . $table_prefix . "_row` (eid);");
-                $db->query("CREATE INDEX sid ON `" . $table_prefix . "_row` (sid);");
+                $db->query("ALTER TABLE `" . $table_prefix . "_admins` ADD `areaid` SMALLINT(4) UNSIGNED NOT NULL DEFAULT '0' AFTER `subjectid`;");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("ALTER TABLE `" . $table_prefix . "_row` ADD `area_ids` VARCHAR(191) NOT NULL DEFAULT '' AFTER `code`, ADD INDEX `area_ids` (`area_ids`);");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
                 $db->query("CREATE INDEX cid ON `" . $table_prefix . "_row` (cid);");
-                $db->query("CREATE INDEX area_ids ON `" . $table_prefix . "_row` (area_ids);");
             } catch (PDOException $e) {
                 trigger_error($e->getMessage());
             }
 
             try {
-                $db->query("ALTER TABLE `" . $table_prefix . "_admins` ADD `areaid` smallint(4) unsigned NOT NULL DEFAULT '0';");
+                $db->query("CREATE INDEX sid ON `" . $table_prefix . "_row` (sid);");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("CREATE INDEX eid ON `" . $table_prefix . "_row` (eid);");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("CREATE INDEX sgid ON `" . $table_prefix . "_row` (sgid);");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
                 $db->query("DROP INDEX userid ON `" . $table_prefix . "_admins`;");
                 $db->query("ALTER TABLE `" . $table_prefix . "_admins` ADD CONSTRAINT userid UNIQUE (userid,subjectid,areaid);");
                
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("UPDATE `" . $table_prefix . "_admins` SET admin=3 WHERE admin=2;");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("UPDATE `" . $table_prefix . "_admins` SET admin=2 WHERE admin=1;");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+            // Chạy cập nhật 
+            try {
+                nv_fix_cat_order();
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+            // "Xử lý area_ids của các văn bản: OK\n";
+            try {
+                $offset = 0;
+                while (1) {
+                    $sql = "SELECT id FROM " . $table_prefix . "_row
+                    ORDER BY id ASC LIMIT 1000 OFFSET " . $offset;
+                    $result = $db->query($sql);
+
+                    $num = 0;
+                    while ($row = $result->fetch()) {
+                        $num++;
+
+                        $sql = "SELECT area_id FROM " . $table_prefix . "_row_area
+                        WHERE row_id=" . $row['id'];
+                        $area_id = $db->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+                        $area_id = empty($area_id) ? '' : implode(',', $area_id);
+
+                        $sql = "UPDATE " . $table_prefix . "_row SET
+                        area_ids=" . $db->quote($area_id) . " WHERE id=" . $row['id'];
+                        $db->query($sql);
+                    }
+                    $result->closeCursor();
+
+                    $offset += 1000;
+                    if ($num <= 0) {
+                        break;
+                    }
+                }
+                
             } catch (PDOException $e) {
                 trigger_error($e->getMessage());
             }
