@@ -19,7 +19,7 @@ if ($nv_Request->isset_request('get_alias_title', 'post')) {
 }
 
 $contents = "";
-$sList = nv_sList();
+list($sList, $sListAdd) = nv_sList();
 $scount = count($sList);
 
 if (empty($sList) and !$nv_Request->isset_request('add', 'get')) {
