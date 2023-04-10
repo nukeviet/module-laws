@@ -2,7 +2,7 @@
 
 Chú ý:
 - Gói cập nhật này dành cho module laws 4.1.02, 4.2.01, 4.2.02, 4.3.00, 4.3.01, 4.3.05, 4.5.00, 4.5.02 nếu module của bạn không ở phiên bản này cần tìm các hướng dẫn cập nhật lên tối thiểu 4.1.02 trước.
-- Module laws 4.5.03 hoạt động trên NukeViet 4.5.02
+- Module laws 4.5.03 hoạt động trên NukeViet 4.5.02 trở lên
 
 ## Chuẩn bị cập nhật
 
