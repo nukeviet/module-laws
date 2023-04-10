@@ -17,17 +17,17 @@ $nv_update_config = array();
 $nv_update_config['type'] = 1;
 
 // ID goi cap nhat
-$nv_update_config['packageID'] = 'NVULAWS4502';
+$nv_update_config['packageID'] = 'NVULAWS4503';
 
 // Cap nhat cho module nao, de trong neu la cap nhat NukeViet, ten thu muc module neu la cap nhat module
 $nv_update_config['formodule'] = 'laws';
 
 // Thong tin phien ban, tac gia, ho tro
-$nv_update_config['release_date'] = 1664249620;
+$nv_update_config['release_date'] = 1680920456;
 $nv_update_config['author'] = 'VINADES.,JSC <contact@vinades.vn>';
-$nv_update_config['support_website'] = 'https://github.com/nukeviet/module-laws/tree/to-4.5.02';
-$nv_update_config['to_version'] = '4.5.02';
-$nv_update_config['allow_old_version'] = array('4.1.02', '4.2.01', '4.2.02', '4.3.00', '4.3.01', '4.3.05', '4.5.00');
+$nv_update_config['support_website'] = 'https://github.com/nukeviet/module-laws/tree/to-4.5.03';
+$nv_update_config['to_version'] = '4.5.03';
+$nv_update_config['allow_old_version'] = array('4.1.02', '4.2.01', '4.2.02', '4.3.00', '4.3.01', '4.3.05', '4.5.00', '4.5.02');
 
 // 0:Nang cap bang tay, 1:Nang cap tu dong, 2:Nang cap nua tu dong
 $nv_update_config['update_auto_type'] = 1;
@@ -42,6 +42,7 @@ $nv_update_config['lang']['vi']['nv_up_s3'] = 'Sửa dữ liệu văn bản';
 $nv_update_config['lang']['vi']['nv_up_s4'] = 'Cập nhật CSDL phiên bản 4.3.01';
 $nv_update_config['lang']['vi']['nv_up_s5'] = 'Cập nhật CSDL phiên bản 4.3.05';
 $nv_update_config['lang']['vi']['nv_up_s6'] = 'Cập nhật CSDL phiên bản 4.5.00';
+$nv_update_config['lang']['vi']['nv_up_s7'] = 'Cập nhật CSDL phiên bản 4.5.03';
 $nv_update_config['lang']['vi']['nv_up_finish'] = 'Đánh dấu phiên bản mới';
 
 $nv_update_config['tasklist'] = array();
@@ -81,9 +82,15 @@ $nv_update_config['tasklist'][] = array(
     'l' => 'nv_up_s6',
     'f' => 'nv_up_s6'
 );
+$nv_update_config['tasklist'][] = array(
+    'r' => '4.5.03',
+    'rq' => 1,
+    'l' => 'nv_up_s7',
+    'f' => 'nv_up_s7'
+);
 
 $nv_update_config['tasklist'][] = array(
-    'r' => '4.5.02',
+    'r' => '4.5.03',
     'rq' => 1,
     'l' => 'nv_up_finish',
     'f' => 'nv_up_finish'
@@ -138,6 +145,49 @@ while (list($_tmp) = $result->fetch(PDO::FETCH_NUM)) {
     }
 }
 
+/**
+ * @param number $parentid
+ * @param number $order
+ * @param number $lev
+ * @return number
+ */
+function nv_fix_cat_order($parentid = 0, $order = 0, $lev = 0)
+{
+    global $db, $table_prefix;
+
+    $sql = "SELECT id, parentid FROM " . $table_prefix . "_area WHERE parentid=" . $parentid . " ORDER BY weight ASC";
+    $result = $db->query($sql);
+    $array_cat_order = [];
+    while ($row = $result->fetch()) {
+        $array_cat_order[] = $row['id'];
+    }
+    $result->closeCursor();
+    $weight = 0;
+    if ($parentid > 0) {
+        ++$lev;
+    } else {
+        $lev = 0;
+    }
+    foreach ($array_cat_order as $id_i) {
+        ++$order;
+        ++$weight;
+        $sql = "UPDATE " . $table_prefix . "_area SET weight=" . $weight . ", sort=" . $order . ", lev=" . $lev . " WHERE id=" . intval($id_i);
+        $db->query($sql);
+        $order = nv_fix_cat_order($id_i, $order, $lev);
+    }
+    $numsubcat = $weight;
+    if ($parentid > 0) {
+        $sql = "UPDATE " . $table_prefix . "_area SET numsubcat=" . $numsubcat;
+        if ($numsubcat == 0) {
+            $sql .= ", subcatid=''";
+        } else {
+            $sql .= ", subcatid='" . implode(',', $array_cat_order) . "'";
+        }
+        $sql .= " WHERE id=" . intval($parentid);
+        $db->query($sql);
+    }
+    return $order;
+}
 /**
  * nv_up_s1()
  *
@@ -381,6 +431,139 @@ function nv_up_s6()
                     )";
                 $db->query($sql);
 
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+        }
+    }
+
+    return $return;
+}
+
+
+/**
+ * nv_up_s6()
+ *
+ * @return
+ *
+ */
+function nv_up_s7()
+{
+    global $nv_update_baseurl, $db, $db_config, $nv_Cache, $array_modlang_update;
+    $return = array(
+        'status' => 1,
+        'complete' => 1,
+        'next' => 1,
+        'link' => 'NO',
+        'lang' => 'NO',
+        'message' => ''
+    );
+    foreach ($array_modlang_update as $lang => $array_mod) {
+        foreach ($array_mod['mod'] as $module_info) {
+            $table_prefix = $db_config['prefix'] . "_" . $lang . "_" . $module_info['module_data'];
+
+            try {
+                $db->query("ALTER TABLE `" . $table_prefix . "_area` 
+                ADD `sort` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Thứ tự tổng thể' AFTER `weight`, 
+                ADD `lev` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Cấp bậc' AFTER `sort`, 
+                ADD `numsubcat` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Số lĩnh vực con' AFTER `lev`, 
+                ADD `subcatid` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'Danh sách ID lĩnh vực con, phân cách bởi dấu phảy' AFTER `numsubcat`, 
+                ADD INDEX `sort` (`sort`);");
+                
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("ALTER TABLE `" . $table_prefix . "_admins` ADD `areaid` SMALLINT(4) UNSIGNED NOT NULL DEFAULT '0' AFTER `subjectid`;");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("ALTER TABLE `" . $table_prefix . "_row` ADD `area_ids` VARCHAR(191) NOT NULL DEFAULT '' AFTER `code`, ADD INDEX `area_ids` (`area_ids`);");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("CREATE INDEX cid ON `" . $table_prefix . "_row` (cid);");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("CREATE INDEX sid ON `" . $table_prefix . "_row` (sid);");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("CREATE INDEX eid ON `" . $table_prefix . "_row` (eid);");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("CREATE INDEX sgid ON `" . $table_prefix . "_row` (sgid);");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("DROP INDEX userid ON `" . $table_prefix . "_admins`;");
+                $db->query("ALTER TABLE `" . $table_prefix . "_admins` ADD CONSTRAINT userid UNIQUE (userid,subjectid,areaid);");
+               
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("UPDATE `" . $table_prefix . "_admins` SET admin=3 WHERE admin=2;");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+
+            try {
+                $db->query("UPDATE `" . $table_prefix . "_admins` SET admin=2 WHERE admin=1;");
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+            // Chạy cập nhật 
+            try {
+                nv_fix_cat_order();
+            } catch (PDOException $e) {
+                trigger_error($e->getMessage());
+            }
+            // "Xử lý area_ids của các văn bản: OK\n";
+            try {
+                $offset = 0;
+                while (1) {
+                    $sql = "SELECT id FROM " . $table_prefix . "_row
+                    ORDER BY id ASC LIMIT 1000 OFFSET " . $offset;
+                    $result = $db->query($sql);
+
+                    $num = 0;
+                    while ($row = $result->fetch()) {
+                        $num++;
+
+                        $sql = "SELECT area_id FROM " . $table_prefix . "_row_area
+                        WHERE row_id=" . $row['id'];
+                        $area_id = $db->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+                        $area_id = empty($area_id) ? '' : implode(',', $area_id);
+
+                        $sql = "UPDATE " . $table_prefix . "_row SET
+                        area_ids=" . $db->quote($area_id) . " WHERE id=" . $row['id'];
+                        $db->query($sql);
+                    }
+                    $result->closeCursor();
+
+                    $offset += 1000;
+                    if ($num <= 0) {
+                        break;
+                    }
+                }
+                
             } catch (PDOException $e) {
                 trigger_error($e->getMessage());
             }
