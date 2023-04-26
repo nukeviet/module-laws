@@ -12,7 +12,7 @@ if (!defined('NV_IS_MOD_LAWS')) {
     die('Stop!!!');
 }
 
-$page_title = $module_info['site_title'];
+$page_title = $lang_module['search'] . NV_TITLEBAR_DEFIS . $module_info['site_title'];
 $key_words = $module_info['keywords'];
 
 $per_page = $nv_laws_setting['numsub'];
@@ -62,6 +62,7 @@ $where = '';
 $search = false;
 if (!empty($key) or !empty($area) or !empty($cat) or !empty($subject) or !empty($sstatus) or !empty($ssigner) or !empty($sfrom1) or !empty($sto1) or !empty($approval) or !empty($examine)) {
     $search = true;
+    $nv_BotManager->setPrivate();
 
     if (!empty($key)) {
         $dbkey = $db->dblikeescape($key);
