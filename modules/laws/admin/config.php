@@ -12,7 +12,7 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     die('Stop!!!');
 }
 
-$page_title = $lang_module['config'];
+$page_title = $nv_Lang->getModule('config');
 
 $array_config = [];
 $array_config_comm = $module_config[$module_name];
@@ -100,7 +100,7 @@ $array_config['activecomm'] = $array_config['activecomm'] ? 'checked="checked"' 
 
 $xtpl = new XTemplate("config.tpl", NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file);
 $xtpl->assign('FORM_ACTION', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $op);
-$xtpl->assign('LANG', $lang_module);
+$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
 $xtpl->assign('DATA', $array_config);
 
 foreach ($typeview as $type) {
@@ -109,10 +109,10 @@ foreach ($typeview as $type) {
 }
 
 $array_other = [
-    'cat' => $lang_module['config_detail_other_cat'],
-    'area' => $lang_module['config_detail_other_area'],
-    'subject' => $lang_module['config_detail_other_subject'],
-    'singer' => $lang_module['config_detail_other_signer']
+    'cat' => $nv_Lang->getModule('config_detail_other_cat'),
+    'area' => $nv_Lang->getModule('config_detail_other_area'),
+    'subject' => $nv_Lang->getModule('config_detail_other_subject'),
+    'singer' => $nv_Lang->getModule('config_detail_other_signer')
 ];
 $array_config['detail_other'] = !empty($array_config['detail_other']) ? unserialize($array_config['detail_other']) : [];
 

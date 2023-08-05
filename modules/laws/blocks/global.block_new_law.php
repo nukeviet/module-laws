@@ -23,55 +23,55 @@ if (!nv_function_exists('nv_law_block_newg')) {
     {
         $html = '';
         $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $lang_block['numrow'] . ':</label>';
+        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('numrow') . ':</label>';
         $html .= '<div class="col-sm-18"><input type="text" class="form-control" name="config_numrow" value="' . $data_block['numrow'] . '" /></div>';
         $html .= '</div>';
         $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $lang_block['title_length'] . ':</label>';
-        $html .= '<div class="col-sm-18"><input type="text" class="form-control" name="config_title_length" value="' . $data_block['title_length'] . '" /><span class="help-block">' . $lang_block['title_note'] . '</span></div>';
+        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('title_length') . ':</label>';
+        $html .= '<div class="col-sm-18"><input type="text" class="form-control" name="config_title_length" value="' . $data_block['title_length'] . '" /><span class="help-block">' . $nv_Lang->getModule('title_note') . '</span></div>';
         $html .= '</div>';
         $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $lang_block['show_code'] . ':</label>';
+        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('show_code') . ':</label>';
         $ck = $data_block['show_code'] ? 'checked="checked"' : '';
         $html .= '<div class="col-sm-18"><input type="checkbox" name="config_show_code" value="1" ' . $ck . ' /></div>';
         $html .= '</div>';
         $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $lang_block['direction'] . ':</label>';
+        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('direction') . ':</label>';
         $html .= '<div class="col-sm-18"><select name="config_direction" class="form-control">';
         $sl = $data_block['direction'] == 'none' ? 'selected="selected"' : '';
-        $html .= '<option value="none" ' . $sl . ' >' . $lang_block['direction_none'] . '</option>';
+        $html .= '<option value="none" ' . $sl . ' >' . $nv_Lang->getModule('direction_none') . '</option>';
         $sl = $data_block['direction'] == 'up' ? 'selected="selected"' : '';
-        $html .= '<option value="up" ' . $sl . ' >' . $lang_block['direction_up'] . '</option>';
+        $html .= '<option value="up" ' . $sl . ' >' . $nv_Lang->getModule('direction_up') . '</option>';
         $sl = $data_block['direction'] == 'down' ? 'selected="selected"' : '';
-        $html .= '<option value="down" ' . $sl . ' >' . $lang_block['direction_down'] . '</option>';
+        $html .= '<option value="down" ' . $sl . ' >' . $nv_Lang->getModule('direction_down') . '</option>';
         $html .= '</select></div>';
         $html .= '</div>';
         $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $lang_block['duration'] . ':</label>';
+        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('duration') . ':</label>';
         $html .= '<div class="col-sm-18"><input type="text" class="form-control" name="config_duration" value="' . $data_block['duration'] . '" /></div>';
         $html .= '</div>';
         $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $lang_block['pauseOnHover'] . ':</label>';
+        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('pauseOnHover') . ':</label>';
         $ck = $data_block['pauseOnHover'] ? 'checked="checked"' : '';
         $html .= '<div class="col-sm-18"><input type="checkbox" name="config_pauseOnHover" value="1" ' . $ck . ' /></div>';
         $html .= '</div>';
         $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $lang_block['duplicated'] . ':</label>';
+        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('duplicated') . ':</label>';
         $ck = $data_block['duplicated'] ? 'checked="checked"' : '';
         $html .= '<div class="col-sm-18"><input type="checkbox" name="config_duplicated" value="1" ' . $ck . ' /></div>';
         $html .= '</div>';
 
         $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $lang_block['order'] . ':</label>';
+        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('order') . ':</label>';
         $html .= '<div class="col-sm-18"><select name="config_order" class="form-control">';
         $sel = $data_block['order'] == '1' ? 'selected="selected"' : '';
-        $html .= '<option value="1" ' . $sel . ' >' . $lang_block['order_pub_new'] . '</option>';
+        $html .= '<option value="1" ' . $sel . ' >' . $nv_Lang->getModule('order_pub_new') . '</option>';
         $sel = $data_block['order'] == '2' ? 'selected="selected"' : '';
-        $html .= '<option value="2" ' . $sel . ' >' . $lang_block['order_pub_old'] . '</option>';
+        $html .= '<option value="2" ' . $sel . ' >' . $nv_Lang->getModule('order_pub_old') . '</option>';
         $sel = $data_block['order'] == '3' ? 'selected="selected"' : '';
-        $html .= '<option value="3" ' . $sel . ' >' . $lang_block['order_addtime_new'] . '</option>';
+        $html .= '<option value="3" ' . $sel . ' >' . $nv_Lang->getModule('order_addtime_new') . '</option>';
         $sel = $data_block['order'] == '4' ? 'selected="selected"' : '';
-        $html .= '<option value="4" ' . $sel . ' >' . $lang_block['order_addtime_old'] . '</option>';
+        $html .= '<option value="4" ' . $sel . ' >' . $nv_Lang->getModule('order_addtime_old') . '</option>';
         $html .= '</select></div>';
         $html .= '</div>';
         return $html;
@@ -109,7 +109,7 @@ if (!nv_function_exists('nv_law_block_newg')) {
      */
     function nv_law_block_newg($block_config)
     {
-        global $module_info, $lang_module, $global_config, $site_mods, $db, $my_head, $module_name, $nv_laws_listcat, $nv_Cache;
+        global $module_info, $global_config, $site_mods, $db, $my_head, $module_name, $nv_laws_listcat, $nv_Cache, $nv_Lang;
 
         $module = $block_config['module'];
         $data = $site_mods[$module]['module_data'];

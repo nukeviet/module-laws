@@ -43,7 +43,7 @@ while (list ($area_id) = $result->fetch(3)) {
 }
 
 if (!nv_user_in_groups($row['groups_view'])) {
-    nv_info_die($lang_module['info_no_allow'], $lang_module['info_no_allow'], $lang_module['info_no_allow_detail']);
+    nv_info_die($nv_Lang->getModule('info_no_allow'), $nv_Lang->getModule('info_no_allow'), $nv_Lang->getModule('info_no_allow_detail'));
 }
 
 if ($nv_Request->isset_request('download', 'get')) {
@@ -82,11 +82,11 @@ if ($nv_Request->isset_request('pdf', 'get')) {
     $row['files'] = explode(',', $row['files']);
 
     if (!isset($row['files'][$fileid])) {
-        nv_info_die($lang_global['error_404_title'], $lang_global['error_404_title'], $lang_global['error_404_content'], 404);
+        nv_info_die($nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_content'), 404);
     }
 
     if (!file_exists(NV_UPLOADS_REAL_DIR . '/' . $module_upload . '/' . $row['files'][$fileid])) {
-        nv_info_die($lang_global['error_404_title'], $lang_global['error_404_title'], $lang_global['error_404_content'], 404);
+        nv_info_die($nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_content'), 404);
     }
 
     $file_url = $base_url . '&' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $lawalias . '&download=1&id=' . $fileid;
@@ -160,12 +160,12 @@ if (!empty($row['files'])) {
     $row['files'] = [];
 
     foreach ($files as $id => $file) {
-        $file_title = (!preg_match("/^http*/", $file)) ? basename($file) : $lang_module['click_to_download'];
+        $file_title = (!preg_match("/^http*/", $file)) ? basename($file) : $nv_Lang->getModule('click_to_download');
         $row['files'][] = array(
             'title' => $file_title,
             'key' => md5($id . $file_title),
             'ext' => nv_getextension($file_title),
-            'titledown' => $lang_module['download'] . ' ' . (count($files) > 1 ? $id + 1 : ''),
+            'titledown' => $nv_Lang->getModule('download') . ' ' . (count($files) > 1 ? $id + 1 : ''),
             'url' => (!preg_match("/^http*/", $file)) ? $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $lawalias . '&amp;download=1&amp;id=' . $id : $file,
             'urlpdf' => $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $lawalias . '&amp;pdf=1&amp;id=' . $id
         );

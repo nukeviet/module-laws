@@ -10,7 +10,7 @@
 
 if (!defined('NV_IS_FILE_ADMIN')) die('Stop!!!');
 
-$page_title = $lang_module['examine'];
+$page_title = $nv_Lang->getModule('examine');
 
 $contents = "";
 $sList = nv_eList();
@@ -39,29 +39,29 @@ if ($nv_Request->isset_request('cWeight, id', 'post')) {
     $query = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_examine SET weight=" . $cWeight . " WHERE id=" . $id;
     $db->query($query);
     $nv_Cache->delMod($module_name);
-    nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['logChangesWeight'], "Id: " . $id, $admin_info['userid']);
+    nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('logChangesWeight'), "Id: " . $id, $admin_info['userid']);
     nv_htmlOutput('OK');
 }
 
 if ($nv_Request->isset_request('del', 'post')) {
     $id = $nv_Request->get_int('del', 'post', 0);
-    if (!isset($sList[$id])) die($lang_module['errorExamineNotExists']);
+    if (!isset($sList[$id])) die($nv_Lang->getModule('errorExamineNotExists'));
     $sql = "SELECT COUNT(*) as count FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE eid=" . $id;
     $result = $db->query($sql);
     $row = $result->fetch();
-    if ($row['count']) die($lang_module['errorExamineYesRow']);
+    if ($row['count']) die($nv_Lang->getModule('errorExamineYesRow'));
 
     $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_examine WHERE id = " . $id;
     $db->query($query);
     fix_examineWeight();
     $nv_Cache->delMod($module_name);
-    nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['logDelExamine'], "Id: " . $id, $admin_info['userid']);
+    nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('logDelExamine'), "Id: " . $id, $admin_info['userid']);
     nv_htmlOutput('OK');
 }
 
 $xtpl = new XTemplate($op . ".tpl", NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file);
-$xtpl->assign('LANG', $lang_module);
-$xtpl->assign('GLANG', $lang_global);
+$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 $xtpl->assign('NV_BASE_SITEURL', NV_BASE_SITEURL);
 $xtpl->assign('MODULE_URL', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE);
 
@@ -73,20 +73,20 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
             nv_redirect_location(NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=examine");
         }
 
-        $xtpl->assign('PTITLE', $lang_module['editExamine']);
+        $xtpl->assign('PTITLE', $nv_Lang->getModule('editExamine'));
         $xtpl->assign('ACTION_URL', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=examine&edit&id=" . $post['id']);
-        $log_title = $lang_module['editExamine'];
+        $log_title = $nv_Lang->getModule('editExamine');
     } else {
-        $xtpl->assign('PTITLE', $lang_module['addExamine']);
+        $xtpl->assign('PTITLE', $nv_Lang->getModule('addExamine'));
         $xtpl->assign('ACTION_URL', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=examine&add");
-        $log_title = $lang_module['addExamine'];
+        $log_title = $nv_Lang->getModule('addExamine');
     }
 
     if ($nv_Request->isset_request('save', 'post')) {
         $post['title'] = $nv_Request->get_title('title', 'post', '', 1);
 
         if (empty($post['title'])) {
-            die($lang_module['errorIsEmpty'] . ": " . $lang_module['title']);
+            die($nv_Lang->getModule('errorIsEmpty') . ": " . $nv_Lang->getModule('title'));
         }
 
         $_sList = $sList;

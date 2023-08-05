@@ -22,7 +22,7 @@ $eList = nv_eList();
 $sgList = nv_sgList();
 
 if (!defined('NV_IS_ADMIN_MODULE') and (empty($sList) or empty($allowed_area_view))) {
-    $contents = nv_theme_alert($lang_module['info'], $lang_module['info_no_permission']);
+    $contents = nv_theme_alert($nv_Lang->getModule('info'), $nv_Lang->getModule('info_no_permission'));
     include NV_ROOTDIR . '/includes/header.php';
     echo nv_admin_theme($contents);
     include NV_ROOTDIR . '/includes/footer.php';
@@ -128,7 +128,7 @@ if ($nv_Request->isset_request('del', 'post')) {
     nv_htmlOutput('OK');
 }
 
-$page_title = $lang_module['main'];
+$page_title = $nv_Lang->getModule('main');
 
 $per_page = 20;
 $page = $nv_Request->get_int('page', 'get', 1);
@@ -240,26 +240,26 @@ if (!empty($where)) {
 $num_items = $db->query($db->sql())->fetchColumn();
 if (empty($num_items) and !$is_search and $page = 1) {
     if (empty($catList)) {
-        $type = $lang_module['cat'];
+        $type = $nv_Lang->getModule('cat');
         $href = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=cat&add';
     } elseif (empty($aList)) {
-        $type = $lang_module['area'];
+        $type = $nv_Lang->getModule('area');
         $href = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=area&add';
     } elseif (empty($sList)) {
-        $type = $lang_module['subject'];
+        $type = $nv_Lang->getModule('subject');
         $href = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=subject&add';
     } elseif (empty($eList) and defined('ACTIVE_COMMENTS')) {
-        $type = $lang_module['examine'];
+        $type = $nv_Lang->getModule('examine');
         $href = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=examine&add';
     } elseif (empty($sgList)) {
-        $type = $lang_module['signer'];
+        $type = $nv_Lang->getModule('signer');
         $href = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=signer&add';
     } else {
         nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=content');
     }
 
-    $message_content = $lang_module['msg1'] . ' ' . $type . ' ' . $lang_module['msg2'] . '. ' . $lang_module['msg5'];
-    $contents = nv_theme_alert($lang_module['info'], $message_content, 'info', $href, $lang_module['msg3'] . ' ' . $lang_module['msg4']);
+    $message_content = $nv_Lang->getModule('msg1') . ' ' . $type . ' ' . $nv_Lang->getModule('msg2') . '. ' . $nv_Lang->getModule('msg5');
+    $contents = nv_theme_alert($nv_Lang->getModule('info'), $message_content, 'info', $href, $nv_Lang->getModule('msg3') . ' ' . $nv_Lang->getModule('msg4'));
     include NV_ROOTDIR . '/includes/header.php';
     echo nv_admin_theme($contents);
     include NV_ROOTDIR . '/includes/footer.php';
@@ -299,8 +299,8 @@ if (!empty($array_userids)) {
 }
 
 $xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', $lang_module);
-$xtpl->assign('GLANG', $lang_global);
+$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 $xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
 $xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
 $xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
@@ -321,7 +321,7 @@ foreach ($array as $row) {
     $row['link'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $row['alias'];
     $row['url_edit'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=content&amp;id=' . $row['id'];
     $row['status_render'] = $row['status'] ? ' checked="checked"' : '';
-    $row['status_text'] = $row['status'] ? $lang_module['status1'] : $lang_module['status0'];
+    $row['status_text'] = $row['status'] ? $nv_Lang->getModule('status1') : $nv_Lang->getModule('status0');
     $row['admin_add'] = isset($array_users[$row['admin_add']]) ? $array_users[$row['admin_add']]['show_name'] : ('#' . $row['admin_add']);
     $row['area_ids'] = empty($row['area_ids']) ? [] : explode(',', $row['area_ids']);
 

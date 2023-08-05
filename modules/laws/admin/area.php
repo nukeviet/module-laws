@@ -12,7 +12,7 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     die('Stop!!!');
 }
 
-$page_title = $lang_module['area'];
+$page_title = $nv_Lang->getModule('area');
 
 if ($nv_Request->isset_request('get_alias_title', 'post')) {
     $alias = $nv_Request->get_title('get_alias_title', 'post', '');
@@ -47,7 +47,7 @@ if ($nv_Request->isset_request('cWeight, id', 'post')) {
     $db->query($query);
     fix_aWeight();
     $nv_Cache->delMod($module_name);
-    nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['logChangeaWeight'], "Id: " . $id, $admin_info['userid']);
+    nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('logChangeaWeight'), "Id: " . $id, $admin_info['userid']);
     nv_htmlOutput('OK');
 }
 
@@ -81,7 +81,7 @@ if ($nv_Request->isset_request('del', 'post')) {
             continue;
         }
 
-        nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['logDelArea'], "Id: " . $id, $admin_info['userid']);
+        nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('logDelArea'), "Id: " . $id, $admin_info['userid']);
 
         $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_area WHERE id = " . $id;
         $db->query($query);
@@ -91,21 +91,21 @@ if ($nv_Request->isset_request('del', 'post')) {
 
     if (sizeof($listid) == 1) {
         if ($check_sub > 0) {
-            nv_htmlOutput($lang_module['errorAreaYesSub']);
+            nv_htmlOutput($nv_Lang->getModule('errorAreaYesSub'));
         }
         if ($check_row > 0) {
-            nv_htmlOutput($lang_module['errorAreaYesRow']);
+            nv_htmlOutput($nv_Lang->getModule('errorAreaYesRow'));
         }
     } else {
         $error = [];
         if ($check_sub > 0) {
-            $error[] = $lang_module['errorAreaYesSub1'];
+            $error[] = $nv_Lang->getModule('errorAreaYesSub1');
         }
         if ($check_row > 0) {
-            $error[] = $lang_module['errorAreaYesRow1'];
+            $error[] = $nv_Lang->getModule('errorAreaYesRow1');
         }
         if (!empty($error)) {
-            $error[] = $lang_module['errorAreaDeleteList'];
+            $error[] = $nv_Lang->getModule('errorAreaDeleteList');
             nv_htmlOutput(implode("\n", $error));
         }
     }
@@ -113,8 +113,8 @@ if ($nv_Request->isset_request('del', 'post')) {
 }
 
 $xtpl = new XTemplate($op . ".tpl", NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file);
-$xtpl->assign('LANG', $lang_module);
-$xtpl->assign('GLANG', $lang_global);
+$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 $xtpl->assign('NV_BASE_SITEURL', NV_BASE_SITEURL);
 $xtpl->assign('MODULE_URL', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE);
 
@@ -126,14 +126,14 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
             nv_redirect_location(NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=area");
         }
 
-        $xtpl->assign('PTITLE', $lang_module['editArea']);
+        $xtpl->assign('PTITLE', $nv_Lang->getModule('editArea'));
         $xtpl->assign('ACTION_URL', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=area&edit&id=" . $post['id']);
-        $log_title = $lang_module['editArea'];
+        $log_title = $nv_Lang->getModule('editArea');
     } else {
         $post['id'] = 0;
-        $xtpl->assign('PTITLE', $lang_module['addArea']);
+        $xtpl->assign('PTITLE', $nv_Lang->getModule('addArea'));
         $xtpl->assign('ACTION_URL', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=area&add");
-        $log_title = $lang_module['addArea'];
+        $log_title = $nv_Lang->getModule('addArea');
     }
 
     if ($nv_Request->isset_request('save', 'post')) {
@@ -165,7 +165,7 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
         }
 
         if (empty($post['title'])) {
-            die($lang_module['errorIsEmpty'] . ": " . $lang_module['title']);
+            die($nv_Lang->getModule('errorIsEmpty') . ": " . $nv_Lang->getModule('title'));
         }
 
         $_aList = $aList;

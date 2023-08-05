@@ -25,10 +25,10 @@ if (!function_exists('nv_laws_block_cat')) {
     {
         $html = '';
         $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $lang_block['title_length'] . ':</label>';
+        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('title_length') . ':</label>';
         $html .= '<div class="col-sm-9">';
         $html .= "<select name=\"config_title_length\" class=\"form-control\">\n";
-        $html .= "<option value=\"\">" . $lang_block['title_length'] . "</option>\n";
+        $html .= "<option value=\"\">" . $nv_Lang->getModule('title_length') . "</option>\n";
         for ($i = 0; $i < 100; ++$i) {
             $html .= "<option value=\"" . $i . "\" " . (($data_block['title_length'] == $i) ? " selected=\"selected\"" : "") . ">" . $i . "</option>\n";
         }
@@ -64,7 +64,7 @@ if (!function_exists('nv_laws_block_cat')) {
      */
     function nv_laws_block_cat($block_config)
     {
-        global $lang_module, $module_info, $global_config, $site_mods, $nv_laws_listcat, $module_name;
+        global $module_info, $global_config, $site_mods, $nv_laws_listcat, $module_name, $nv_Lang;
 
         $module = $block_config['module'];
         $mod_data = $site_mods[$module]['module_data'];

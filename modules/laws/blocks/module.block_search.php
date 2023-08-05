@@ -23,7 +23,7 @@ if (!function_exists('nv_law_block_search')) {
     {
         $html = '';
         $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $lang_block['style'] . ':</label>';
+        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('style') . ':</label>';
         $html .= ' <div class="col-sm-9">';
         $html .= "<select name=\"config_style\" class=\"form-control\">\n";
         $sel = $data_block['style'] == 'center' ? 'selected="selected"' : '';
@@ -34,10 +34,10 @@ if (!function_exists('nv_law_block_search')) {
         $html .= '</div>';
         $html .= '</div>';
         $html .= '<div class="form-group">';
-        $html .= '<label class="control-label col-sm-6">' . $lang_block['search_advance'] . ':</label>';
+        $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('search_advance') . ':</label>';
         $html .= '<div class="col-sm-18">';
         $ck = (isset($data_block['search_advance']) and $data_block['search_advance']) ? 'checked="checked"' : '';
-        $html .= " <label><input type=\"checkbox\" name=\"config_search_advance\" value=\"1\" " . $ck . ">" . $lang_block['search_advance_note'] . "</label>\n";
+        $html .= " <label><input type=\"checkbox\" name=\"config_search_advance\" value=\"1\" " . $ck . ">" . $nv_Lang->getModule('search_advance_note') . "</label>\n";
         $html .= '</div>';
         $html .= '</div>';
 
@@ -70,7 +70,7 @@ if (!function_exists('nv_law_block_search')) {
      */
     function nv_law_block_search($block_config)
     {
-        global $my_head, $db, $lang_module, $site_mods, $global_config, $module_info, $module_file, $nv_laws_listsubject, $nv_laws_listarea, $nv_laws_listcat, $module_name, $module_config, $nv_Request, $module_data, $nv_Cache;
+        global $my_head, $db, $site_mods, $global_config, $module_info, $module_file, $nv_laws_listsubject, $nv_laws_listarea, $nv_laws_listcat, $module_name, $module_config, $nv_Request, $module_data, $nv_Cache, $nv_Lang;
 
         $module = $block_config['module'];
         $module_data = $site_mods[$module]['module_data'];
@@ -85,7 +85,7 @@ if (!function_exists('nv_law_block_search')) {
         }
 
         $xtpl = new XTemplate($block_file_name, NV_ROOTDIR . "/themes/" . $block_theme . "/modules/" . $module_info['module_theme']);
-        $xtpl->assign('LANG', $lang_module);
+        $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
         $xtpl->assign('NV_BASE_SITEURL', NV_BASE_SITEURL);
         $xtpl->assign('TEMPLATE', $module_info['template']);
         $xtpl->assign('MODULE_FILE', $module_file);
@@ -123,7 +123,7 @@ if (!function_exists('nv_law_block_search')) {
         $_nv_laws_listarea = array(
             0 => array(
                 "id" => 0,
-                "name" => $lang_module['search_area'],
+                "name" => $nv_Lang->getModule('search_area'),
                 "alias" => ""
             )
         ) + $nv_laws_listarea;
@@ -142,7 +142,7 @@ if (!function_exists('nv_law_block_search')) {
         $nv_laws_listcat = array(
             0 => array(
                 "id" => 0,
-                "name" => $lang_module['search_cat'],
+                "name" => $nv_Lang->getModule('search_cat'),
                 "alias" => ""
             )
         ) + $nv_laws_listcat;
@@ -160,7 +160,7 @@ if (!function_exists('nv_law_block_search')) {
             $_nv_laws_listsubject = array(
                 0 => array(
                     "id" => 0,
-                    "title" => $lang_module['search_subject'],
+                    "title" => $nv_Lang->getModule('search_subject'),
                     "alias" => ""
                 )
             ) + $nv_laws_listsubject;
@@ -176,24 +176,24 @@ if (!function_exists('nv_law_block_search')) {
 
         $nv_list_status = array();
         $arr_approval = array(
-            2 => $lang_module['s_app_status_all'],
-            0 => $lang_module['e0'],
-            1 => $lang_module['e1']
+            2 => $nv_Lang->getModule('s_app_status_all'),
+            0 => $nv_Lang->getModule('e0'),
+            1 => $nv_Lang->getModule('e1')
         );
 
         $nv_list_status[] = array(
             "id" => 0,
-            "title" => $lang_module['s_status_all'],
+            "title" => $nv_Lang->getModule('s_status_all'),
             "selected" => ""
         );
         $nv_list_status[] = array(
             "id" => 1,
-            "title" => $lang_module['s_status_1'],
+            "title" => $nv_Lang->getModule('s_status_1'),
             "selected" => 1 == $sstatus ? " selected=\"selected\"" : ""
         );
         $nv_list_status[] = array(
             "id" => 2,
-            "title" => $lang_module['s_status_2'],
+            "title" => $nv_Lang->getModule('s_status_2'),
             "selected" => 2 == $sstatus ? " selected=\"selected\"" : ""
         );
         if ($module_config[$module_name]['activecomm']) {
@@ -236,7 +236,7 @@ if (!function_exists('nv_law_block_search')) {
         $list = array(
             0 => array(
                 "id" => 0,
-                "title" => $lang_module['s_signer_all'],
+                "title" => $nv_Lang->getModule('s_signer_all'),
                 "alias" => ""
             )
         ) + $nv_Cache->db($sql, 'id', $module_name);
@@ -252,16 +252,16 @@ if (!function_exists('nv_law_block_search')) {
         $block_config['search_advance'] = !isset($block_config['search_advance']) ? 0 : $block_config['search_advance'];
         if ($block_config['search_advance']) {
             if (!$is_advance) {
-                $xtpl->assign('LANG_ADVANCE', $lang_module['search_advance']);
+                $xtpl->assign('LANG_ADVANCE', $nv_Lang->getModule('search_advance'));
                 $xtpl->assign('IS_ADVANCE', 0);
                 $xtpl->parse('main.is_advance');
                 $xtpl->parse('main.is_advance_btn.is_advance_class');
             } else {
-                $xtpl->assign('LANG_ADVANCE', $lang_module['search_simple']);
+                $xtpl->assign('LANG_ADVANCE', $nv_Lang->getModule('search_simple'));
             }
             $xtpl->parse('main.is_advance_btn');
         } else {
-            $xtpl->assign('LANG_ADVANCE', $lang_module['search_simple']);
+            $xtpl->assign('LANG_ADVANCE', $nv_Lang->getModule('search_simple'));
             $xtpl->assign('IS_ADVANCE', 1);
         }
 

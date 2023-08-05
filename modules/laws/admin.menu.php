@@ -78,16 +78,16 @@ if (defined('NV_IS_SPADMIN')) {
 }
 
 if ($NV_IS_ADMIN_MODULE) {
-    $submenu['signer'] = $lang_module['signer'];
-    $submenu['area'] = $lang_module['area'];
-    $submenu['cat'] = $lang_module['cat'];
-    $submenu['subject'] = $lang_module['subject'];
+    $submenu['signer'] = $nv_Lang->getModule('signer');
+    $submenu['area'] = $nv_Lang->getModule('area');
+    $submenu['cat'] = $nv_Lang->getModule('cat');
+    $submenu['subject'] = $nv_Lang->getModule('subject');
 }
 
 if ($NV_IS_ADMIN_FULL_MODULE) {
-    $submenu['admins'] = $lang_module['admins'];
-    $submenu['config'] = $lang_module['config'];
+    $submenu['admins'] = $nv_Lang->getModule('admins');
+    $submenu['config'] = $nv_Lang->getModule('config');
 }
 if ($module_config[$module_name]['activecomm'] and $NV_IS_ADMIN_MODULE) {
-    $submenu['examine'] = $lang_module['examine'];
+    $submenu['examine'] = $nv_Lang->getModule('examine');
 }

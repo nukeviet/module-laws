@@ -23,17 +23,17 @@ if (!defined('NV_IS_MOD_LAWS')) {
  */
 function nv_theme_laws_list($array_data, $generate_page = '', $show_header = true, $show_stt = true)
 {
-    global $lang_module, $lang_global, $module_info, $nv_laws_setting, $module_name, $module_config;
+    global $module_info, $nv_laws_setting, $module_name, $module_config, $nv_Lang;
 
     $xtpl = new XTemplate('list.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
-    $xtpl->assign('LANG', $lang_module);
-    $xtpl->assign('GLANG', $lang_global);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 
     foreach ($array_data as $row) {
         $row['url_subject'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=subject/' . $row['alias'];
         $row['publtime'] = $row['publtime'] ? nv_date('d/m/Y', $row['publtime']) : 'N/A';
         $row['exptime'] = $row['exptime'] ? nv_date('d/m/Y', $row['exptime']) : 'N/A';
-        $row['number_comm'] = $row['number_comm'] ? sprintf($lang_module['number_comm'], number_format($row['number_comm'], 0, ',', '.')) : '';
+        $row['number_comm'] = $row['number_comm'] ? sprintf($nv_Lang->getModule('number_comm'), number_format($row['number_comm'], 0, ',', '.')) : '';
 
         $xtpl->assign('ROW', $row);
 
@@ -76,10 +76,10 @@ function nv_theme_laws_list($array_data, $generate_page = '', $show_header = tru
         if ($module_config[$module_name]['activecomm']) {
             $comment_time = [];
             if (!empty($row['start_comm_time'])) {
-                $comment_time[] = sprintf($lang_module['start_comm_time'], nv_date('d/m/Y', $row['start_comm_time']));
+                $comment_time[] = sprintf($nv_Lang->getModule('start_comm_time'), nv_date('d/m/Y', $row['start_comm_time']));
             }
             if (!empty($row['end_comm_time'])) {
-                $comment_time[] = sprintf($lang_module['end_comm_time'], nv_date('d/m/Y', $row['end_comm_time']));
+                $comment_time[] = sprintf($nv_Lang->getModule('end_comm_time'), nv_date('d/m/Y', $row['end_comm_time']));
             }
             if (!empty($comment_time)) {
                 $xtpl->assign('COMMENT_TIME', implode(' - ', $comment_time));
@@ -148,11 +148,11 @@ function nv_theme_laws_list($array_data, $generate_page = '', $show_header = tru
  */
 function nv_theme_laws_main($array_data, $generate_page)
 {
-    global $lang_module, $lang_global, $module_info;
+    global $module_info, $nv_Lang;
 
     $xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
-    $xtpl->assign('LANG', $lang_module);
-    $xtpl->assign('GLANG', $lang_global);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
     $xtpl->assign('HTML', nv_theme_laws_list($array_data, $generate_page));
     $xtpl->parse('main');
     return $xtpl->text('main');
@@ -167,14 +167,14 @@ function nv_theme_laws_main($array_data, $generate_page)
  */
 function nv_theme_laws_maincat($mod, $array_data)
 {
-    global $global_config, $module_name, $module_config, $lang_module, $module_info, $op, $nv_laws_setting;
+    global $global_config, $module_name, $module_config, $module_info, $op, $nv_laws_setting, $nv_Lang;
 
     $xtpl = new XTemplate('main_' . $mod . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
-    $xtpl->assign('LANG', $lang_module);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     
     foreach ($array_data as $data) {
         $data['url_subject'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=subject/' . $data['alias'];
-        $data['numcount'] = sprintf($lang_module['s_result_num'], $data['numcount']);
+        $data['numcount'] = sprintf($nv_Lang->getModule('s_result_num'), $data['numcount']);
 
         $xtpl->assign('DATA', $data);
 
@@ -212,17 +212,17 @@ function nv_theme_laws_maincat($mod, $array_data)
  */
 function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = array(), $other_subject = array(), $other_signer = array(), $content_comment)
 {
-    global $global_config, $module_name, $module_config, $lang_module, $module_info, $op, $nv_laws_listcat, $nv_laws_listarea, $nv_laws_listsubject, $client_info, $nv_laws_setting;
+    global $global_config, $module_name, $module_config, $module_info, $op, $nv_laws_listcat, $nv_laws_listarea, $nv_laws_listsubject, $client_info, $nv_laws_setting, $nv_Lang;
 
     $xtpl = new XTemplate($module_info['funcs'][$op]['func_name'] . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
-    $xtpl->assign('LANG', $lang_module);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
 
     $array_data['publtime'] = $array_data['publtime'] ? nv_date('d/m/Y', $array_data['publtime']) : '';
     $array_data['startvalid'] = $array_data['startvalid'] ? nv_date('d/m/Y', $array_data['startvalid']) : '';
     $array_data['exptime'] = $array_data['exptime'] ? nv_date('d/m/Y', $array_data['exptime']) : '';
-    $array_data['start_comm_time'] = $array_data['start_comm_time'] ? nv_date('d/m/Y', $array_data['start_comm_time']) : $lang_module['unlimit'];
-    $array_data['end_comm_time'] = $array_data['end_comm_time'] ? nv_date('d/m/Y', $array_data['end_comm_time']) : $lang_module['unlimit'];
-    $array_data['approval'] = $array_data['approval'] == 1 ? $lang_module['e1'] : $lang_module['e0'];
+    $array_data['start_comm_time'] = $array_data['start_comm_time'] ? nv_date('d/m/Y', $array_data['start_comm_time']) : $nv_Lang->getModule('unlimit');
+    $array_data['end_comm_time'] = $array_data['end_comm_time'] ? nv_date('d/m/Y', $array_data['end_comm_time']) : $nv_Lang->getModule('unlimit');
+    $array_data['approval'] = $array_data['approval'] == 1 ? $nv_Lang->getModule('e1') : $nv_Lang->getModule('e0');
     if (isset($nv_laws_listcat[$array_data['cid']])) {
         $array_data['cat'] = $nv_laws_listcat[$array_data['cid']]['title'];
         $array_data['cat_url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $nv_laws_listcat[$array_data['cid']]['alias'];
@@ -422,11 +422,11 @@ function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = a
  */
 function nv_theme_laws_search($array_data, $generate_page, $all_page)
 {
-    global $global_config, $module_name, $lang_module, $module_info, $op;
+    global $global_config, $module_name, $module_info, $op, $nv_Lang;
 
     $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
-    $xtpl->assign('LANG', $lang_module);
-    $xtpl->assign('NUMRESULT', sprintf($lang_module['s_result_num'], $all_page));
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+    $xtpl->assign('NUMRESULT', sprintf($nv_Lang->getModule('s_result_num'), $all_page));
 
     if (empty($array_data)) {
         $xtpl->parse('empty');
@@ -449,10 +449,10 @@ function nv_theme_laws_search($array_data, $generate_page, $all_page)
  */
 function nv_theme_laws_area($array_data, $generate_page, $cat)
 {
-    global $global_config, $module_name, $lang_module, $module_info, $op, $nv_laws_setting;
+    global $global_config, $module_name, $module_info, $op, $nv_laws_setting, $nv_Lang;
 
     $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
-    $xtpl->assign('LANG', $lang_module);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     $xtpl->assign('CAT', $cat);
     $xtpl->assign('HTML', nv_theme_laws_list($array_data, $generate_page));
 
@@ -470,10 +470,10 @@ function nv_theme_laws_area($array_data, $generate_page, $cat)
  */
 function nv_theme_laws_cat($array_data, $generate_page, $cat)
 {
-    global $global_config, $module_name, $lang_module, $module_info, $op;
+    global $global_config, $module_name, $module_info, $op, $nv_Lang;
 
     $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
-    $xtpl->assign('LANG', $lang_module);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     $xtpl->assign('CAT', $cat);
     $xtpl->assign('HTML', nv_theme_laws_list($array_data, $generate_page));
 
@@ -491,10 +491,10 @@ function nv_theme_laws_cat($array_data, $generate_page, $cat)
  */
 function nv_theme_laws_subject($array_data, $generate_page, $cat)
 {
-    global $global_config, $module_name, $nv_laws_setting, $lang_module, $module_info, $op;
+    global $global_config, $module_name, $nv_laws_setting, $module_info, $op, $nv_Lang;
 
     $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
-    $xtpl->assign('LANG', $lang_module);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     $xtpl->assign('CAT', $cat);
     $xtpl->assign('HTML', nv_theme_laws_list($array_data, $generate_page));
 
@@ -512,10 +512,10 @@ function nv_theme_laws_subject($array_data, $generate_page, $cat)
  */
 function nv_theme_laws_signer($array_data, $generate_page, $cat)
 {
-    global $global_config, $module_name, $lang_module, $module_info, $op, $nv_laws_setting;
+    global $global_config, $module_name, $module_info, $op, $nv_laws_setting, $nv_Lang;
 
     $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
-    $xtpl->assign('LANG', $lang_module);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     $xtpl->assign('CAT', $cat);
     $xtpl->assign('HTML', nv_theme_laws_list($array_data, $generate_page));
 
@@ -531,10 +531,10 @@ function nv_theme_laws_signer($array_data, $generate_page, $cat)
  */
 function nv_theme_laws_list_other($array_data)
 {
-    global $global_config, $module_name, $lang_module, $module_info, $op, $nv_laws_setting, $module_config, $site_mods;
+    global $global_config, $module_name, $module_info, $op, $nv_laws_setting, $module_config, $site_mods, $nv_Lang;
 
     $xtpl = new XTemplate('list_other.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
-    $xtpl->assign('LANG', $lang_module);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
 
     foreach ($array_data as $row) {
         $row['publtime'] = $row['publtime'] ? nv_date('d/m/Y', $row['publtime']) : 'N/A';
@@ -542,10 +542,10 @@ function nv_theme_laws_list_other($array_data)
 
         $row['comm_time'] = [];
         if (!empty($row['start_comm_time'])) {
-            $row['comm_time'][] = sprintf($lang_module['start_comm_time'], nv_date('d/m/Y', $row['start_comm_time']));
+            $row['comm_time'][] = sprintf($nv_Lang->getModule('start_comm_time'), nv_date('d/m/Y', $row['start_comm_time']));
         }
         if (!empty($row['end_comm_time'])) {
-            $row['comm_time'][] = sprintf($lang_module['end_comm_time'], nv_date('d/m/Y', $row['end_comm_time']));
+            $row['comm_time'][] = sprintf($nv_Lang->getModule('end_comm_time'), nv_date('d/m/Y', $row['end_comm_time']));
         }
         $row['comm_time'] = implode(' - ', $row['comm_time']);
 
@@ -590,10 +590,10 @@ function nv_theme_laws_list_other($array_data)
  */
 function nv_theme_viewpdf($file_url)
 {
-    global $lang_module, $lang_global;
+    global $nv_Lang;
     $xtpl = new XTemplate('viewer.tpl', NV_ROOTDIR . '/' . NV_ASSETS_DIR . '/js/pdf.js');
-    $xtpl->assign('LANG', $lang_module);
-    $xtpl->assign('GLANG', $lang_global);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+    $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
     $xtpl->assign('PDF_JS_DIR', NV_STATIC_URL . NV_ASSETS_DIR . '/js/pdf.js/');
     $xtpl->assign('PDF_URL', nv_url_rewrite(str_replace('&amp;', '&', $file_url), true));
     $xtpl->parse('main');

@@ -49,7 +49,7 @@ if ($post['id'] > 0) {
     $row['area_id_old'] = $row['area_id'] = $row['area_ids'];
     $post = $row;
 
-    $post['ptitle'] = $lang_module['editRow'];
+    $post['ptitle'] = $nv_Lang->getModule('editRow');
     $post['action_url'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=content&amp;id=" . $post['id'];
 } else {
     // Kiểm tra quyền thêm văn bản
@@ -72,7 +72,7 @@ if ($post['id'] > 0) {
     $post['startvalid'] = 0;
     $post['approval'] = 0;
 
-    $post['ptitle'] = $lang_module['addRow'];
+    $post['ptitle'] = $nv_Lang->getModule('addRow');
     $post['action_url'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=content";
 }
 
@@ -81,12 +81,12 @@ $page_title = $post['ptitle'];
 if ($nv_Request->isset_request('save', 'post')) {
     $post['title'] = nv_substr($nv_Request->get_title('title', 'post', ''), 0, 250);
     if (empty($post['title'])) {
-        $error[] = $lang_module['errorIsEmpty'] . ": " . $lang_module['title'];
+        $error[] = $nv_Lang->getModule('errorIsEmpty') . ": " . $nv_Lang->getModule('title');
     }
 
     $post['cid'] = $nv_Request->get_int('cid', 'post', 0);
     if (!isset($catList[$post['cid']])) {
-        $error[] = $lang_module['erroNotSelectCat'];
+        $error[] = $nv_Lang->getModule('erroNotSelectCat');
     }
 
     $post['area_id'] = $nv_Request->get_typed_array('aid', 'post', 'int', []);
@@ -109,19 +109,19 @@ if ($nv_Request->isset_request('save', 'post')) {
     }
 
     if (empty($post['area_id'])) {
-        $error[] = $lang_module['erroNotSelectArea'];
+        $error[] = $nv_Lang->getModule('erroNotSelectArea');
     }
 
     $post['sid'] = $nv_Request->get_int('sid', 'post', 0);
     if (!isset($sList[$post['sid']])) {
-        $error[] = $lang_module['erroNotSelectSubject'];
+        $error[] = $nv_Lang->getModule('erroNotSelectSubject');
     }
 
     $post['eid'] = $nv_Request->get_int('eid', 'post', 0);
     $post['introtext'] = $nv_Request->get_title('introtext', 'post', '', 1);
     $post['introtext'] = nv_nl2br($post['introtext'], "<br />");
     if (empty($post['introtext'])) {
-        $error[] = $lang_module['errorIsEmpty'] . ": " . $lang_module['introtext'];
+        $error[] = $nv_Lang->getModule('errorIsEmpty') . ": " . $nv_Lang->getModule('introtext');
     }
 
     $post['note'] = $nv_Request->get_title('note', 'post', '', 1);
@@ -142,7 +142,7 @@ if ($nv_Request->isset_request('save', 'post')) {
             $count = $result->fetchColumn();
 
             if ($count != 1) {
-                $error_sub[] = sprintf($lang_module['replacementError'], $replacement);
+                $error_sub[] = sprintf($nv_Lang->getModule('replacementError'), $replacement);
             }
         }
 
@@ -168,7 +168,7 @@ if ($nv_Request->isset_request('save', 'post')) {
             $count = $result->fetchColumn();
 
             if ($count != 1) {
-                $error_sub[] = sprintf($lang_module['relatementError'], $relatement);
+                $error_sub[] = sprintf($nv_Lang->getModule('relatementError'), $relatement);
             }
         }
 
@@ -223,7 +223,7 @@ if ($nv_Request->isset_request('save', 'post')) {
         $post['publtime'] = 0;
     }
     if (empty($post['publtime']) && !defined('ACTIVE_COMMENTS')) {
-        $error[] = $lang_module['erroNotSelectPubtime'];
+        $error[] = $nv_Lang->getModule('erroNotSelectPubtime');
     }
 
     $post['exptime'] = $nv_Request->get_title('exptime', 'post', '');
@@ -260,9 +260,9 @@ if ($nv_Request->isset_request('save', 'post')) {
     if (!defined('ACTIVE_COMMENTS')) {
         if ($post['startvalid'] > 0) {
             if ($post['startvalid'] < $post['publtime']) {
-                $error[] = $lang_module['erroStartvalid'];
+                $error[] = $nv_Lang->getModule('erroStartvalid');
             } elseif ($post['exptime'] > 0 && ($post['exptime'] <= $post['publtime'] || $post['exptime'] <= $post['startvalid'])) {
-                $error[] = $lang_module['erroExptime'];
+                $error[] = $nv_Lang->getModule('erroExptime');
             }
         }
     }
@@ -326,7 +326,7 @@ if ($nv_Request->isset_request('save', 'post')) {
             // Cap nhat lai so luong van ban o chu de
             $db->query('UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_subject SET numcount=(SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $post['sid'] . ' AND status=1) WHERE id=' . $post['sid']);
 
-            nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['editRow'], "Id: " . $post['id'], $admin_info['userid']);
+            nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('editRow'), "Id: " . $post['id'], $admin_info['userid']);
         } else {
             $query = "INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_row (
                 replacement, relatement, title, alias, code, area_ids, cid, sid, eid, sgid,
@@ -381,7 +381,7 @@ if ($nv_Request->isset_request('save', 'post')) {
                     SELECT COUNT(*) FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $post['sid'] . ' AND status=1
                 ) WHERE id=' . $post['sid']);
 
-                nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['addRow'], "Id: " . $_id, $admin_info['userid']);
+                nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('addRow'), "Id: " . $_id, $admin_info['userid']);
             }
         }
 
@@ -408,8 +408,8 @@ if ($nv_Request->isset_request('save', 'post')) {
 }
 
 $xtpl = new XTemplate('content.tpl', NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file);
-$xtpl->assign('LANG', $lang_module);
-$xtpl->assign('GLANG', $lang_global);
+$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 $xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
 $xtpl->assign('NV_BASE_SITEURL', NV_BASE_SITEURL);
 $xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);

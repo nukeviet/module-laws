@@ -14,7 +14,7 @@ if (!function_exists('nv_law_block_10area')) {
 
     function nv_law_block_10area()
     {
-        global $lang_module, $module_info, $module_file, $global_config, $nv_laws_listarea, $module_name, $db, $module_data;
+        global $module_info, $module_file, $global_config, $nv_laws_listarea, $module_name, $db, $module_data, $nv_Lang;
         
         if (file_exists(NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file . '/block_top10_area.tpl')) {
             $block_theme = $global_config['module_theme'];
@@ -23,7 +23,7 @@ if (!function_exists('nv_law_block_10area')) {
         }
         
         $xtpl = new XTemplate("block_top10_area.tpl", NV_ROOTDIR . "/themes/" . $block_theme . "/modules/" . $module_file);
-        $xtpl->assign('LANG', $lang_module);
+        $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
         $xtpl->assign('NV_BASE_SITEURL', NV_BASE_SITEURL);
         $xtpl->assign('TEMPLATE', $block_theme);
         $xtpl->assign('MODULE_FILE', $module_file);
@@ -65,7 +65,7 @@ if (!function_exists('nv_law_block_10area')) {
         $result = $db->query($sql);
         $num = $result->fetchColumn();
         
-        $xtpl->assign('INFO_NUM', sprintf($lang_module['info_num'], $num));
+        $xtpl->assign('INFO_NUM', sprintf($nv_Lang->getModule('info_num'), $num));
         
         $xtpl->parse('main');
         return $xtpl->text('main');

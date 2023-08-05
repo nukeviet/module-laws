@@ -10,7 +10,7 @@
 
 if (!defined('NV_IS_FILE_ADMIN')) die('Stop!!!');
 
-$page_title = $lang_module['subject'];
+$page_title = $nv_Lang->getModule('subject');
 
 if ($nv_Request->isset_request('get_alias_title', 'post')) {
     $alias = $nv_Request->get_title('get_alias_title', 'post', '');
@@ -45,7 +45,7 @@ if ($nv_Request->isset_request('cWeight, id', 'post')) {
     $query = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_subject SET weight=" . $cWeight . " WHERE id=" . $id;
     $db->query($query);
     $nv_Cache->delMod($module_name);
-    nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['logChangesWeight'], "Id: " . $id, $admin_info['userid']);
+    nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('logChangesWeight'), "Id: " . $id, $admin_info['userid']);
     nv_htmlOutput('OK');
 }
 
@@ -72,7 +72,7 @@ if ($nv_Request->isset_request('del', 'post')) {
             continue;
         }
 
-        nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['logDelSubject'], "Id: " . $id, $admin_info['userid']);
+        nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('logDelSubject'), "Id: " . $id, $admin_info['userid']);
 
         $query = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_subject WHERE id = " . $id;
         $db->query($query);
@@ -84,15 +84,15 @@ if ($nv_Request->isset_request('del', 'post')) {
 
     if (sizeof($listid) == 1) {
         if ($check_row > 0) {
-            nv_htmlOutput($lang_module['errorSubjectYesRow']);
+            nv_htmlOutput($nv_Lang->getModule('errorSubjectYesRow'));
         }
     } else {
         $error = [];
         if ($check_row > 0) {
-            $error[] = $lang_module['errorSubjectYesRow1'];
+            $error[] = $nv_Lang->getModule('errorSubjectYesRow1');
         }
         if (!empty($error)) {
-            $error[] = $lang_module['errorSubjectDeleteList'];
+            $error[] = $nv_Lang->getModule('errorSubjectDeleteList');
             nv_htmlOutput(implode("\n", $error));
         }
     }
@@ -100,8 +100,8 @@ if ($nv_Request->isset_request('del', 'post')) {
 }
 
 $xtpl = new XTemplate($op . ".tpl", NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file);
-$xtpl->assign('LANG', $lang_module);
-$xtpl->assign('GLANG', $lang_global);
+$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 $xtpl->assign('NV_BASE_SITEURL', NV_BASE_SITEURL);
 $xtpl->assign('MODULE_URL', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE);
 
@@ -113,14 +113,14 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
             nv_redirect_location(NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=subject");
         }
 
-        $xtpl->assign('PTITLE', $lang_module['editSubject']);
+        $xtpl->assign('PTITLE', $nv_Lang->getModule('editSubject'));
         $xtpl->assign('ACTION_URL', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=subject&edit&id=" . $post['id']);
-        $log_title = $lang_module['editSubject'];
+        $log_title = $nv_Lang->getModule('editSubject');
     } else {
         $post['id'] = 0;
-        $xtpl->assign('PTITLE', $lang_module['addSubject']);
+        $xtpl->assign('PTITLE', $nv_Lang->getModule('addSubject'));
         $xtpl->assign('ACTION_URL', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=subject&add");
-        $log_title = $lang_module['addSubject'];
+        $log_title = $nv_Lang->getModule('addSubject');
     }
 
     if ($nv_Request->isset_request('save', 'post')) {
@@ -151,7 +151,7 @@ if ($nv_Request->isset_request('add', 'get') or $nv_Request->isset_request('edit
         }
 
         if (empty($post['title'])) {
-            die($lang_module['errorIsEmpty'] . ": " . $lang_module['title']);
+            die($nv_Lang->getModule('errorIsEmpty') . ": " . $nv_Lang->getModule('title'));
         }
 
         $_sList = $sList;

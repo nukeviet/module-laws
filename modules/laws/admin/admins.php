@@ -25,7 +25,7 @@ foreach ($array_configed_admin as $userid_i) {
 
 // Không có quản trị module
 if (empty($module_info['admins'])) {
-    $contents = nv_theme_alert($lang_module['admin_no_user_title'], $lang_module['admin_no_user_content']);
+    $contents = nv_theme_alert($nv_Lang->getModule('admin_no_user_title'), $nv_Lang->getModule('admin_no_user_content'));
 }
 
 $orders = [
@@ -43,10 +43,10 @@ if ($ordertype != 'ASC') {
 $base_url = NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op;
 $userid = $nv_Request->get_absint('userid', 'get', 0);
 $array_permissions_mod = [
-    $lang_module['admin_cat'],
-    $lang_module['admin_area'],
-    $lang_module['admin_module'],
-    $lang_module['admin_full_module']
+    $nv_Lang->getModule('admin_cat'),
+    $nv_Lang->getModule('admin_area'),
+    $nv_Lang->getModule('admin_module'),
+    $nv_Lang->getModule('admin_full_module')
 ];
 $error = '';
 
@@ -154,13 +154,13 @@ if (!empty($module_info['admins'])) {
 
 if (!empty($users_list)) {
     $head_tds = [];
-    $head_tds['userid']['title'] = $lang_module['admin_userid'];
+    $head_tds['userid']['title'] = $nv_Lang->getModule('admin_userid');
     $head_tds['userid']['href'] = NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;sortby=userid&amp;sorttype=ASC';
-    $head_tds['username']['title'] = $lang_module['admin_username'];
+    $head_tds['username']['title'] = $nv_Lang->getModule('admin_username');
     $head_tds['username']['href'] = NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;sortby=username&amp;sorttype=ASC';
-    $head_tds['full_name']['title'] = $global_config['name_show'] == 0 ? $lang_module['lastname_firstname'] : $lang_module['firstname_lastname'];
+    $head_tds['full_name']['title'] = $global_config['name_show'] == 0 ? $nv_Lang->getModule('lastname_firstname') : $nv_Lang->getModule('firstname_lastname');
     $head_tds['full_name']['href'] = NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;sortby=full_name&amp;sorttype=ASC';
-    $head_tds['email']['title'] = $lang_module['admin_email'];
+    $head_tds['email']['title'] = $nv_Lang->getModule('admin_email');
     $head_tds['email']['href'] = NV_BASE_ADMINURL . 'index.php?' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;sortby=email&amp;sorttype=ASC';
 
     foreach ($orders as $order) {
@@ -174,7 +174,7 @@ if (!empty($users_list)) {
     }
 
     $xtpl = new XTemplate('admin.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-    $xtpl->assign('LANG', $lang_module);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     foreach ($head_tds as $head_td) {
         $xtpl->assign('HEAD_TD', $head_td);
         $xtpl->parse('main.head_td');
@@ -235,7 +235,7 @@ if (!empty($users_list)) {
                 $xtpl->assign('CONTENT', $u);
                 $xtpl->parse('main.edit.catid');
             }
-            $xtpl->assign('CAPTION_EDIT', $lang_module['admin_edit_user'] . ': ' . $users_list[$userid]['username']);
+            $xtpl->assign('CAPTION_EDIT', $nv_Lang->getModule('admin_edit_user') . ': ' . $users_list[$userid]['username']);
 
             // Xuất lĩnh vực
             foreach ($aList as $area) {
@@ -265,7 +265,7 @@ if (!empty($users_list)) {
     $contents = $xtpl->text('main');
 }
 
-$page_title = $lang_module['admins'];
+$page_title = $nv_Lang->getModule('admins');
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);

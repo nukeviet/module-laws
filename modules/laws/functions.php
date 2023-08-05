@@ -134,7 +134,7 @@ function nv_get_start_id($page, $per_page)
  */
 function raw_law_list_by_result($result, $page = 1, $per_page = 1)
 {
-    global $db_slave, $module_data, $nv_laws_listsubject, $nv_laws_listarea, $nv_laws_listcat, $module_name, $module_info, $site_mods, $module_config, $nv_laws_setting, $lang_module;
+    global $db_slave, $module_data, $nv_laws_listsubject, $nv_laws_listarea, $nv_laws_listcat, $module_name, $module_info, $site_mods, $module_config, $nv_laws_setting, $nv_Lang;
 
     $array = $array_ids = [];
     $stt = nv_get_start_id($page, $per_page);
@@ -168,7 +168,7 @@ function raw_law_list_by_result($result, $page = 1, $per_page = 1)
                     $file_title = basename($file);
                     $row['files'][] = array(
                         "title" => $file_title,
-                        "titledown" => $lang_module['download'] . ' ' . (count($files) > 1 ? $id + 1 : ''),
+                        "titledown" => $nv_Lang->getModule('download') . ' ' . (count($files) > 1 ? $id + 1 : ''),
                         "url" => (!preg_match("/^http*/", $file)) ? NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $module_info['alias']['detail'] . "/" . $row['alias'] . "&amp;download=1&amp;id=" . $id : $file
                     );
                 }

@@ -18,7 +18,7 @@ if (!function_exists('nv_law_block_area')) {
      */
     function nv_law_block_area($block_config)
     {
-        global $lang_module, $module_info, $module_file, $global_config, $nv_laws_listarea, $module_name;
+        global $module_info, $module_file, $global_config, $nv_laws_listarea, $module_name, $nv_Lang;
 
         if (file_exists(NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file . '/block_area.tpl')) {
             $block_theme = $global_config['module_theme'];
@@ -27,7 +27,7 @@ if (!function_exists('nv_law_block_area')) {
         }
 
         $xtpl = new XTemplate("block_area.tpl", NV_ROOTDIR . "/themes/" . $block_theme . "/modules/" . $module_info['module_theme']);
-        $xtpl->assign('LANG', $lang_module);
+        $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
         $xtpl->assign('NV_BASE_SITEURL', NV_BASE_SITEURL);
         $xtpl->assign('TEMPLATE', $module_info['template']);
         $xtpl->assign('MODULE_FILE', $module_file);

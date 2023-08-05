@@ -10,7 +10,7 @@
 
 if (!defined('NV_IS_FILE_ADMIN')) die('Stop!!!');
 
-$page_title = $lang_module['scontent'];
+$page_title = $nv_Lang->getModule('scontent');
 
 $id = $nv_Request->get_int('id', 'get', 0);
 $error = "";
@@ -21,7 +21,7 @@ if ($id) {
     $check = $result->rowCount();
     
     if ($check != 1) {
-        nv_info_die($lang_global['error_404_title'], $lang_global['error_404_title'], $lang_global['error_404_content']);
+        nv_info_die($nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_title'), $nv_Lang->getGlobal('error_404_content'));
     }
     
     list ($id, $title, $offices, $positions) = $result->fetch(3);
@@ -34,10 +34,10 @@ if ($id) {
     );
     
     $form_action = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $op . "&amp;id=" . $id;
-    $table_caption = $lang_module['scontent_edit'];
+    $table_caption = $nv_Lang->getModule('scontent_edit');
 } else {
     $form_action = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $op;
-    $table_caption = $lang_module['scontent_add'];
+    $table_caption = $nv_Lang->getModule('scontent_add');
     
     $array = array(
         "id" => 1,
@@ -54,7 +54,7 @@ if ($nv_Request->isset_request('bntsubmit', 'post')) {
     
     // Check error
     if (empty($array['title'])) {
-        $error = $lang_module['scontent_error_title'];
+        $error = $nv_Lang->getModule('scontent_error_title');
     } else {
         if (empty($id)) {
             // Check exist
@@ -63,7 +63,7 @@ if ($nv_Request->isset_request('bntsubmit', 'post')) {
             list ($check_exist) = $result->fetch(3);
             
             if ($check_exist) {
-                $error = $lang_module['scontent_error_exist'];
+                $error = $nv_Lang->getModule('scontent_error_exist');
             } else {
                 // Insert into database
                 $sql = "INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_signer VALUES (
@@ -76,10 +76,10 @@ if ($nv_Request->isset_request('bntsubmit', 'post')) {
                 
                 if ($db->insert_id($sql)) {
                     $nv_Cache->delMod($module_name);
-                    nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['scontent_add'], $array['title'], $admin_info['userid']);
+                    nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('scontent_add'), $array['title'], $admin_info['userid']);
                     nv_redirect_location(NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=signer");
                 } else {
-                    $error = $lang_module['error_save'];
+                    $error = $nv_Lang->getModule('error_save');
                 }
             }
         } else {
@@ -89,7 +89,7 @@ if ($nv_Request->isset_request('bntsubmit', 'post')) {
             list ($check_exist) = $result->fetch(3);
             
             if ($check_exist) {
-                $error = $lang_module['actor_error_exist'];
+                $error = $nv_Lang->getModule('actor_error_exist');
             } else {
                 $sql = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_signer SET 
 					title=" . $db->quote($array['title']) . ", 
@@ -99,10 +99,10 @@ if ($nv_Request->isset_request('bntsubmit', 'post')) {
                 
                 if ($db->query($sql)) {
                     $nv_Cache->delMod($module_name);
-                    nv_insert_logs(NV_LANG_DATA, $module_name, $lang_module['scontent_edit'], $array_old['title'] . "&nbsp;=&gt;&nbsp;" . $array['title'], $admin_info['userid']);
+                    nv_insert_logs(NV_LANG_DATA, $module_name, $nv_Lang->getModule('scontent_edit'), $array_old['title'] . "&nbsp;=&gt;&nbsp;" . $array['title'], $admin_info['userid']);
                     nv_redirect_location(NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE . "=signer");
                 } else {
-                    $error = $lang_module['error_update'];
+                    $error = $nv_Lang->getModule('error_update');
                 }
             }
         }
@@ -110,8 +110,8 @@ if ($nv_Request->isset_request('bntsubmit', 'post')) {
 }
 
 $xtpl = new XTemplate("signer_content.tpl", NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file);
-$xtpl->assign('LANG', $lang_module);
-$xtpl->assign('GLANG', $lang_global);
+$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 $xtpl->assign('DATA', $array);
 $xtpl->assign('TABLE_CAPTION', $table_caption);
 $xtpl->assign('FORM_ACTION', $form_action);

@@ -12,7 +12,7 @@ if (!defined('NV_IS_MOD_LAWS')) {
     die('Stop!!!');
 }
 
-$page_title = $lang_module['search'] . NV_TITLEBAR_DEFIS . $module_info['site_title'];
+$page_title = $nv_Lang->getModule('search') . NV_TITLEBAR_DEFIS . $module_info['site_title'];
 $key_words = $module_info['keywords'];
 
 $per_page = $nv_laws_setting['numsub'];
