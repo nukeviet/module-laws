@@ -20,6 +20,14 @@
 /includes/
 /install/
 /uploads/
+/vendor/
+/.gitattributes
+/composer.json
+/error.php
+/.github
+/api.php
+/sload.php
+/mload.php
 
 # Ignore fix module files and directories.
 /modules/*
@@ -40,9 +48,3 @@
 !/themes/default/images/laws/*
 !/themes/default/modules/laws
 !/themes/default/modules/laws/*
-/vendor/
-/.gitattributes
-/composer.json
-/error.php
-/.github
-/api.php
