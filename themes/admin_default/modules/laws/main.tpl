@@ -11,7 +11,7 @@
         </div>
         <div class="col-sm-6">
             <div class="form-group">
-                <label for="element_cid">{LANG.search_cat}:</label>
+                <label for="element_cid">{LANG.search_cat_admin}:</label>
                 <select class="form-control select2" name="cid" id="element_cid">
                     <option value="0">{LANG.search_all}</option>
                     <!-- BEGIN: catParent -->
@@ -93,10 +93,10 @@
                     </th>
                     <!-- BEGIN: col_comment -->
                     <th style="width: 15%" class="text-nowrap">
-                        <a href="{URL_ORDER_START_COMM_TIME}">{ICON_ORDER_START_COMM_TIME} {LANG.start_comm_time}</a>
+                        <a href="{URL_ORDER_START_COMM_TIME}">{ICON_ORDER_START_COMM_TIME} {LANG.start_comm_time_admin}</a>
                     </th>
                     <th style="width: 15%" class="text-nowrap">
-                        <a href="{URL_ORDER_END_COMM_TIME}">{ICON_ORDER_END_COMM_TIME} {LANG.end_comm_time}</a>
+                        <a href="{URL_ORDER_END_COMM_TIME}">{ICON_ORDER_END_COMM_TIME} {LANG.end_comm_time_admin}</a>
                     </th>
                     <!-- END: col_comment -->
                     <!-- BEGIN: col_nocomment -->

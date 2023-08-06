@@ -80,8 +80,8 @@ if (defined('NV_IS_SPADMIN')) {
 
 if ($NV_IS_ADMIN_MODULE) {
     $submenu['signer'] = $nv_Lang->getModule('signer');
-    $submenu['area'] = $nv_Lang->getModule('area');
-    $submenu['cat'] = $nv_Lang->getModule('cat');
+    $submenu['area'] = $nv_Lang->getModule('area_manager');
+    $submenu['cat'] = $nv_Lang->getModule('cat_manager');
     $submenu['subject'] = $nv_Lang->getModule('subject');
 }
 

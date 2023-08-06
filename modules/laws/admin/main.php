@@ -128,7 +128,7 @@ if ($nv_Request->isset_request('del', 'post')) {
     nv_htmlOutput('OK');
 }
 
-$page_title = $nv_Lang->getModule('main');
+$page_title = $nv_Lang->getModule('main_title');
 
 $per_page = 20;
 $page = $nv_Request->get_int('page', 'get', 1);
@@ -240,10 +240,10 @@ if (!empty($where)) {
 $num_items = $db->query($db->sql())->fetchColumn();
 if (empty($num_items) and !$is_search and $page = 1) {
     if (empty($catList)) {
-        $type = $nv_Lang->getModule('cat');
+        $type = $nv_Lang->getModule('cat_manager');
         $href = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=cat&add';
     } elseif (empty($aList)) {
-        $type = $nv_Lang->getModule('area');
+        $type = $nv_Lang->getModule('area_manager');
         $href = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=area&add';
     } elseif (empty($sList)) {
         $type = $nv_Lang->getModule('subject');

@@ -20,9 +20,9 @@ $lang_translator['info'] = '';
 $lang_translator['langtype'] = 'lang_module';
 
 $lang_module['msgnocheck'] = 'Please select at least one row to do';
-$lang_module['main'] = 'Main';
-$lang_module['area'] = 'Area';
-$lang_module['cat'] = 'Category';
+$lang_module['main_title'] = 'Main';
+$lang_module['area_manager'] = 'Area';
+$lang_module['cat_manager'] = 'Category';
 $lang_module['subject'] = 'Subject';
 $lang_module['save'] = 'Save';
 $lang_module['add'] = 'Add';

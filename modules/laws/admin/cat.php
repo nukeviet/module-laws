@@ -13,7 +13,7 @@ if (!defined('NV_IS_FILE_ADMIN')) {
     die('Stop!!!');
 }
 
-$page_title = $nv_Lang->getModule('cat');
+$page_title = $nv_Lang->getModule('cat_manager');
 
 if ($nv_Request->isset_request('get_alias_title', 'post')) {
     $alias = $nv_Request->get_title('get_alias_title', 'post', '');

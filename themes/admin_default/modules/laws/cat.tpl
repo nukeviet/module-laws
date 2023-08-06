@@ -6,7 +6,7 @@
     <a href="{MODULE_URL}=cat&amp;add" class="btn btn-primary">{LANG.addCat}</a>
 </div>
 <div class="myh3">
-    <span><a class="mycat" href="0">{LANG.cat}</a></span>
+    <span><a class="mycat" href="0">{LANG.cat_manager}</a></span>
 </div>
 <div id="pageContent">
     <div style="text-align: center"><em class="fa fa-spinner fa-spin fa-4x">&nbsp;</em><br />{LANG.wait}</div>

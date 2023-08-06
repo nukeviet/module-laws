@@ -39,7 +39,7 @@
                             </tr>
                             <!-- BEGIN: comment -->
                             <tr class="form-inline">
-                                <td>{LANG.start_comm_time}</td>
+                                <td>{LANG.start_comm_time_admin}</td>
                                 <td>
                                     <label>
                                         <input autocomplete="off" class="form-control" name="start_comm_time" id="start_comm_time" value="{DATA.start_comm_time}" style="width: 110px;" maxlength="10" type="text" /> &nbsp;({LANG.prm})
@@ -47,7 +47,7 @@
                                 </td>
                             </tr>
                             <tr class="form-inline">
-                                <td>{LANG.end_comm_time}</td>
+                                <td>{LANG.end_comm_time_admin}</td>
                                 <td>
                                     <label>
                                         <input autocomplete="off" class="form-control" name="end_comm_time" id="end_comm_time" value="{DATA.end_comm_time}" style="width: 110px;" maxlength="10" type="text" /> &nbsp;({LANG.prm})

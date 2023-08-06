@@ -9,7 +9,7 @@
     <a href="{MODULE_URL}=area&amp;add" class="btn btn-primary">{LANG.addArea}</a>
 </div>
 <div class="myh3">
-    <span><a class="mycat" href="0">{LANG.area}</a></span>
+    <span><a class="mycat" href="0">{LANG.area_manager}</a></span>
 </div>
 <div id="pageContent">
     <div style="text-align: center"><em class="fa fa-spinner fa-spin fa-4x">&nbsp;</em><br />{LANG.wait}</div>
