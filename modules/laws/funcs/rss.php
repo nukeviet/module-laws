@@ -65,5 +65,8 @@ if (!empty($nv_laws_listcat)) {
 }
 
 $atomlink = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $module_info['alias']['rss'];
+if (file_exists(NV_ROOTDIR . '/themes/' . $module_info['template'] . '/css/rss.xsl')) {
+    $channel['xsltheme'] = $module_info['template'];
+}
 nv_rss_generate($channel, $items, $atomlink);
 die();
