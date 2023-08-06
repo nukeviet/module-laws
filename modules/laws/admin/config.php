@@ -84,7 +84,7 @@ $typeview = [];
 for ($i = 0; $i <= 4; $i++) {
     $typeview[] = [
         "id" => $i,
-        "title" => $lang_module['type_view_' . $i],
+        "title" => $nv_Lang->getModule('type_view_' . $i),
         "selected" => ($i == $array_config['typeview']) ? " selected=\"selected\"" : ""
     ];
 }
@@ -129,7 +129,7 @@ foreach ($array_other as $key => $value) {
 for ($i = 0; $i <= 2; $i++) {
     $xtpl->assign('TITLE_SHOW_TYPE', [
         'key' => $i,
-        'title' => $lang_module['config_tshow' . $i],
+        'title' => $nv_Lang->getModule('config_tshow' . $i),
         'selected' => $array_config['title_show_type'] == $i ? ' selected' : ''
     ]);
     $xtpl->parse('main.title_show_type');
