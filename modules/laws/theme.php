@@ -211,7 +211,7 @@ function nv_theme_laws_maincat($mod, $array_data)
  * @param mixed $other_signer
  * @return
  */
-function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = array(), $other_subject = array(), $other_signer = array(), $content_comment)
+function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = array(), $other_subject = array(), $other_signer = array(), $content_comment = '')
 {
     global $global_config, $module_name, $module_config, $module_info, $op, $nv_laws_listcat, $nv_laws_listarea, $nv_laws_listsubject, $client_info, $nv_laws_setting, $nv_Lang;
 
