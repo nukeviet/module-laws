@@ -18,11 +18,12 @@ if (!function_exists('nv_laws_block_cat')) {
      *
      * @param mixed $module
      * @param mixed $data_block
-     * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_laws_cat($module, $data_block, $lang_block)
+    function nv_block_config_laws_cat($module, $data_block)
     {
+        global $nv_Lang;
+
         $html = '';
         $html .= '<div class="form-group">';
         $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('title_length') . ':</label>';
@@ -43,10 +44,9 @@ if (!function_exists('nv_laws_block_cat')) {
      * nv_block_config_laws_cat_submit()
      *
      * @param mixed $module
-     * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_laws_cat_submit($module, $lang_block)
+    function nv_block_config_laws_cat_submit($module)
     {
         global $nv_Request;
         $return = array();

@@ -16,11 +16,12 @@ if (!nv_function_exists('nv_law_block_newg')) {
      *
      * @param mixed $module
      * @param mixed $data_block
-     * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_new_laws($module, $data_block, $lang_block)
+    function nv_block_config_new_laws($module, $data_block)
     {
+        global $nv_Lang;
+
         $html = '';
         $html .= '<div class="form-group">';
         $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('numrow') . ':</label>';
@@ -81,10 +82,9 @@ if (!nv_function_exists('nv_law_block_newg')) {
      * nv_block_config_new_laws_submit()
      *
      * @param mixed $module
-     * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_new_laws_submit($module, $lang_block)
+    function nv_block_config_new_laws_submit($module)
     {
         global $nv_Request;
         $return = array();

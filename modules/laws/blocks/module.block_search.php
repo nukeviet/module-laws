@@ -16,11 +16,12 @@ if (!function_exists('nv_law_block_search')) {
      *
      * @param mixed $module
      * @param mixed $data_block
-     * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_laws_search($module, $data_block, $lang_block)
+    function nv_block_config_laws_search($module, $data_block)
     {
+        global $nv_Lang;
+
         $html = '';
         $html .= '<div class="form-group">';
         $html .= '<label class="control-label col-sm-6">' . $nv_Lang->getModule('style') . ':</label>';
@@ -48,10 +49,9 @@ if (!function_exists('nv_law_block_search')) {
      * nv_block_config_laws_search_submit()
      *
      * @param mixed $module
-     * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_laws_search_submit($module, $lang_block)
+    function nv_block_config_laws_search_submit($module)
     {
         global $nv_Request;
         $return = array();
