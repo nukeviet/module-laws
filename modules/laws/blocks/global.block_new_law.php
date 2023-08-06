@@ -140,13 +140,11 @@ if (!nv_function_exists('nv_law_block_newg')) {
 
                 $my_head .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . NV_STATIC_URL . "themes/" . $block_theme . "/css/laws.css\" />";
 
-                $temp_lang_module = $lang_module;
-                $lang_module = array();
-                include NV_ROOTDIR . '/modules/' . $site_mods[$module]['module_file'] . '/language/' . NV_LANG_INTERFACE . '.php';
-                $lang_block_module = $lang_module;
-                $lang_module = $temp_lang_module;
+                $nv_Lang->changeLang();
+                $nv_Lang->loadModule($modfile, false, true);
+                $lang_block_module = \NukeViet\Core\Language::$tmplang_module;
             } else {
-                $lang_block_module = $lang_module;
+                $lang_block_module = \NukeViet\Core\Language::$lang_module;
             }
 
             $xtpl = new XTemplate('block_new_law.tpl', NV_ROOTDIR . '/themes/' . $block_theme . '/modules/' . $modfile);
