@@ -1,11 +1,12 @@
 <?php
 
 /**
- * @Project NUKEVIET 4.x
- * @Author VINADES.,JSC <contact@vinades.vn>
- * @Copyright (C) 2014 VINADES.,JSC. All rights reserved
- * @License GNU/GPL version 2 or any later version
- * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
+ * NukeViet Content Management System
+ * @version 4.x
+ * @author VINADES.,JSC <contact@vinades.vn>
+ * @copyright (C) 2009-2023 VINADES.,JSC. All rights reserved
+ * @license GNU/GPL version 2 or any later version
+ * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
 if (!defined('NV_MAINFILE')) {
@@ -19,8 +20,8 @@ $module_version = [
     'change_alias' => 'detail',
     'is_sysmod' => 0,
     'virtual' => 1,
-    'version' => '4.5.04',
-    'date' => 'Thursday, April 27, 2023 6:12:17 AM GMT+07:00',
+    'version' => '4.6.00',
+    'date' => 'Sunday, August 6, 2023 10:38:20 AM GMT+07:00',
     'author' => 'VINADES <contact@vinades.vn>',
     'uploads_dir' => [
         $module_upload
