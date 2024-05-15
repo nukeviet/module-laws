@@ -41,7 +41,7 @@ $key_words = $module_info['keywords'];
 $description = $signer['title'] . ' - ' . $signer['offices'] . ' - ' . $signer['positions'];
 
 if (!defined('NV_IS_MODADMIN') and $page < 5) {
-    $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_' . $catid . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';
+    $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_sig' . $id . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';
     if (($cache = $nv_Cache->getItem($module_name, $cache_file)) != false) {
         $contents = $cache;
     }
