@@ -171,7 +171,7 @@ function nv_theme_laws_maincat($mod, $array_data)
 
     $xtpl = new XTemplate('main_' . $mod . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
     $xtpl->assign('LANG', $lang_module);
-    
+
     foreach ($array_data as $data) {
         $data['url_subject'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=subject/' . $data['alias'];
         $data['numcount'] = sprintf($lang_module['s_result_num'], $data['numcount']);
@@ -208,9 +208,10 @@ function nv_theme_laws_maincat($mod, $array_data)
  * @param mixed $other_area
  * @param mixed $other_subject
  * @param mixed $other_signer
+ * @param mixed $content_comment
  * @return
  */
-function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = array(), $other_subject = array(), $other_signer = array(), $content_comment)
+function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = array(), $other_subject = array(), $other_signer = array(), $content_comment = '')
 {
     global $global_config, $module_name, $module_config, $lang_module, $module_info, $op, $nv_laws_listcat, $nv_laws_listarea, $nv_laws_listsubject, $client_info, $nv_laws_setting;
 

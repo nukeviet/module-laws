@@ -1,13 +1,14 @@
 <?php
 
 /**
- * @Project NUKEVIET 4.x
- * @Author VINADES.,JSC <contact@vinades.vn>
- * @Copyright (C) 2014 VINADES.,JSC. All rights reserved
- * @Language English
- * @License CC BY-SA (http://creativecommons.org/licenses/by-sa/4.0/)
- * @Createdate Jul 27, 2011, 07:55:00 AM
+ * NukeViet Content Management System
+ * @version 4.x
+ * @author VINADES.,JSC <contact@vinades.vn>
+ * @copyright (C) 2009-2024 VINADES.,JSC. All rights reserved
+ * @license GNU/GPL version 2 or any later version
+ * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
+
 
 if (!defined('NV_ADMIN') or !defined('NV_MAINFILE')) {
     die('Stop!!!');
@@ -19,9 +20,12 @@ $lang_translator['copyright'] = '@Copyright (C) 2011 VINADES.,JSC. All rights re
 $lang_translator['info'] = '';
 $lang_translator['langtype'] = 'lang_module';
 
+$lang_module['info'] = 'Info';
+$lang_module['info_no_permission'] = 'You have not been granted permission to manage laws, please contact your superiors for permission';
 $lang_module['msgnocheck'] = 'Please select at least one row to do';
 $lang_module['main'] = 'Main';
 $lang_module['area'] = 'Area';
+$lang_module['area_name'] = 'Area';
 $lang_module['cat'] = 'Category';
 $lang_module['subject'] = 'Subject';
 $lang_module['save'] = 'Save';
@@ -30,8 +34,14 @@ $lang_module['status'] = 'Status';
 $lang_module['status1'] = 'Active';
 $lang_module['status0'] = 'Unactive';
 $lang_module['feature'] = 'Feature';
+$lang_module['day'] = 'Day';
+$lang_module['there_is_num'] = 'Number of results';
+$lang_module['is_required'] = 'Required';
+$lang_module['select2_pick'] = 'Enter title or code to search';
 $lang_module['hl0'] = 'Enable';
 $lang_module['hl1'] = 'Unenable';
+$lang_module['e0'] = 'Not passed yet';
+$lang_module['e1'] = 'Passed';
 $lang_module['add_laws'] = 'Add  a laws';
 $lang_module['logChangeWeight'] = 'Weight change';
 $lang_module['bodytexterror'] = 'You have not entered the text content for details';
@@ -44,6 +54,7 @@ $lang_module['errorCatDeleteList'] = 'Other eligible categories (if any) have be
 $lang_module['logDelCat'] = 'Delete category';
 $lang_module['editCat'] = 'Edit category';
 $lang_module['addCat'] = 'Add category';
+$lang_module['newicon'] = 'New day';
 $lang_module['errorIsExists'] = 'Error! This category is exist';
 $lang_module['title'] = 'Title';
 $lang_module['alias'] = 'Alias';
@@ -62,7 +73,7 @@ $lang_module['errorAreaNotExists'] = 'Error! This field does not exist';
 $lang_module['errorAreaYesSub'] = 'Error! Having the field under this sector. Please remove them first';
 $lang_module['errorAreaYesRow'] = 'Error! This field contains the text. Please remove them first';
 $lang_module['errorAreaYesSub1'] = 'There are areas with subareas, the system ignores not deletes. Need to delete the subareas in it first';
-$lang_module['errorAreaYesRow2'] = 'There are areas with law, the system ignores not deleted. Need to delete the law in it first';
+$lang_module['errorAreaYesRow1'] = 'There are area with have laws, that the system ignores and does not delete. Need to delete the laws in it first';
 $lang_module['errorAreaDeleteList'] = 'Other eligible areas (if any) have been deleted';
 $lang_module['errorAreaYesCode'] = 'Error! You did not enter a written code';
 $lang_module['logDelArea'] = 'Delete Field';
@@ -111,8 +122,6 @@ $lang_module['ID'] = 'ID';
 $lang_module['note'] = 'Note';
 $lang_module['startvalid'] = 'Startvalid';
 $lang_module['relatement'] = 'Relatement';
-$lang_module['replacementError'] = 'Error: Text replace with ID %d does not exist';
-$lang_module['relatementError'] = 'Error: Text associated with ID %d does not exist';
 $lang_module['reset'] = 'Reset';
 $lang_module['waiting'] = 'Enter information then click the search button to perform membership';
 $lang_module['from'] = 'from';
@@ -137,14 +146,82 @@ $lang_module['config'] = 'Configuration module';
 $lang_module['config_nummain'] = 'Number of text at home';
 $lang_module['config_numsub'] = 'Number of text in the page';
 $lang_module['config_typeview'] = 'View type';
-$lang_module['type_view_0'] = 'Newest on top';
-$lang_module['type_view_1'] = 'Oldest on top';
-$lang_module['wait'] = 'Please wait....';
-$lang_module['search_error'] = 'Choose at least one search terms';
-$lang_module['admin_add'] = "Admin add";
-
-$lang_module['admins'] = 'Decentralization of management';
+$lang_module['config_down_in_home'] = 'Download on main page';
+$lang_module['config_down_in_home_note'] = 'Allows users to download attachments from the laws list, without needing to go to the details page.';
+$lang_module['config_detail_other'] = 'Displays laws of the same category';
+$lang_module['config_detail_other_cat'] = 'Same category';
+$lang_module['config_detail_other_area'] = 'Same area';
+$lang_module['config_detail_other_signer'] = 'Same signer';
+$lang_module['config_detail_other_subject'] = 'Same agency';
+$lang_module['config_detail_other_numlinks'] = 'Number of links of the same type';
+$lang_module['config_show_link_detailpage'] = 'Display links when viewing law details in';
+$lang_module['config_show_link_detailpage1'] = 'Law category';
+$lang_module['config_show_link_detailpage2'] = 'Area';
+$lang_module['config_show_link_detailpage3'] = 'Agency';
+$lang_module['config_show_link_detailpage4'] = 'Signer';
+$lang_module['config_detail_hide_empty_field'] = 'Hide items without information when viewing law details';
+$lang_module['config_detail_pdf_quick_view'] = 'Display quick view button for PDF files on the law detail page';
 $lang_module['config_tshow'] = 'Show title/abstract when when viewing list form';
 $lang_module['config_tshow0'] = 'Show abstract';
 $lang_module['config_tshow1'] = 'Show title';
 $lang_module['config_tshow2'] = 'Title + Abstract';
+$lang_module['type_view_0'] = 'Newest on top';
+$lang_module['type_view_1'] = 'Oldest on top';
+$lang_module['type_view_2'] = 'Sorted by issuing agency (Only applicable on the home page)';
+$lang_module['type_view_3'] = 'On adding law, new on top';
+$lang_module['type_view_4'] = 'On adding law, old on top';
+$lang_module['wait'] = 'Please wait....';
+$lang_module['numlink'] = 'Number links';
+$lang_module['search_error'] = 'Choose at least one search terms';
+$lang_module['search_cat'] = 'Category';
+$lang_module['search_all'] = 'All';
+$lang_module['msg1'] = 'You need add';
+$lang_module['msg2'] = 'first';
+$lang_module['msg3'] = 'Click here';
+$lang_module['msg4'] = 'to go to adding page';
+$lang_module['msg5'] = 'The system will automatically redirect after 5 seconds.';
+$lang_module['activecomm'] = 'Allows for comments';
+$lang_module['start_comm_time'] = 'Date of starting consultation';
+$lang_module['end_comm_time'] = 'Date of ending consultation';
+$lang_module['view_comm'] = 'View comments';
+$lang_module['examine'] = 'Inspection agency';
+$lang_module['addExamine'] = 'Add Inspection agency';
+$lang_module['errorExamineNotExists'] = 'Error! The verification agency does not exist.';
+$lang_module['errorExamineYesRow'] = 'Error! There are laws belonging to this Inspection Agency. Let\'s delete them first.';
+$lang_module['editExamine'] = 'Edit Inspection agency';
+$lang_module['logDelExamine'] = 'Delete Inspection agency';
+$lang_module['ExamineSel'] = 'Select Inspection agency';
+$lang_module['approval'] = 'Status';
+$lang_module['erroStartvalid'] = 'Error! The effective date cannot be before the date of issuance.';
+$lang_module['erroExptime'] = 'Error! The expiration date must be after the date of issuance and the effective date.';
+$lang_module['admin_add'] = 'Admin add';
+$lang_module['admins'] = 'Decentralization of management';
+$lang_module['admin_cat_for_user'] = 'Your authority at the issuing agencies';
+$lang_module['admin_no_user_title'] = 'There is no module manager yet';
+$lang_module['admin_no_user_content'] = 'The decentralization function for this module only applies to module operators. You need to add a module operator before decentralizing.';
+$lang_module['content_subject'] = 'Agency issuing law';
+$lang_module['permissions_admin'] = 'Management of issuing agencies';
+$lang_module['permissions_admin_area'] = 'Management of area';
+$lang_module['permissions_add_content'] = 'Add law';
+$lang_module['permissions_edit_content'] = 'Edit law';
+$lang_module['permissions_del_content'] = 'Delete law';
+$lang_module['permissions_pub_error'] = 'Error: You are not allowed to post law at the issuing agency: %1$s';
+$lang_module['permissions_sendspadmin_error'] = 'Error: You are not allowed to send law to the editor-in-chief at the issuing agency: %1$s';
+$lang_module['permissions_pub_show_error'] = 'Error: You are not allowed to display the law at the issuing agency: %1$s';
+$lang_module['admin_cat'] = 'Manage laws according to the issuing agency';
+$lang_module['admin_area'] = 'Manage laws by area';
+$lang_module['admin_module'] = 'Module management';
+$lang_module['admin_full_module'] = 'Full module management';
+$lang_module['admin_userid'] = 'ID';
+$lang_module['admin_username'] = 'Username';
+$lang_module['admin_full_name'] = 'Full name';
+$lang_module['admin_first_name'] = 'Last name';
+$lang_module['admin_last_name'] = 'First name';
+$lang_module['admin_email'] = 'Email';
+$lang_module['lastname_firstname'] = 'Full name';
+$lang_module['admin_permissions'] = 'Permissions';
+$lang_module['admin_edit'] = 'Edit';
+$lang_module['admin_edit_user'] = 'Edit user';
+$lang_module['admin_area_note'] = 'Note: If you have the right to manage the parent area, you also have the right to manage the child areas within it';
+$lang_module['admin_full_note'] = 'Full module rights have the rights of module management, additional rights to configure the module and decentralize other accounts';
+$lang_module['admin_note'] = 'Module managers have the right to manage all laws, fields, issuing agencies, verifying agencies (if opinions are sought), people, and categories.';

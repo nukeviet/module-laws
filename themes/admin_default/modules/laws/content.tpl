@@ -111,12 +111,24 @@
                             </tr>
                             <!-- END: normal_laws -->
                             <tr>
-                                <td>{LANG.replacement} ({LANG.ID})</td>
-                                <td><input class="form-control" title="{LANG.replacement}" type="text" name="replacement" id="replacement" style="width: 200px;" maxlength="255" value="{DATA.replacement}" /></td>
+                                <td>{LANG.replacement}</td>
+                                <td>
+                                    <select id="element_replacement" name="replacement[]" class="form-control" multiple="multiple">
+                                        <!-- BEGIN: replacement -->
+                                        <option value="{REPLACEMENT.id}" selected="selected">{REPLACEMENT.title}</option>
+                                        <!-- END: replacement -->
+                                    </select>
+                                </td>
                             </tr>
                             <tr>
-                                <td>{LANG.relatement} ({LANG.ID})</td>
-                                <td><input class="form-control" title="{LANG.relatement}" type="text" name="relatement" id="relatement" style="width: 200px;" maxlength="255" value="{DATA.relatement}" /></td>
+                                <td>{LANG.relatement}</td>
+                                <td>
+                                    <select id="element_relatement" name="relatement[]" class="form-control" multiple="multiple">
+                                        <!-- BEGIN: relatement -->
+                                        <option value="{RELATEMENT.id}" selected="selected">{RELATEMENT.title}</option>
+                                        <!-- END: relatement -->
+                                    </select>
+                                </td>
                             </tr>
                             <tr>
                                 <td>{LANG.keywords}</td>
@@ -250,17 +262,27 @@ $(document).ready(function() {
         tokenSeparators: [',']
     });
 
-    $("#replacementSearch").click(function() {
-        nv_open_browse("{NV_BASE_ADMINURL}index.php?" + nv_name_variable + "=" + nv_module_name + "&" + nv_fc_variable + "=getlid&area=replacement", "NVImg", "850", "600", "resizable=no,scrollbars=no,toolbar=no,location=no,status=no");
-        return false;
-    });
-    $("#amendmentSearch").click(function() {
-        nv_open_browse("{NV_BASE_ADMINURL}index.php?" + nv_name_variable + "=" + nv_module_name + "&" + nv_fc_variable + "=getlid&area=amendment", "NVImg", "850", "600", "resizable=no,scrollbars=no,toolbar=no,location=no,status=no");
-        return false;
-    });
-    $("#supplementSearch").click(function() {
-        nv_open_browse("{NV_BASE_ADMINURL}index.php?" + nv_name_variable + "=" + nv_module_name + "&" + nv_fc_variable + "=getlid&area=supplement", "NVImg", "850", "600", "resizable=no,scrollbars=no,toolbar=no,location=no,status=no");
-        return false;
+    // Tìm văn bản thay thế
+    $('#element_replacement,#element_relatement').select2({
+        width: '100%',
+        language: '{NV_LANG_INTERFACE}',
+        ajax: {
+            delay: 250,
+            cache: false,
+            type: 'POST',
+            url: script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '={OP}&nocache=' + new Date().getTime(),
+            dataType: 'json',
+            data: function (params) {
+                return {
+                    id: {DATA.id},
+                    q: params.term,
+                    findlaws: '{NV_CHECK_SESSION}',
+                    page: params.page || 1
+                };
+            }
+        },
+        placeholder: '{LANG.select2_pick}',
+        minimumInputLength: 2
     });
 });
 </script>
