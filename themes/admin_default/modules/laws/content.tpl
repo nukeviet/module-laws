@@ -69,7 +69,7 @@
                                 <td>{LANG.publtime} <span class="red">*</span></td>
                                 <td>
                                     <label>
-                                        <input autocomplete="off" class="form-control" name="publtime" id="publtime" value="{DATA.publtime}" style="width: 110px;" maxlength="10" type="text" /> &nbsp;({LANG.prm})
+                                        <input autocomplete="off" class="form-control" name="publtime" id="publtime" value="{DATA.publtime}" style="width: 110px;" maxlength="10" type="text" />
                                     </label>
                                 </td>
                             </tr>
@@ -77,7 +77,7 @@
                                 <td>{LANG.startvalid}</td>
                                 <td>
                                     <label>
-                                        <input autocomplete="off" class="form-control" name="startvalid" id="startvalid" value="{DATA.startvalid}" style="width: 110px;" maxlength="10" type="text" /> &nbsp;({LANG.prm})
+                                        <input autocomplete="off" class="form-control" name="startvalid" id="startvalid" value="{DATA.startvalid}" style="width: 110px;" maxlength="10" type="text" />
                                     </label>
                                 </td>
                             </tr>
@@ -85,28 +85,20 @@
                                 <td>{LANG.exptime}</td>
                                 <td>
                                     <div class="form-inline">
-                                        <div class="form-group mb-0">
-                                            <select class="form-control" id="chooseexptime" name="chooseexptime" style="width: 200px">
-                                                <option value="0"{DATA.select0}>{LANG.hl0}</option>
-                                                <option value="1"{DATA.select1}>{LANG.hl1}</option>
-                                            </select>
-                                        </div>
-                                        <div id="exptimearea" class="form-group mt-xs-2 mb-0{DATA.display}">
-                                            <input autocomplete="off" class="form-control" name="exptime" id="exptime" value="{DATA.exptime}" style="width: 110px;" maxlength="10" type="text" /> ({LANG.prm})
-                                        </div>
+                                        <input autocomplete="off" class="form-control" name="exptime" id="exptime" value="{DATA.exptime}" style="width: 110px;" maxlength="10" type="text" />
                                     </div>
-                                    <script type="text/javascript">
-                                    $(document).ready(function() {
-                                        $('#chooseexptime').change(function() {
-                                            if ($(this).val() == 0) {
-                                                $('#exptime').val('');
-                                                $('#exptimearea').addClass('hidden');
-                                            } else {
-                                                $('#exptimearea').removeClass('hidden');
-                                            }
-                                        });
-                                    });
-                                    </script>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{LANG.effective_status}</td>
+                                <td>
+                                    <div class="form-inline">
+                                        <select class="form-control" name="effective_status">
+                                            <!-- BEGIN: estatus -->
+                                            <option value="{ESTATUS.key}"{ESTATUS.selected}>{ESTATUS.title}</option>
+                                            <!-- END: estatus -->
+                                        </select>
+                                    </div>
                                 </td>
                             </tr>
                             <!-- END: normal_laws -->
@@ -237,14 +229,15 @@
                 </table>
             </div>
         </div>
-        <input type="hidden" name="save" value="1" /> <input class="btn btn-primary" name="bntsubmit" type="submit" value="{LANG.save}" />
+        <input type="hidden" name="save" value="1" />
+        <input class="btn btn-primary" name="bntsubmit" type="submit" value="{LANG.save}" />
     </form>
 </div>
 <script type="text/javascript">
 $("#publtime,#startvalid,#end_comm_time,#start_comm_time,#exptime").datepicker({
     showOn : "both",
     yearRange: "2000:2055",
-    dateFormat : "dd.mm.yy",
+    dateFormat : "dd/mm/yy",
     changeMonth : true,
     changeYear : true,
     showOtherMonths : true,

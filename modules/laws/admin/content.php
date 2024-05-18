@@ -53,6 +53,12 @@ $sgList = nv_sgList();
 $row = $post = $error = [];
 $post['id'] = $nv_Request->get_int('id', 'get', 0);
 
+$effective_status = [
+    0 => $nv_Lang->getModule('effective_status0'),
+    1 => $nv_Lang->getModule('effective_status1'),
+    2 => $nv_Lang->getModule('effective_status2'),
+];
+
 if ($post['id'] > 0) {
     // Lấy và kiểm tra quyền sửa văn bản
     $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id=" . $post['id'];
@@ -102,6 +108,7 @@ if ($post['id'] > 0) {
     $post['end_comm_time'] = 0;
     $post['startvalid'] = 0;
     $post['approval'] = 0;
+    $post['effective_status'] = 0;
 
     $post['ptitle'] = $nv_Lang->getModule('addRow');
     $post['action_url'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=content";
@@ -210,7 +217,7 @@ if ($nv_Request->isset_request('save', 'post')) {
     $post['files'] = !empty($post['files']) ? implode(",", $post['files']) : "";
 
     $post['publtime'] = $nv_Request->get_title('publtime', 'post', '');
-    if (preg_match("/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/", $post['publtime'], $m)) {
+    if (preg_match("/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/", $post['publtime'], $m)) {
         $post['publtime'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
     } else {
         $post['publtime'] = 0;
@@ -220,7 +227,7 @@ if ($nv_Request->isset_request('save', 'post')) {
     }
 
     $post['exptime'] = $nv_Request->get_title('exptime', 'post', '');
-    if (preg_match("/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/", $post['exptime'], $m)) {
+    if (preg_match("/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/", $post['exptime'], $m)) {
         $post['exptime'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
     } else {
         $post['exptime'] = 0;
@@ -228,14 +235,14 @@ if ($nv_Request->isset_request('save', 'post')) {
 
     //Nếu là module lấy ý kiến thì lấy thời gian bắt đầu-kết thúc lấy ý kiến, trang thái thông qua của văn bản
     $post['start_comm_time'] = $nv_Request->get_title('start_comm_time', 'post', '');
-    if (preg_match("/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/", $post['start_comm_time'], $m)) {
+    if (preg_match("/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/", $post['start_comm_time'], $m)) {
         $post['start_comm_time'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
     } else {
         $post['start_comm_time'] = 0;
     }
 
     $post['end_comm_time'] = $nv_Request->get_title('end_comm_time', 'post', '');
-    if (preg_match("/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/", $post['end_comm_time'], $m)) {
+    if (preg_match("/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/", $post['end_comm_time'], $m)) {
         $post['end_comm_time'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
     } else {
         $post['end_comm_time'] = 0;
@@ -243,7 +250,7 @@ if ($nv_Request->isset_request('save', 'post')) {
     $post['approval'] = (int) $nv_Request->get_bool('approval', 'post', false);
 
     $post['startvalid'] = $nv_Request->get_title('startvalid', 'post', '');
-    if (preg_match("/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/", $post['startvalid'], $m)) {
+    if (preg_match("/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/", $post['startvalid'], $m)) {
         $post['startvalid'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
     } else {
         $post['startvalid'] = 0;
@@ -258,6 +265,13 @@ if ($nv_Request->isset_request('save', 'post')) {
                 $error[] = $nv_Lang->getModule('erroExptime');
             }
         }
+
+        $post['effective_status'] = $nv_Request->get_absint('effective_status', 'post', 0);
+        if (!isset($effective_status[$post['effective_status']])) {
+            $post['effective_status'] = 0;
+        }
+    } else {
+        $post['effective_status'] = 0;
     }
 
     $post['sgid'] = $nv_Request->get_title('sgid', 'post', '');
@@ -294,6 +308,7 @@ if ($nv_Request->isset_request('save', 'post')) {
                 groups_view=" . $db->quote($post['groups_view']) . ",
                 groups_download=" . $db->quote($post['groups_download']) . ",
                 files=" . $db->quote($post['files']) . ",
+                effective_status=" . $post['effective_status'] . ",
                 edittime=" . NV_CURRENTTIME . ",
                 publtime=" . $post['publtime'] . ",
                 exptime=" . $post['exptime'] . ",
@@ -320,7 +335,7 @@ if ($nv_Request->isset_request('save', 'post')) {
         } else {
             $query = "INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_row (
                 replacement, relatement, title, alias, code, area_ids, cid, sid, eid, sgid,
-                note, introtext, bodytext, keywords, groups_view, groups_download, files,
+                note, introtext, bodytext, keywords, groups_view, groups_download, files, effective_status,
                 status, approval, addtime, edittime, publtime, start_comm_time, end_comm_time,
                 startvalid, exptime, view_hits, download_hits, admin_add, admin_edit
             ) VALUES (
@@ -341,6 +356,7 @@ if ($nv_Request->isset_request('save', 'post')) {
                 " . $db->quote($post['groups_view']) . ",
                 " . $db->quote($post['groups_download']) . ",
                 " . $db->quote($post['files']) . ",
+                " . $post['effective_status'] . ",
                 1,  " . $post['approval'] . ",
                 " . NV_CURRENTTIME . ", 0,
                 " . $post['publtime'] . ",
@@ -423,12 +439,12 @@ $post['display'] = ($post['exptime'] == 0 or $post['exptime'] > NV_CURRENTTIME) 
 $post['e0'] = ($post['approval'] == 0) ? " selected=\"selected\"" : "";
 $post['e1'] = ($post['approval'] == 1) ? " selected=\"selected\"" : "";
 
-$post['publtime'] = !empty($post['publtime']) ? date("d.m.Y", $post['publtime']) : "";
-$post['exptime'] = !empty($post['exptime']) ? date("d.m.Y", $post['exptime']) : "";
+$post['publtime'] = !empty($post['publtime']) ? date("d/m/Y", $post['publtime']) : "";
+$post['exptime'] = !empty($post['exptime']) ? date("d/m/Y", $post['exptime']) : "";
 
-$post['start_comm_time'] = !empty($post['start_comm_time']) ? date("d.m.Y", $post['start_comm_time']) : "";
-$post['end_comm_time'] = !empty($post['end_comm_time']) ? date("d.m.Y", $post['end_comm_time']) : "";
-$post['startvalid'] = !empty($post['startvalid']) ? date("d.m.Y", $post['startvalid']) : "";
+$post['start_comm_time'] = !empty($post['start_comm_time']) ? date("d/m/Y", $post['start_comm_time']) : "";
+$post['end_comm_time'] = !empty($post['end_comm_time']) ? date("d/m/Y", $post['end_comm_time']) : "";
+$post['startvalid'] = !empty($post['startvalid']) ? date("d/m/Y", $post['startvalid']) : "";
 
 $post['groups_view'] = array_filter(explode(',', $post['groups_view']));
 $post['groups_download'] = array_filter(explode(',', $post['groups_download']));
@@ -547,6 +563,15 @@ if (!empty($post['files'])) {
 if (defined('ACTIVE_COMMENTS')) {
     $xtpl->parse('main.comment');
 } else {
+    foreach ($effective_status as $key => $value) {
+        $xtpl->assign('ESTATUS', [
+            'key' => $key,
+            'title' => $value,
+            'selected' => $key == $post['effective_status'] ? ' selected="selected"' : '',
+        ]);
+        $xtpl->parse('main.normal_laws.estatus');
+    }
+
     $xtpl->parse('main.normal_laws');
 }
 

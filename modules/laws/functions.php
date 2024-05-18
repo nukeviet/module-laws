@@ -15,9 +15,11 @@ if (!defined('NV_SYSTEM')) {
 
 define('NV_IS_MOD_LAWS', true);
 
+if (!empty($module_config[$module_name]['activecomm'])) {
+    define('ACTIVE_COMMENTS', true);
+}
+
 /**
- * nv_module_setting()
- *
  * @return
  */
 function nv_module_setting()

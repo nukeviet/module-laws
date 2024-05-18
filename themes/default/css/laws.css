@@ -1,9 +1,19 @@
 ﻿/**
- * @Project NUKEVIET 4.0
- * @Author VINADES.,JSC (contact@vinades.vn)
- * @Copyright (C) 2010 VINADES.,JSC. All rights reserved
- * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
+ * NukeViet Content Management System
+ * @version 4.x
+ * @author VINADES.,JSC <contact@vinades.vn>
+ * @copyright (C) 2009-2023 VINADES.,JSC. All rights reserved
+ * @license GNU/GPL version 2 or any later version
+ * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
+
+.mb-1 {
+    margin-bottom: 5px!important;
+}
+
+.mb-0 {
+    margin-bottom: 0!important;
+}
 
 /* Block Menu */
 .smoothmenu2 {
@@ -12,10 +22,6 @@
 
 .smoothmenu2 ul li a {
     padding: 5px;
-}
-
-.ddsmoothmenu-v {
-
 }
 
 .ddsmoothmenu-v ul {
@@ -309,142 +315,6 @@
     }
 }
 
-/* Other */
-h3.pagetitle {
-    line-height: 30px;
-    padding: 0px;
-    margin: 8px 0px 8px 0px;
-}
-
-.generate_page {
-    text-align: center;
-    font-weight: bold
-}
-
-/* Style button */
-.style-button {
-    padding: 0px 10px 0px 0px;
-    height: 25px;
-    cursor: pointer;
-    display: inline-block;
-    background-image: url('../images/laws/button.png');
-    background-position: right top;
-    background-repeat: no-repeat;
-}
-
-.style-button:hover {
-    background-image: url('../images/laws/button.png');
-    background-repeat: no-repeat;
-    background-position: right bottom;
-}
-
-.style-button:hover span, .style-button:hover a {
-    background-repeat: no-repeat !important;
-    background-position: left bottom;
-    background-image: url('../images/laws/button.png');
-}
-
-.style-button span, .style-button a {
-    background-position: left top;
-    line-height: 25px;
-    padding-left: 10px;
-    display: inline-block;
-    background-repeat: no-repeat;
-    background-image: url('../images/laws/button.png');
-    font-weight: bold;
-    color: #FFFFFF;
-}
-
-/* big icon */
-.big-icon {
-    height: 32px;
-    padding: 0;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    display: inline-block;
-    width: 32px;
-    margin-right: 4px;
-}
-
-.bcourse {
-    background-image: url('../images/laws/big-icon-pack.png');
-}
-
-.bdetail {
-    background-position: -32px 0px;
-    background-image: url('../images/laws/big-icon-pack.png');
-}
-
-.bteacher {
-    background-position: -64px 0px;
-    background-image: url('../images/laws/big-icon-pack.png');
-}
-
-.bcat {
-    background-position: -96px 0px;
-    background-image: url('../images/laws/big-icon-pack.png');
-}
-
-/* small icon */
-.small-icon {
-    height: 16px;
-    padding: 0;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    display: inline-block;
-    width: 16px;
-    margin-right: 4px;
-}
-
-.sreg {
-    background-image: url('../images/laws/small-icon-pack.png');
-}
-
-.steacher {
-    background-position: -16px;
-    background-image: url('../images/laws/small-icon-pack.png');
-}
-
-.ssumary {
-    background-position: -32px;
-    background-image: url('../images/laws/small-icon-pack.png');
-}
-
-.sdetail {
-    background-position: -48px;
-    background-image: url('../images/laws/small-icon-pack.png');
-}
-
-.snumc {
-    background-position: -64px;
-    background-image: url('../images/laws/small-icon-pack.png');
-}
-
-.scv {
-    background-position: -80px;
-    background-image: url('../images/laws/small-icon-pack.png');
-}
-
-.slession {
-    background-position: -96px;
-    background-image: url('../images/laws/small-icon-pack.png');
-}
-
-.svideo {
-    background-position: -112px;
-    background-image: url('../images/laws/small-icon-pack.png');
-}
-
-.sdata {
-    background-position: -128px;
-    background-image: url('../images/laws/small-icon-pack.png');
-}
-
-.sfloder {
-    background-position: -144px;
-    background-image: url('../images/laws/small-icon-pack.png');
-}
-
 /* ul list */
 ul.list-item, ul.list-releted-item, ul.list-none {
     padding: 0px;
@@ -523,7 +393,7 @@ table.inner-search input[type=submit], table.inner-search input[type=button] {
 
 /* BLOCK TOP LAW */
 .block-law {
-    padding: 0px 10px;
+    padding: 0;
 }
 
 .block-law ul {
@@ -586,7 +456,6 @@ a#btn-search {
 
 .laws-download-file .list-group-item .badge {
     float: right;
-    display: inline-block;
     width: 22px;
     height: 22px;
     font-size: 12px;

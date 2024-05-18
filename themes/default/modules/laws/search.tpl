@@ -1,5 +1,5 @@
 <!-- BEGIN: main -->
-<h3 class="pagetitle"><span class="big-icon bdetail">&nbsp;</span>{LANG.s_result} {NUMRESULT}</h3>
+<h1 class="margin-bottom-lg"><i class="fa fa-book" aria-hidden="true"></i> {LANG.s_result} {NUMRESULT}</h1>
 {HTML}
 <!-- END: main -->
 

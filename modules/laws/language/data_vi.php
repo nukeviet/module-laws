@@ -13,6 +13,8 @@ if (!defined('NV_ADMIN')) {
     die('Stop!!!');
 }
 
+global $admin_info;
+
 $debug = false;
 
 if ($debug) {
@@ -99,3 +101,7 @@ if ($debug) {
         $db->query("INSERT INTO " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_row_area (row_id, area_id) VALUES (" . $i . ", " . $area_id . ")");
     }
 }
+
+$sql = "INSERT INTO " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_row (id, replacement, relatement, title, alias, code, area_ids, cid, sid, eid, sgid, note, introtext, bodytext, keywords, groups_view, groups_download, files, status, effective_status, approval, addtime, edittime, publtime, start_comm_time, end_comm_time, startvalid, exptime, view_hits, download_hits, admin_add, admin_edit) VALUES
+(1, '', '', 'Kế hoạch 366/KH-UBND', 'Ke-hoach-366-KH-UBND-1', '366&#x002F;KH-UBND', '2', 1, 1, 0, 1, '', 'Kế hoạch 366&#x002F;KH-UBND Nghệ An 2024 thu thập tài liệu vào lưu trữ lịch sử tỉnh Nghệ An, giai đoạn 2024-2030', '', 'kế hoạch,thu thập,tài liệu,lưu trữ,lịch sử,giai đoạn', '6', '6', '', 1, 0, 0, 1716018536, 0, 1715965200, 0, 0, 0, 0, 0, 0, " . $admin_info['admin_id'] . ", 0);";
+$db->query($sql);

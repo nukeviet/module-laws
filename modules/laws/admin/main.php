@@ -290,9 +290,11 @@ if (!empty($array_userids)) {
 
     while ($row = $result->fetch()) {
         $row['full_name'] = nv_show_name_user($row['first_name'], $row['last_name']);
-        $row['show_name'] = $row['username'];
-        if (!empty($row['full_name'])) {
-            $row['show_name'] .= ' (' . $row['full_name'] . ')';
+        $row['show_name'] = $row['full_name'];
+        if (empty($row['show_name'])) {
+            $row['show_name'] = $row['username'];
+        } else {
+            $row['show_name'] .= ' (' . $row['username'] . ')';
         }
         $array_users[$row['userid']] = $row;
     }
@@ -301,11 +303,6 @@ if (!empty($array_userids)) {
 $xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
 $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
 $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
-$xtpl->assign('NV_LANG_VARIABLE', NV_LANG_VARIABLE);
-$xtpl->assign('NV_LANG_DATA', NV_LANG_DATA);
 $xtpl->assign('MODULE_NAME', $module_name);
 $xtpl->assign('MODULE_FILE', $module_file);
 $xtpl->assign('OP', $op);

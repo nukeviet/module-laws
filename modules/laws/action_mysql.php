@@ -43,7 +43,7 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   UNIQUE KEY alias (alias,parentid),
   KEY weight (weight),
   KEY sort (sort)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM COMMENT 'Lĩnh vực'";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_cat(
   id smallint(4) unsigned NOT NULL AUTO_INCREMENT,
@@ -58,7 +58,7 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   PRIMARY KEY (id),
   UNIQUE KEY alias (alias,parentid),
   KEY weight (weight)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM COMMENT 'Loại văn bản'";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_subject(
   id smallint(4) unsigned NOT NULL AUTO_INCREMENT,
@@ -73,7 +73,7 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   PRIMARY KEY (id),
   UNIQUE KEY alias (alias),
   KEY weight (weight)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM COMMENT 'Cơ quan ban hành'";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_row(
   id int(10) NOT NULL AUTO_INCREMENT,
@@ -94,13 +94,14 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   groups_view varchar(255) NOT NULL,
   groups_download varchar(255) NOT NULL,
   files mediumtext NOT NULL,
-  status tinyint(1) NOT NULL,
-  approval tinyint(1) NOT NULL,
-  addtime int(11) NOT NULL,
-  edittime int(11) NOT NULL,
+  status tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Ẩn hoặc hiện văn bản ngoài site',
+  effective_status tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Tình trạng hiệu lực: 0 tự động (đã biết), 1 hiệu lực một phần, 2 đã sửa đổi',
+  approval tinyint(1) NOT NULL DEFAULT '0',
+  addtime int(11) NOT NULL DEFAULT '0',
+  edittime int(11) NOT NULL DEFAULT '0',
   publtime int(11) NOT NULL DEFAULT '0',
-  start_comm_time int(11) NULL,
-  end_comm_time int(11) NULL,
+  start_comm_time int(11) NULL DEFAULT '0',
+  end_comm_time int(11) NULL DEFAULT '0',
   startvalid int(11) NOT NULL DEFAULT '0',
   exptime int(11) NOT NULL DEFAULT '0',
   view_hits mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -112,14 +113,16 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   KEY cid (cid),
   KEY sid (sid),
   KEY eid (eid),
-  KEY sgid (sgid)
-) ENGINE=MyISAM";
+  KEY sgid (sgid),
+  KEY status (status),
+  KEY effective_status (effective_status)
+) ENGINE=MyISAM COMMENT 'Danh sách văn bản'";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_row_area (
     row_id INT(10) UNSIGNED NOT NULL ,
     area_id SMALLINT(4) UNSIGNED NOT NULL,
     UNIQUE KEY alias (row_id, area_id)
-) ENGINE = MyISAM";
+) ENGINE=MyISAM COMMENT 'Lĩnh vực của từng văn bản'";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_signer(
   id smallint(4) unsigned NOT NULL AUTO_INCREMENT,
@@ -128,27 +131,27 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   positions varchar(255) NOT NULL DEFAULT '',
   addtime int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM COMMENT 'Người kí văn bản'";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_set_replace (
   id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   oid mediumint(8) unsigned NOT NULL DEFAULT '0',
   nid mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM;";
+) ENGINE=MyISAM COMMENT 'Dữ liệu văn bản thay thế, được thay thế';";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_config (
   config_name varchar(30) NOT NULL,
   config_value varchar(255) NOT NULL,
   UNIQUE KEY config_name (config_name)
-)ENGINE=MyISAM";
+)ENGINE=MyISAM COMMENT 'Cấu hình module'";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_examine(
   id smallint(4) unsigned NOT NULL AUTO_INCREMENT,
   title varchar(250) NOT NULL,
   weight smallint(4) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM COMMENT 'Cơ quan thẩm tra'";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_admins(
   userid mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
@@ -159,7 +162,7 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   edit_content tinyint(4) NOT NULL DEFAULT '0',
   del_content tinyint(4) NOT NULL DEFAULT '0',
   UNIQUE KEY userid (userid,subjectid,areaid)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM COMMENT 'Phân quyền quản lý'";
 
 $sql_create_module[] = "INSERT INTO " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_config VALUES
 ('nummain', '50'),

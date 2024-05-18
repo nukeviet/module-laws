@@ -87,8 +87,12 @@ if ($NV_IS_ADMIN_MODULE) {
 
 if ($NV_IS_ADMIN_FULL_MODULE) {
     $submenu['admins'] = $nv_Lang->getModule('admins');
-    $submenu['config'] = $nv_Lang->getModule('config');
 }
+
 if ($module_config[$module_name]['activecomm'] and $NV_IS_ADMIN_MODULE) {
     $submenu['examine'] = $nv_Lang->getModule('examine');
+}
+
+if ($NV_IS_ADMIN_FULL_MODULE) {
+    $submenu['config'] = $nv_Lang->getModule('config');
 }
