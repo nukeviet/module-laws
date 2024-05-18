@@ -15,6 +15,34 @@ if (!defined('NV_IS_FILE_ADMIN')) {
 
 use NukeViet\Module\laws\Shared\Admins;
 
+// Tìm kiếm văn bản qua ajax
+if ($nv_Request->get_title('findlaws', 'post', '') === NV_CHECK_SESSION) {
+    $respon = [
+        'results' => [],
+        'pagination' => [
+            'more' => false
+        ]
+    ];
+
+    $q = $nv_Request->get_title('q', 'post', '');
+    $page = $nv_Request->get_absint('page', 'post', 1);
+    $id = $nv_Request->get_absint('id', 'post', 0);
+
+    if (!empty($q)) {
+        $db->sqlreset()->select('COUNT(id)')->from(NV_PREFIXLANG . '_' . $module_data . '_row');
+        $db->where("(title LIKE '%" . $db->dblikeescape($q) . "%' OR code LIKE '%" . $db->dblikeescape($q) . "%') AND id!=" . $id);
+
+        $num_items = $db->query($db->sql())->fetchColumn();
+        $per_page = 20;
+
+        $db->select('id, title text')->order('title ASC')->limit($per_page)->offset(($page - 1) * $per_page);
+        $respon['results'] = $db->query($db->sql())->fetchAll() ?: [];
+        $respon['pagination']['more'] = (($page * $per_page) < $num_items);
+    }
+
+    nv_jsonOutput($respon);
+}
+
 $contents = '';
 $groups_list = nv_groups_list();
 $catList = nv_catList();
@@ -48,6 +76,8 @@ if ($post['id'] > 0) {
     }
 
     $row['area_id_old'] = $row['area_id'] = $row['area_ids'];
+    $row['replacement'] = array_unique(array_filter(array_map('intval', explode(',', $row['replacement']))));
+    $row['relatement'] = array_unique(array_filter(array_map('intval', explode(',', $row['relatement']))));
     $post = $row;
 
     $post['ptitle'] = $nv_Lang->getModule('editRow');
@@ -58,10 +88,10 @@ if ($post['id'] > 0) {
         nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=main');
     }
 
-    $post['area_id_old'] = $post['area_id'] = [];
+    $post['area_id_old'] = $post['area_id'] = $post['relatement'] = $post['replacement'] = [];
     $post['publtime'] = NV_CURRENTTIME;
     $post['exptime'] = 0;
-    $post['relatement'] = $post['replacement'] = $post['title'] = $post['code'] = $post['introtext'] = $post['bodytext'] = $post['keywords'] = $post['author'] = '';
+    $post['title'] = $post['code'] = $post['introtext'] = $post['bodytext'] = $post['keywords'] = $post['author'] = '';
     $post['groups_view'] = $post['groups_download'] = '6';
     $post['cid'] = $post['sid'] = $post['sgid'] = $post['eid'] = $post['who_view'] = $post['who_download'] = 0;
 
@@ -128,56 +158,18 @@ if ($nv_Request->isset_request('save', 'post')) {
     $post['note'] = $nv_Request->get_title('note', 'post', '', 1);
     $post['note'] = nv_nl2br($post['note'], "<br />");
 
-    $post['replacement'] = nv_substr($nv_Request->get_title('replacement', 'post', '', 1), 0, 255);
-
+    $post['replacement'] = $nv_Request->get_typed_array('replacement', 'post', 'int', []);
     if (!empty($post['replacement'])) {
-        $check_replacement = explode(",", $post['replacement']);
-        $check_replacement = array_map("trim", $check_replacement);
-        $check_replacement = array_map("intval", $check_replacement);
-        $check_replacement = array_filter($check_replacement);
-
-        $error_sub = [];
-        foreach ($check_replacement as $replacement) {
-            $sql = "SELECT COUNT(*) as count FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id=" . $replacement;
-            $result = $db->query($sql);
-            $count = $result->fetchColumn();
-
-            if ($count != 1) {
-                $error_sub[] = sprintf($nv_Lang->getModule('replacementError'), $replacement);
-            }
-        }
-
-        if (empty($error_sub)) {
-            $post['replacement'] = implode(",", $check_replacement);
-        } else {
-            $error = array_merge($error, $error_sub);
-        }
+        $sql = "SELECT id FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id IN(" . implode(',', $post['replacement']) . ") AND id!=" . $post['id'];
+        $ids = $db->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+        $post['replacement'] = array_intersect($post['replacement'], $ids);
     }
 
-    $post['relatement'] = nv_substr($nv_Request->get_title('relatement', 'post', '', 1), 0, 255);
-
+    $post['relatement'] = $nv_Request->get_typed_array('relatement', 'post', 'int', []);
     if (!empty($post['relatement'])) {
-        $check_relatement = explode(",", $post['relatement']);
-        $check_relatement = array_map("trim", $check_relatement);
-        $check_relatement = array_map("intval", $check_relatement);
-        $check_relatement = array_filter($check_relatement);
-
-        $error_sub = [];
-        foreach ($check_relatement as $relatement) {
-            $sql = "SELECT COUNT(*) as count FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id=" . $relatement;
-            $result = $db->query($sql);
-            $count = $result->fetchColumn();
-
-            if ($count != 1) {
-                $error_sub[] = sprintf($nv_Lang->getModule('relatementError'), $relatement);
-            }
-        }
-
-        if (empty($error_sub)) {
-            $post['relatement'] = implode(",", $check_relatement);
-        } else {
-            $error = array_merge($error, $error_sub);
-        }
+        $sql = "SELECT id FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id IN(" . implode(',', $post['relatement']) . ") AND id!=" . $post['id'];
+        $ids = $db->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+        $post['relatement'] = array_intersect($post['relatement'], $ids);
     }
 
     $alias = change_alias($post['title']);
@@ -284,8 +276,8 @@ if ($nv_Request->isset_request('save', 'post')) {
     if (empty($error)) {
         if (!empty($post['id'])) {
             $query = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_row SET
-                replacement=" . $db->quote($post['replacement']) . ",
-                relatement=" . $db->quote($post['relatement']) . ",
+                replacement=" . $db->quote($post['replacement'] ? implode(',', $post['replacement']) : '') . ",
+                relatement=" . $db->quote($post['relatement'] ? implode(',', $post['relatement']) : '') . ",
                 title=" . $db->quote($post['title']) . ",
                 alias=" . $db->quote($alias . "-" . $post['id']) . ",
                 code=" . $db->quote($post['code']) . ",
@@ -317,10 +309,7 @@ if ($nv_Request->isset_request('save', 'post')) {
             $sql = "DELETE FROM " . NV_PREFIXLANG . "_" . $module_data . "_set_replace WHERE nid=" . $post['id'];
             $db->query($sql);
 
-            $replacement = explode(",", $post['replacement']);
-            $replacement = array_filter($replacement);
-
-            foreach ($replacement as $rep) {
+            foreach ($post['replacement'] as $rep) {
                 $db->query("INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_set_replace VALUES( NULL, " . $post['id'] . ", " . $rep . " )");
             }
 
@@ -335,8 +324,8 @@ if ($nv_Request->isset_request('save', 'post')) {
                 status, approval, addtime, edittime, publtime, start_comm_time, end_comm_time,
                 startvalid, exptime, view_hits, download_hits, admin_add, admin_edit
             ) VALUES (
-                " . $db->quote($post['replacement']) . ",
-                " . $db->quote($post['relatement']) . ",
+                " . $db->quote($post['replacement'] ? implode(',', $post['replacement']) : '') . ",
+                " . $db->quote($post['relatement'] ? implode(',', $post['relatement']) : '') . ",
                 " . $db->quote($post['title']) . ",
                 '',
                 " . $db->quote($post['code']) . ",
@@ -370,10 +359,7 @@ if ($nv_Request->isset_request('save', 'post')) {
                 $query = "UPDATE " . NV_PREFIXLANG . "_" . $module_data . "_row SET alias=" . $db->quote($alias) . " WHERE id=" . $_id;
                 $db->query($query);
 
-                $replacement = explode(",", $post['replacement']);
-                $replacement = array_filter($replacement);
-
-                foreach ($replacement as $rep) {
+                foreach ($post['replacement'] as $rep) {
                     $db->query("INSERT INTO " . NV_PREFIXLANG . "_" . $module_data . "_set_replace VALUES( NULL, " . $_id . ", " . $rep . " )");
                 }
 
@@ -411,10 +397,6 @@ if ($nv_Request->isset_request('save', 'post')) {
 $xtpl = new XTemplate('content.tpl', NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file);
 $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
 $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
-$xtpl->assign('NV_BASE_SITEURL', NV_BASE_SITEURL);
-$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
-$xtpl->assign('NV_ASSETS_DIR', NV_ASSETS_DIR);
 $xtpl->assign('MODULE_NAME', $module_name);
 $xtpl->assign('MODULE_DATA', $module_data);
 $xtpl->assign('MODULE_URL', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE);
@@ -569,6 +551,25 @@ if (defined('ACTIVE_COMMENTS')) {
 }
 
 $xtpl->assign('NUMFILE', sizeof($post['files']));
+
+// Xử lý hiển thị văn bản thay thế và văn bản liên quan
+if (!empty($post['replacement'])) {
+    $sql = "SELECT id, title FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id IN(" . implode(',', $post['replacement']) . ") ORDER BY title ASC";
+    $rows = $db->query($sql)->fetchAll();
+    foreach ($rows as $row) {
+        $xtpl->assign('REPLACEMENT', $row);
+        $xtpl->parse('main.replacement');
+    }
+}
+
+if (!empty($post['relatement'])) {
+    $sql = "SELECT id, title FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE id IN(" . implode(',', $post['relatement']) . ") ORDER BY title ASC";
+    $rows = $db->query($sql)->fetchAll();
+    foreach ($rows as $row) {
+        $xtpl->assign('RELATEMENT', $row);
+        $xtpl->parse('main.relatement');
+    }
+}
 
 $xtpl->parse('main');
 $contents = $xtpl->text('main');
