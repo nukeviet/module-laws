@@ -47,10 +47,26 @@
         </div>
         <!-- END: down_in_home -->
         <!-- BEGIN: send_comm -->
-        <div class="c-comment a-center"><span class="label-name">{LANG.comm_time}:</span><a rel="dofollow" href="{ROW.url}#comment" title="{LANG.comm_time}"><span class="send_comm"></span></a></div>
+        <div class="c-comment a-center">
+            <span class="label-name">{LANG.comm_time}:</span>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.comm_time}">
+                <span class="fa-stack">
+                  <i class="fa fa-circle fa-stack-2x text-success"></i>
+                  <i class="fa fa-comments fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </div>
         <!-- END: send_comm -->
         <!-- BEGIN: comm_close -->
-        <div class="c-comment a-center"><span class="label-name">{LANG.comm_time}:</span><a rel="dofollow" href="{ROW.url}#comment" title="{LANG.uncomm_time}"><span class="comm_close"></span></a></div>
+        <div class="c-comment a-center">
+            <span class="label-name">{LANG.comm_time}:</span>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.uncomm_time}">
+                <span class="fa-stack">
+                  <i class="fa fa-comments fa-stack-1x"></i>
+                  <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                </span>
+            </a>
+        </div>
         <!-- END: comm_close -->
     </div>
     <!-- END: loop -->

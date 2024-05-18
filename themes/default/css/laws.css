@@ -343,14 +343,6 @@ ul.list-none li {
     line-height: 1.6em;
 }
 
-.center {
-    text-align: center
-}
-
-.infoerror {
-    color: #FF0000;
-}
-
 /* BLOCK TOP AREA CENTER */
 div.blocktop10area {
     padding: 5px;
@@ -371,7 +363,7 @@ div.blocktop10area ul li {
     width: 48%;
 }
 
-/* BLOCK SEARCH */
+/* SEARCH */
 .formsearch {
     padding: 5px 5px 0px 5px;
     margin: 5px 0px 0px 0px;
@@ -389,6 +381,12 @@ table.inner-search input[type=text], table.inner-search input[type=submit], tabl
 table.inner-search input[type=submit], table.inner-search input[type=button] {
     background-color: #FFFFFF;
     cursor: pointer;
+}
+
+a#btn-search {
+    display: block;
+    font-size: 12px;
+    margin-top: 7px;
 }
 
 /* BLOCK TOP LAW */
@@ -416,63 +414,6 @@ table.inner-search input[type=submit], table.inner-search input[type=button] {
     color: #666666;
 }
 
-/* DETAIL */
-h3.lawh3 {
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-bottom-color: #CCCCCC;
-    font-size: 20px;
-    line-height: 25px;
-    padding-bottom: 10px;
-    margin-bottom: 5px;
-    padding-top: 10px;
-    margin-top: 0px;
-    color: #02659d;
-}
-
-h3.subtitle {
-    font-size: 20px;
-    line-height: 25px;
-    margin-bottom: 5px;
-    padding-top: 10px;
-    margin-top: 0px;
-    color: #02659d;
-}
-
-a#btn-search {
-    display: block;
-    font-size: 12px;
-    margin-top: 7px;
-}
-
-.laws-download-file {
-    margin-top: -6px;
-}
-
-.laws-download-file .list-group-item:first-child {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-}
-
-.laws-download-file .list-group-item .badge {
-    float: right;
-    width: 22px;
-    height: 22px;
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 22px;
-    color: #fff;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    background-color: #5cb85c;
-    border-radius: 15px;
-}
-
-.laws-download-file .list-group-item .badge a {
-    color: #fff;
-}
-
 #advance .form-inline label{
     width:100%;
 }
@@ -481,18 +422,4 @@ a#btn-search {
     margin-right: 2px;
 }
 
-.send_comm {
-    width: 25px;
-    height: 25px;
-    background: url(../images/laws/comment.png) no-repeat center;
-    background-size: 25px 25px;
-    display: inline-block;
-}
-
-.comm_close {
-    width: 25px;
-    height: 25px;
-    background: url(../images/laws/comment_close.png) no-repeat center;
-    background-size: 20px 20px;
-    display: inline-block;
-}
+/* Trang chi tiết */
