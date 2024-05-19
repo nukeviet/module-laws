@@ -31,6 +31,10 @@ if (empty($row)) {
     nv_redirect_location($base_url);
 }
 
+$page_title = $row['title'];
+$key_words = $row['keywords'];
+$description = $row['introtext'];
+
 $base_url .= '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $row['alias'];
 $page_url = $base_url;
 $canonicalUrl = getCanonicalUrl($page_url);
@@ -95,10 +99,6 @@ if ($nv_Request->isset_request('pdf', 'get')) {
     nv_htmlOutput($contents);
 }
 
-$page_title = $row['title'];
-$key_words = $row['keywords'];
-$description = $row['introtext'];
-
 // Lay van ban thay the no
 if (!empty($row['replacement'])) {
     $sql = 'SELECT title, alias, code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id IN(' . $row['replacement'] . ')';
@@ -155,21 +155,77 @@ if (!empty($row['eid'])) {
 }
 
 // File download
+$row['quick_view'] = 0;
+$row['groups_download_array'] = explode(',', $row['groups_download']);
+$quick_view_exts = [
+    'pdf' => 'pdf',
+    // Word
+    'docx' => 'word',
+    'doc' => 'word',
+    'dotx' => 'word',
+    'dot' => 'word',
+    'dotm' => 'word',
+    'docm' => 'word',
+    'odt' => 'word',
+    // Excel
+    'xlsx' => 'excel',
+    'xls' => 'excel',
+    'xlsm' => 'excel',
+    'xlsb' => 'excel',
+    'xltx' => 'excel',
+    'xltm' => 'excel',
+    'csv' => 'excel',
+    'ods' => 'excel',
+    // PowerPoint
+    'pptx' => 'powerpoint',
+    'ppt' => 'powerpoint',
+    'ppsx' => 'powerpoint',
+    'pps' => 'powerpoint',
+    'potx' => 'powerpoint',
+    'pot' => 'powerpoint',
+    'potm' => 'powerpoint',
+    'ppsm' => 'powerpoint',
+    'odp' => 'powerpoint',
+    // Image
+    'jpg' => 'image',
+    'png' => 'image',
+    'gif' => 'image',
+    'webp' => 'image',
+    'jpeg' => 'image',
+];
+
 if (!empty($row['files'])) {
     $row['files'] = explode(',', $row['files']);
     $files = $row['files'];
     $row['files'] = [];
 
     foreach ($files as $id => $file) {
-        $file_title = (!preg_match("/^http*/", $file)) ? basename($file) : $nv_Lang->getModule('click_to_download');
-        $row['files'][] = array(
+        $is_remote = (strpos($file, '//') !== false);
+        $ext = $is_remote ? '' : nv_getextension($file);
+        $file_title = !$is_remote ? basename($file) : $nv_Lang->getModule('click_to_download');
+        $file_type = $quick_view_exts[$ext] ?? '';
+        $url = !$is_remote ? urlRewriteWithDomain($base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $lawalias . '&amp;download=1&amp;id=' . $id, NV_MY_DOMAIN) : $file;
+
+        // Nếu pdf và ảnh thì xem nhanh nếu có set quyền download cũng được, các loại khác public download mới xem được
+        $quick_view = ($file_type == 'image' or $file_type == 'pdf') ? true : (($file_type != '' and in_array(6, $row['groups_download_array'])) ? true : false);
+        !$nv_laws_setting['detail_pdf_quick_view'] && $quick_view = false;
+
+        $row['files'][] = [
             'title' => $file_title,
             'key' => md5($id . $file_title),
             'ext' => nv_getextension($file_title),
             'titledown' => $nv_Lang->getModule('download') . ' ' . (count($files) > 1 ? $id + 1 : ''),
-            'url' => (!preg_match("/^http*/", $file)) ? $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $lawalias . '&amp;download=1&amp;id=' . $id : $file,
-            'urlpdf' => $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $lawalias . '&amp;pdf=1&amp;id=' . $id
-        );
+            'url' => $url,
+            'url_encode' => urlencode(str_replace('&amp;', '&', $url)),
+            'urlpdf' => $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $lawalias . '&amp;pdf=1&amp;id=' . $id,
+            'file_type' => $file_type,
+            'quick_view' => $quick_view,
+        ];
+
+        // Được phép tải về và file xem được trực tuyến
+        if (nv_user_in_groups($row['groups_download']) and $quick_view) {
+            $row['quick_view']++;
+        }
     }
 }
 
@@ -252,6 +308,158 @@ if (isset($site_mods['comment']) and isset($module_config[$module_name]['activec
 } else {
     $content_comment = '';
 }
+
+/*
+ * Định các tabs hiển thị
+ */
+$tab_show = $nv_Request->get_title('tab', 'get', '');
+if ($tab_show and !in_array($tab_show, ['basic', 'body', 'others', 'files'])) {
+    $tab_show = '';
+}
+$row['tabs'] = [];
+$row['tab_show'] = $tab_show ? $tab_show : 'basic';
+// Tab cơ bản
+$row['tabs']['doc-basic'] = [
+    'active' => (empty($tab_show) or $tab_show == 'basic'),
+    'title' => $nv_Lang->getModule('tab_basic'),
+    'link' => $page_url . '&amp;tab=basic'
+];
+// Tab nội dung
+if (!empty($row['bodytext']) or $row['quick_view']) {
+    $row['tabs']['doc-body'] = [
+        'active' => (empty($tab_show) or $tab_show == 'body'),
+        'title' => $nv_Lang->getModule('bodytext'),
+        'link' => $page_url . '&amp;tab=body'
+    ];
+    // Active tab nội dung thì không active mặc định tab basic nữa
+    if (empty($tab_show)) {
+        $row['tabs']['doc-basic']['active'] = 0;
+        $row['tab_show'] = 'body';
+    }
+}
+// Tab liên quan
+if (!empty($other_cat) or !empty($other_area) or !empty($other_subject) or !empty($other_signer)) {
+    $row['tabs']['doc-others'] = [
+        'active' => ($tab_show == 'others'),
+        'title' => $nv_Lang->getModule('tab_others'),
+        'link' => $page_url . '&amp;tab=others'
+    ];
+}
+// Tab tải về
+if (!empty($row['files'])) {
+    $row['tabs']['doc-files'] = [
+        'active' => ($tab_show == 'files'),
+        'title' => $nv_Lang->getModule('tab_download'),
+        'link' => $page_url . '&amp;tab=files'
+    ];
+}
+
+/*
+ * Định các field hiển thị trong bảng thuộc tính
+ */
+$row['properties'] = [];
+
+// Cơ quan ban hành
+if (empty($nv_laws_setting['detail_hide_empty_field']) or isset($nv_laws_listsubject[$row['sid']])) {
+    $row['properties']['subject'] = [
+        'label' => $nv_Lang->getModule('subject'),
+        'link' => !empty($nv_laws_setting['detail_show_link_subject']) ? (NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=subject/' . $nv_laws_listsubject[$row['sid']]['alias']) : '',
+        'value' => $nv_laws_listsubject[$row['sid']]['title']
+    ];
+}
+// Số hiệu văn bản
+$row['properties']['code'] = [
+    'label' => $nv_Lang->getModule('code'),
+    'value' => $row['code']
+];
+// Loại văn bản
+if (empty($nv_laws_setting['detail_hide_empty_field']) or isset($nv_laws_listcat[$row['cid']])) {
+    $row['properties']['cat'] = [
+        'label' => $nv_Lang->getModule('cat'),
+        'link' => !empty($nv_laws_setting['detail_show_link_cat']) ? (NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $nv_laws_listcat[$row['cid']]['alias']) : '',
+        'value' => $nv_laws_listcat[$row['cid']]['title']
+    ];
+}
+// Người kí
+if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($row['signer'])) {
+    $row['properties']['signer'] = [
+        'label' => $nv_Lang->getModule('signer'),
+        'link' => !empty($nv_laws_setting['detail_show_link_signer']) ? $row['signer_url'] : '',
+        'value' => $row['signer']
+    ];
+}
+// Lĩnh vực
+if (!empty($row['aid'])) {
+    $aid = [];
+    foreach ($row['aid'] as $_aid) {
+        if (!isset($nv_laws_listarea[$_aid])) {
+            continue;
+        }
+        $aid[$_aid] = [
+            'value' => $nv_laws_listarea[$_aid]['title'],
+            'link' => !empty($nv_laws_setting['detail_show_link_area']) ? (NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=area/' . $nv_laws_listarea[$_aid]['alias']) : '',
+        ];
+    }
+    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($aid)) {
+        $row['properties']['area'] = [
+            'label' => $nv_Lang->getModule('area'),
+            'value' => $aid
+        ];
+    }
+}
+if (defined('ACTIVE_COMMENTS')) {
+    // Thuộc tính trong trường hợp lấy ý kiến dự thảo: Ngày bắt đầu, kết thúc lấy ý kiến và cơ quan thẩm tra
+    $row['properties']['start_comm_time'] = [
+        'label' => $nv_Lang->getModule('start_comm_time_title'),
+        'value' => $nv_Lang->getModule('unlimit'),
+        'time' => $row['start_comm_time']
+    ];
+    $row['properties']['end_comm_time'] = [
+        'label' => $nv_Lang->getModule('end_comm_time_title'),
+        'value' => $nv_Lang->getModule('unlimit'),
+        'time' => $row['end_comm_time']
+    ];
+    $row['properties']['approval'] = [
+        'label' => $nv_Lang->getModule('approval'),
+        'value' => $nv_Lang->getModule('e' . $row['approval'])
+    ];
+    // Cơ quan thẩm tra
+    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($row['examine'])) {
+        $row['properties']['examine'] = [
+            'label' => $nv_Lang->getModule('examine'),
+            'value' => $row['examine']
+        ];
+    }
+} else {
+    // Thuộc tính trong trường hợp văn bản thường
+    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($row['effective_status'])) {
+        $row['properties']['effective_status'] = [
+            'label' => $nv_Lang->getModule('effective_status'),
+            'value' => $nv_Lang->getModule('effective_status' . $row['effective_status'])
+        ];
+    }
+    // Ngày ban hành
+    $row['properties']['publtime'] = [
+        'label' => $nv_Lang->getModule('publtime'),
+        'time' => $row['publtime']
+    ];
+    // Ngày hiệu lực
+    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($row['startvalid'])) {
+        $row['properties']['startvalid'] = [
+            'label' => $nv_Lang->getModule('startvalid'),
+            'time' => $row['startvalid']
+        ];
+    }
+    // Ngày hết hiệu lực
+    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($row['exptime'])) {
+        $row['properties']['exptime'] = [
+            'label' => $nv_Lang->getModule('exptime'),
+            'time' => $row['exptime']
+        ];
+    }
+}
+
+//relatement,replacement,unreplacement
 
 $contents = nv_theme_laws_detail($row, $other_cat, $other_area, $other_subject, $other_signer, $content_comment);
 

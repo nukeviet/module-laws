@@ -23,7 +23,20 @@ $(function() {
     });
     $('[data-toggle="collapsepdf"]').each(function() {
         $('#' + $(this).attr('id')).on('shown.bs.collapse', function() {
-            $(this).find('iframe').attr('src', $(this).data('src'));
+            var $this = $(this);
+            var html = '<div class="quickview-holder">&nbsp;</div>';
+            if ($this.data('type') == 'image') {
+                html += '<div class="text-center"><img class="quickview-image" alt="" src="' + $this.data('url') + '"></div>';
+            } else if ($this.data('type') == 'pdf') {
+                html += '<div class="iframe-outer"><iframe src="' + $this.data('pdf') + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
+            } else {
+                html += '<div class="iframe-outer"><iframe src="https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURI($this.data('url')) + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
+            }
+            $this.html(html);
+        });
+
+        $('#' + $(this).attr('id')).on('hidden.bs.collapse', function() {
+            $(this).html('<div class="quickview-holder">&nbsp;</div>');
         });
     });
 });

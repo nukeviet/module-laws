@@ -1,173 +1,117 @@
 <!-- BEGIN: main -->
-<h1 class="lawh3">{DATA.title}</h1>
-<p>{DATA.introtext}</p>
-
-<!-- BEGIN: field -->
-<div class="table-responsive">
-    <table class="table table-striped table-bordered table-hover">
-        <tbody>
-            <tr class="hoatim">
-                <td style="width:160px" class="text-right">{LANG.code}</td>
-                <td>{DATA.code}</td>
-            </tr>
-            <!-- BEGIN: publtime -->
-            <tr class="hoatim">
-                <td class="text-right">{LANG.publtime}</td>
-                <td>{DATA.publtime}</td>
-            </tr>
-            <!-- END: publtime -->
-            <!-- BEGIN: start_comm_time -->
-            <tr class="hoatim">
-                <td class="text-right">{LANG.start_comm_time_title}</td>
-                <td>{DATA.start_comm_time}</td>
-            </tr>
-            <!-- END: start_comm_time -->
-            <!-- BEGIN: end_comm_time -->
-            <tr class="hoatim">
-                <td class="text-right">{LANG.end_comm_time_title}</td>
-                <td>{DATA.end_comm_time}</td>
-            </tr>
-            <!-- END: end_comm_time -->
-             <!-- BEGIN: approval -->
-            <tr class="hoatim">
-                <td class="text-right">{LANG.approval}</td>
-                <td>{DATA.approval}</td>
-            </tr>
-            <!-- END: approval -->
-            <!-- BEGIN: startvalid -->
-            <tr class="hoatim">
-                <td class="text-right">{LANG.startvalid}</td>
-                <td>{DATA.startvalid}</td>
-            </tr>
-            <!-- END: startvalid -->
-            <!-- BEGIN: exptime -->
-            <tr class="hoatim">
-                <td class="text-right">{LANG.exptime}</td>
-                <td>{DATA.exptime}</td>
-            </tr>
-            <!-- END: exptime -->
-            <!-- BEGIN: cat -->
-            <tr class="hoatim">
-                <td class="text-right">{LANG.cat}</td>
-                <td>
-                    <!-- BEGIN: link --><a rel="dofollow" href="{DATA.cat_url}" title="{DATA.cat}">{DATA.cat}</a><!-- END: link -->
-                    <!-- BEGIN: text -->{DATA.cat}<!-- END: text -->
-                </td>
-            </tr>
-            <!-- END: cat -->
-            <tr class="hoatim">
-                <td class="text-right">{LANG.area}</td>
-                <td>
-                    <!-- BEGIN: area_link --><a rel="dofollow" href="{AREA.url}" title="{AREA.title}">{AREA.title}</a><br /><!-- END: area_link -->
-                    <!-- BEGIN: area_text -->{AREA.title}<br /><!-- END: area_text -->
-                </td>
-            </tr>
-            <!-- BEGIN: subject -->
-            <tr class="hoatim">
-                <td class="text-right">{LANG.subject}</td>
-                <td>
-                    <!-- BEGIN: link --><a rel="dofollow" href="{DATA.subject_url}" title="{DATA.subject}">{DATA.subject}</a><!-- END: link -->
-                    <!-- BEGIN: text -->{DATA.subject}<!-- END: text -->
-                </td>
-            </tr>
-            <!-- END: subject -->
-            <!-- BEGIN: examine -->
-            <tr class="hoatim">
-                <td class="text-right">{LANG.examine}</td>
-                <td>
-                    {DATA.examine}
-                </td>
-            </tr>
-            <!-- END: examine -->
-            <!-- BEGIN: signer -->
-            <tr class="hoatim">
-                <td class="text-right">{LANG.signer}</td>
-                <td>
-                    <!-- BEGIN: link --><a rel="dofollow" href="{DATA.signer_url}" title="{DATA.signer}">{DATA.signer}</a><!-- END: link -->
-                    <!-- BEGIN: text -->{DATA.signer}<!-- END: text -->
-                </td>
-            </tr>
-            <!-- END: signer -->
-            <!-- BEGIN: replacement -->
-            <tr>
-                <td class="text-right">{LANG.replacement}</td>
-                <td>
-                    <ul class="list-item">
-                        <!-- BEGIN: loop -->
-                        <li><a rel="dofollow" href="{replacement.link}" title="{replacement.title}">{replacement.code}</a> - {replacement.title}</li>
-                        <!-- END: loop -->
-                    </ul>
-                </td>
-            </tr>
-            <!-- END: replacement -->
-            <!-- BEGIN: unreplacement -->
-            <tr>
-                <td class="text-right">{LANG.unreplacement}</td>
-                <td>
-                    <ul class="list-item">
-                        <!-- BEGIN: loop -->
-                        <li><a rel="dofollow" href="{unreplacement.link}" title="{unreplacement.title}">{unreplacement.code}</a> - {unreplacement.title}</li>
-                        <!-- END: loop -->
-                    </ul>
-                </td>
-            </tr>
-            <!-- END: unreplacement -->
-            <!-- BEGIN: relatement -->
-            <tr>
-                <td class="text-right">{LANG.relatement}</td>
-                <td>
-                    <ul class="list-item">
-                        <!-- BEGIN: loop -->
-                        <li><a rel="dofollow" href="{relatement.link}" title="{relatement.title}">{relatement.code}</a> - {relatement.title}</li>
-                        <!-- END: loop -->
-                    </ul>
-                </td>
-            </tr>
-            <!-- END: relatement -->
-        </tbody>
-    </table>
-</div>
-<!-- END: field -->
-
-<!-- BEGIN: bodytext -->
-<h2 class="lawh3">{LANG.bodytext}</h2>
-<p class="m-bottom">{DATA.bodytext}</p>
-<!-- END: bodytext -->
-
-<div id="comment"></div>
-<!-- BEGIN: files -->
-<h2 class="lawh3"><em class="fa fa-download">&nbsp;</em>{LANG.files}</h2>
-<div class="list-group laws-download-file">
-    <!-- BEGIN: loop -->
-    <div class="list-group-item">
-        <!-- BEGIN: show_quick_view --><span class="badge"><a rel="dofollow" role="button" data-toggle="collapse" href="#pdf{FILE.key}" aria-expanded="false" aria-controls="pdf{FILE.key}"><i class="fa fa-file-pdf-o" data-toggle="tooltip" data-title="{LANG.quick_view_pdf}"></i></a></span><!-- END: show_quick_view -->
-        <a rel="dofollow" href="{FILE.url}" title="{FILE.titledown}{FILE.title}">{FILE.titledown}: <strong>{FILE.title}</strong></a>
-        <!-- BEGIN: content_quick_view -->
-        <div class="clearfix"></div>
-        <div class="collapse" id="pdf{FILE.key}" data-src="{FILE.urlpdf}" data-toggle="collapsepdf">
-            <div style="height:10px"></div>
-            <div class="well">
-                <iframe frameborder="0" height="600" scrolling="yes" src="" width="100%"></iframe>
+<div class="law-detail{RESPONSIVE}">
+    <h1 class="margin-bottom-lg">{DATA.title}</h1>
+    <!-- BEGIN: admin_link -->
+    <div class="list-group clearfix">
+        <a rel="nofollow" class="btn btn-primary btn-xs" href="{DATA.edit_link}"><i class="fa fa-edit"></i> {LANG.edit}</a>
+        <a rel="nofollow" class="btn btn-danger btn-xs" href="javascript:void(0);" onclick="nv_delete_law('{LINK_DELETE}', {DATA.id});"><i class="fa fa-trash-o"></i> {LANG.delete}</a>
+    </div>
+    <!-- END: admin_link -->
+    <ul class="nav nav-tabs" role="tablist">
+        <!-- BEGIN: tab -->
+        <li role="presentation"<!-- BEGIN: active --> class="active"<!-- END: active -->><a href="#{ID}" data-location="{LINK}" aria-controls="{ID}" role="tab" data-toggle="tab">{TITLE}</a></li>
+        <!-- END: tab -->
+    </ul>
+    <div class="metas"></div>
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane{ACTIVE_BASIC}" id="doc-basic">
+            <div class="panel-body">
+                <p>{DATA.introtext}</p>
+                <!-- BEGIN: properties -->
+                <table class="table table-properties table-bordered mb-0">
+                    <tbody>
+                        <!-- BEGIN: tr -->
+                        <tr>
+                            <!-- BEGIN: td -->
+                            <td class="col-header fw-bold">{COL.label}</td>
+                            <td<!-- BEGIN: colspan --> colspan="3"<!-- END: colspan -->>
+                                <!-- BEGIN: link --><a href="{COL.link}">{COL.value}</a><!-- END: link -->
+                                <!-- BEGIN: text -->{COL.value}<!-- END: text -->
+                                <!-- BEGIN: value --><!-- BEGIN: separator -->, <!-- END: separator --><!-- BEGIN: link --><a href="{COL_VALUE.link}">{COL_VALUE.value}</a><!-- END: link --><!-- BEGIN: text -->{COL_VALUE.value}<!-- END: text --><!-- END: value -->
+                            </td>
+                            <!-- END: td -->
+                        </tr>
+                        <!-- END: tr -->
+                    </tbody>
+                </table>
+                <!-- END: properties -->
             </div>
         </div>
-        <!-- END: content_quick_view -->
+        <!-- BEGIN: docbody -->
+        <div role="tabpanel" class="tab-pane{ACTIVE_BODY}" id="doc-body">
+            <div class="panel-body">
+                <!-- BEGIN: bodytext -->
+                <div class="bodytext">
+                    {DATA.bodytext}
+                </div>
+                <!-- END: bodytext -->
+                <!-- BEGIN: fileview -->
+                <p class="text-break-hard margin-bottom"><i class="{FILE.icon}"></i> <strong>{FILE.title}</strong>:</p>
+                <div class="form-group">
+                    <!-- BEGIN: iframe -->
+                    <div class="iframe-outer">
+                        <iframe src="https://view.officeapps.live.com/op/embed.aspx?src={FILE.url_encode}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <!-- END: iframe -->
+                    <!-- BEGIN: pdf -->
+                    <div class="iframe-outer">
+                        <iframe src="{FILE.urlpdf}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <!-- END: pdf -->
+                    <!-- BEGIN: img -->
+                    <div class="text-center">
+                        <img class="quickview-image" alt="{DATA.title}" src="{FILE.url}">
+                    </div>
+                    <!-- END: img -->
+                </div>
+                <!-- END: fileview -->
+            </div>
+        </div>
+        <!-- END: docbody -->
+        <!-- BEGIN: files -->
+        <div role="tabpanel" class="tab-pane{ACTIVE_FILES}" id="doc-files">
+            <div class="panel-body">
+                <div class="h2 fw-bold margin-bottom-lg"><i class="fa fa-download"></i> {LANG.download}</div>
+                <!-- BEGIN: noright -->
+                <div class="alert alert-warning mb-0">{LANG.info_download_no}</div>
+                <!-- END: noright -->
+                <!-- BEGIN: content -->
+                <div class="list-group laws-download-file mb-0">
+                    <!-- BEGIN: loop -->
+                    <div class="list-group-item">
+                        <div class="download-item">
+                            <div class="iicon"><i class="{FILE.icon}"></i></div>
+                            <div class="iname">
+                                <a rel="nofollow" href="{FILE.url}" title="{FILE.titledown}{FILE.title}">{FILE.titledown}: <strong>{FILE.title}</strong></a>
+                            </div>
+                            <!-- BEGIN: show_quick_view -->
+                            <div class="iview">
+                                <a rel="nofollow" role="button" data-toggle="collapse" href="#quickview-{FILE.key}" aria-expanded="false" aria-controls="quickview-{FILE.key}">
+                                    <span class="fa-stack" data-toggle="tooltip" data-title="{LANG.quick_view_pdf}">
+                                        <i class="fa fa-circle fa-stack-2x text-success"></i>
+                                        <i class="fa fa-eye fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </div>
+                            <!-- END: show_quick_view -->
+                        </div>
+                        <!-- BEGIN: content_quick_view -->
+                        <div class="clearfix"></div>
+                        <div class="collapse" id="quickview-{FILE.key}" data-pdf="{FILE.urlpdf}" data-url="{FILE.url}" data-type="{FILE.file_type}" data-toggle="collapsepdf">
+                            <div class="quickview-holder">&nbsp;</div>
+                        </div>
+                        <!-- END: content_quick_view -->
+                    </div>
+                    <!-- END: loop -->
+                </div>
+                <!-- END: content -->
+            </div>
+        </div>
+        <!-- END: files -->
     </div>
-    <!-- END: loop -->
 </div>
-<!-- END: files -->
 
-<!-- BEGIN: nodownload -->
-<h2 class="lawh3">{LANG.files}</h2>
-<p class="text-center m-bottom">{LANG.info_download_no}</p>
-<!-- END: nodownload -->
-
-<!-- BEGIN: admin_link -->
-<div class="text-right list-group clearfix">
-    <a rel="dofollow" class="btn btn-primary btn-xs" href="{DATA.edit_link}"><i class="fa fa-edit"></i> {LANG.edit}</a>
-    <a rel="dofollow" class="btn btn-danger btn-xs" href="javascript:void(0);" onclick="nv_delete_law('{LINK_DELETE}', {DATA.id});"><i class="fa fa-trash-o"></i> {LANG.delete}</a>
-</div>
-<!-- END: admin_link -->
-
+<div id="comment"></div>
 <!-- BEGIN: comment -->
 <div class="news_column panel panel-default">
     <div class="panel-body">

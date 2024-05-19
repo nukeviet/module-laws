@@ -204,165 +204,88 @@ function nv_theme_laws_maincat($mod, $array_data)
 /**
  * Xem chi tiết văn bản
  *
- * @param mixed $array_data
- * @param mixed $other_cat
- * @param mixed $other_area
- * @param mixed $other_subject
- * @param mixed $other_signer
+ * @param array $array_data
+ * @param array $other_cat
+ * @param array $other_area
+ * @param array $other_subject
+ * @param array $other_signer
+ * @param string $content_comment
  * @return
  */
-function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = array(), $other_subject = array(), $other_signer = array(), $content_comment = '')
+function nv_theme_laws_detail($array_data, $other_cat, $other_area, $other_subject, $other_signer, $content_comment)
 {
     global $global_config, $module_name, $module_config, $module_info, $op, $nv_laws_listcat, $nv_laws_listarea, $nv_laws_listsubject, $client_info, $nv_laws_setting, $nv_Lang;
 
     $xtpl = new XTemplate($module_info['funcs'][$op]['func_name'] . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
     $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
 
-    $array_data['publtime'] = $array_data['publtime'] ? nv_date('d/m/Y', $array_data['publtime']) : '';
-    $array_data['startvalid'] = $array_data['startvalid'] ? nv_date('d/m/Y', $array_data['startvalid']) : '';
-    $array_data['exptime'] = $array_data['exptime'] ? nv_date('d/m/Y', $array_data['exptime']) : '';
-    $array_data['start_comm_time'] = $array_data['start_comm_time'] ? nv_date('d/m/Y', $array_data['start_comm_time']) : $nv_Lang->getModule('unlimit');
-    $array_data['end_comm_time'] = $array_data['end_comm_time'] ? nv_date('d/m/Y', $array_data['end_comm_time']) : $nv_Lang->getModule('unlimit');
-    $array_data['approval'] = $array_data['approval'] == 1 ? $nv_Lang->getModule('e1') : $nv_Lang->getModule('e0');
-    if (isset($nv_laws_listcat[$array_data['cid']])) {
-        $array_data['cat'] = $nv_laws_listcat[$array_data['cid']]['title'];
-        $array_data['cat_url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $nv_laws_listcat[$array_data['cid']]['alias'];
-    } else {
-        $array_data['cat'] = '';
-        $array_data['cat_url'] = '#';
+    $enable_responsive = (!empty($global_config['current_theme_type']) and $global_config['current_theme_type'] == 'd') ? false : true;
+    $xtpl->assign('RESPONSIVE', $enable_responsive ? ' enable-responsive' : '');
+
+    foreach ($array_data['tabs'] as $tab_id => $tab) {
+        $xtpl->assign('ID', $tab_id);
+        $xtpl->assign('TITLE', $tab['title']);
+        $xtpl->assign('LINK', $tab['link']);
+
+        if (!empty($tab['active'])) {
+            $xtpl->parse('main.tab.active');
+        }
+
+        $xtpl->parse('main.tab');
     }
 
-    if (isset($nv_laws_listsubject[$array_data['sid']])) {
-        $array_data['subject'] = $nv_laws_listsubject[$array_data['sid']]['title'];
-        $array_data['subject_url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=subject/' . $nv_laws_listsubject[$array_data['sid']]['alias'];
-    } else {
-        $array_data['subject'] = '';
-        $array_data['subject_url'] = '';
-    }
-
+    $xtpl->assign('ACTIVE_BASIC', $array_data['tab_show'] == 'basic' ? ' active' : '');
+    $xtpl->assign('ACTIVE_BODY', $array_data['tab_show'] == 'body' ? ' active' : '');
+    $xtpl->assign('ACTIVE_OTHERS', $array_data['tab_show'] == 'others' ? ' active' : '');
+    $xtpl->assign('ACTIVE_FILES', $array_data['tab_show'] == 'files' ? ' active' : '');
     $xtpl->assign('DATA', $array_data);
 
-    // Ẩn giá trị trống
-    $filled_field = 0;
-    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['cat'])) {
-        $filled_field ++;
-        if (!empty($nv_laws_setting['detail_show_link_cat'])) {
-            $xtpl->parse('main.field.cat.link');
-        } else {
-            $xtpl->parse('main.field.cat.text');
-        }
-        $xtpl->parse('main.field.cat');
-    }
-    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['subject'])) {
-        $filled_field ++;
-        if (!empty($nv_laws_setting['detail_show_link_subject'])) {
-            $xtpl->parse('main.field.subject.link');
-        } else {
-            $xtpl->parse('main.field.subject.text');
-        }
-        $xtpl->parse('main.field.subject');
-    }
+    // Xử lý bảng thuộc tính
+    if (!empty($array_data['properties'])) {
+        $properties = array_chunk($array_data['properties'], 2, true);
 
-    if ($module_config[$module_name]['activecomm']) {
-        $xtpl->parse('main.field.start_comm_time');
-        $xtpl->parse('main.field.end_comm_time');
-        $xtpl->parse('main.field.approval');
-    }
+        foreach ($properties as $lines) {
+            $num = sizeof($lines);
 
-    if ((empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['publtime'])) && $module_config[$module_name]['activecomm'] == 0) {
-        $filled_field ++;
-        $xtpl->parse('main.field.publtime');
-    }
+            foreach ($lines as $col) {
+                if ($num < 2) {
+                    $xtpl->parse('main.properties.tr.td.colspan');
+                }
+                !empty($col['time']) && ($col['value'] = nv_date('d/m/Y', $col['time']));
+                $xtpl->assign('COL', $col);
 
-    if ((empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['examine'])) && $module_config[$module_name]['activecomm'] == 1) {
-        $filled_field ++;
-        $xtpl->parse('main.field.examine');
-    }
-
-    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['startvalid'])) {
-        $filled_field ++;
-        $xtpl->parse('main.field.startvalid');
-    }
-    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['exptime'])) {
-        $filled_field ++;
-        $xtpl->parse('main.field.exptime');
-    }
-    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['signer'])) {
-        $filled_field ++;
-        if (!empty($nv_laws_setting['detail_show_link_signer'])) {
-            $xtpl->parse('main.field.signer.link');
-        } else {
-            $xtpl->parse('main.field.signer.text');
-        }
-        $xtpl->parse('main.field.signer');
-    }
-
-    if (!empty($array_data['aid'])) {
-        foreach ($array_data['aid'] as $aid) {
-            $area['title'] = $nv_laws_listarea[$aid]['title'];
-            $area['url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=area/' . $nv_laws_listarea[$aid]['alias'];
-            $xtpl->assign('AREA', $area);
-
-            if (!empty($nv_laws_setting['detail_show_link_area'])) {
-                $xtpl->parse('main.field.area_link');
-            } else {
-                $xtpl->parse('main.field.area_text');
-            }
-        }
-        $filled_field ++;
-    }
-
-    if (!empty($array_data['relatement'])) {
-        foreach ($array_data['relatement'] as $relatement) {
-            $xtpl->assign('relatement', $relatement);
-            $xtpl->parse('main.field.relatement.loop');
-        }
-        $xtpl->parse('main.field.relatement');
-        $filled_field ++;
-    }
-
-    if (!empty($array_data['replacement'])) {
-        foreach ($array_data['replacement'] as $replacement) {
-            $xtpl->assign('replacement', $replacement);
-            $xtpl->parse('main.field.replacement.loop');
-        }
-        $xtpl->parse('main.field.replacement');
-        $filled_field ++;
-    }
-
-    if (!empty($array_data['unreplacement'])) {
-        foreach ($array_data['unreplacement'] as $unreplacement) {
-            $xtpl->assign('unreplacement', $unreplacement);
-            $xtpl->parse('main.field.unreplacement.loop');
-        }
-        $xtpl->parse('main.field.unreplacement');
-        $filled_field ++;
-    }
-
-    if ($filled_field > 0) {
-        $xtpl->parse('main.field');
-    }
-
-    if (!empty($array_data['bodytext'])) {
-        $xtpl->parse('main.bodytext');
-    }
-
-    if (nv_user_in_groups($array_data['groups_download'])) {
-        if (!empty($array_data['files'])) {
-            foreach ($array_data['files'] as $file) {
-                $xtpl->assign('FILE', $file);
-
-                if ($file['ext'] == 'pdf' and !empty($nv_laws_setting['detail_pdf_quick_view'])) {
-                    $xtpl->parse('main.files.loop.show_quick_view');
-                    $xtpl->parse('main.files.loop.content_quick_view');
+                if (!is_array($col['value'])) {
+                    // Dạng single value
+                    if (empty($col['link'])) {
+                        $xtpl->parse('main.properties.tr.td.text');
+                    } else {
+                        $xtpl->parse('main.properties.tr.td.link');
+                    }
+                } else {
+                    // Dạng multi value
+                    $stt = 0;
+                    foreach ($col['value'] as $value) {
+                        $xtpl->assign('COL_VALUE', $value);
+                        $stt++;
+                        if ($stt > 1) {
+                            $xtpl->parse('main.properties.tr.td.value.separator');
+                        }
+                        if (empty($value['link'])) {
+                            $xtpl->parse('main.properties.tr.td.value.text');
+                        } else {
+                            $xtpl->parse('main.properties.tr.td.value.link');
+                        }
+                        $xtpl->parse('main.properties.tr.td.value');
+                    }
                 }
 
-                $xtpl->parse('main.files.loop');
+                $xtpl->parse('main.properties.tr.td');
             }
-            $xtpl->parse('main.files');
+
+            $xtpl->parse('main.properties.tr');
         }
-    } else {
-        $xtpl->parse('main.nodownload');
+
+        $xtpl->parse('main.properties');
     }
 
     /*
@@ -373,6 +296,71 @@ function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = a
         $xtpl->assign('LINK_DELETE', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
         $xtpl->parse('main.admin_link');
     }
+
+    $icon_sets = [
+        '' => 'fa fa-file-text-o',
+        'pdf' => 'fa fa-file-pdf-o',
+        'word' => 'fa fa-file-word-o',
+        'excel' => 'fa fa-file-excel-o',
+        'powerpoint' => 'fa fa-file-powerpoint-o',
+        'image' => 'fa fa-file-image-o',
+    ];
+
+    // Tab nội dung
+    if (isset($array_data['tabs']['doc-body'])) {
+        if (!empty($array_data['bodytext'])) {
+            // Nội dung văn bản được soạn thảo
+            $xtpl->parse('main.docbody.bodytext');
+        } else {
+            // Xem nội dung từ các file đính kèm
+            foreach ($array_data['files'] as $file) {
+                if (!$file['quick_view']) {
+                    continue;
+                }
+
+                $file['icon'] = $icon_sets[$file['file_type']];
+
+                $xtpl->assign('FILE', $file);
+
+                if ($file['file_type'] == 'image') {
+                    // Ảnh
+                    $xtpl->parse('main.docbody.fileview.img');
+                } elseif ($file['file_type'] == 'pdf') {
+                    // PDF
+                    $xtpl->parse('main.docbody.fileview.pdf');
+                } else {
+                    // MS
+                    $xtpl->parse('main.docbody.fileview.iframe');
+                }
+
+                $xtpl->parse('main.docbody.fileview');
+            }
+        }
+        $xtpl->parse('main.docbody');
+    }
+
+    // Tải tập tin
+    if (isset($array_data['tabs']['doc-files'])) {
+        if (!nv_user_in_groups($array_data['groups_download'])) {
+            $xtpl->parse('main.files.noright');
+        } else {
+            foreach ($array_data['files'] as $file) {
+                $file['icon'] = $icon_sets[$file['file_type']];
+                $xtpl->assign('FILE', $file);
+
+                if ($file['quick_view']) {
+                    $xtpl->parse('main.files.content.loop.show_quick_view');
+                    $xtpl->parse('main.files.content.loop.content_quick_view');
+                }
+
+                $xtpl->parse('main.files.content.loop');
+            }
+
+            $xtpl->parse('main.files.content');
+        }
+        $xtpl->parse('main.files');
+    }
+
 
     if (!empty($other_cat)) {
         $xtpl->assign('OTHER_CAT', nv_theme_laws_list_other($other_cat));
