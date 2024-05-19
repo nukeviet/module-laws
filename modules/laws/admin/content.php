@@ -36,7 +36,12 @@ if ($nv_Request->get_title('findlaws', 'post', '') === NV_CHECK_SESSION) {
         $per_page = 20;
 
         $db->select('id, title text')->order('title ASC')->limit($per_page)->offset(($page - 1) * $per_page);
-        $respon['results'] = $db->query($db->sql())->fetchAll() ?: [];
+        $result = $db->query($db->sql());
+        $respon['results'] = [];
+        while ($row = $result->fetch()) {
+            $row['text'] = nv_unhtmlspecialchars($row['text']);
+            $respon['results'][] = $row;
+        }
         $respon['pagination']['more'] = (($page * $per_page) < $num_items);
     }
 

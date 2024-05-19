@@ -286,3 +286,6 @@ $lang_module['effective_status'] = 'Status';
 $lang_module['effective_status0'] = 'Known';
 $lang_module['effective_status1'] = 'Partially effective';
 $lang_module['effective_status2'] = 'Modified';
+$lang_module['tab_basic'] = 'Summary';
+$lang_module['tab_download'] = 'Download';
+$lang_module['tab_maps'] = 'Related';

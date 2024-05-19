@@ -196,7 +196,7 @@ function raw_law_list_by_result($result, $page = 1, $per_page = 1)
         }
 
         // Đếm số comment (ý kiến) của các văn bản lấy được
-        if (isset($site_mods['comment']) and isset($module_config[$module_name]['activecomm'])) {
+        if (isset($site_mods['comment']) and defined('ACTIVE_COMMENTS')) {
             $area = $module_info['funcs']['detail']['func_id'];
             $_where = 'module=' . $db_slave->quote($module_name);
             if ($area) {

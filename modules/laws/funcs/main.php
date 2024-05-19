@@ -36,7 +36,7 @@ if (empty($contents)) {
     if ($nv_laws_setting['typeview'] != 2) {
         // Danh sách văn bản dạng list, có phân trang
         $order = ($nv_laws_setting['typeview'] == 1 or $nv_laws_setting['typeview'] == 4) ? "ASC" : "DESC";
-        $order_param = ($nv_laws_setting['typeview'] == 0 or $nv_laws_setting['typeview'] == 1) ? "publtime" : "addtime";
+        $order_param = ($nv_laws_setting['typeview'] == 0 or $nv_laws_setting['typeview'] == 1) ? (defined('ACTIVE_COMMENTS') ? 'start_comm_time' : 'publtime') : "addtime";
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE status=1 ORDER BY " . $order_param . " " . $order . "
         LIMIT " . $per_page . " OFFSET " . (($page - 1) * $per_page);

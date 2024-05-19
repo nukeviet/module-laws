@@ -168,7 +168,7 @@ $all_page = $db->query($db->sql())->fetchColumn();
 betweenURLs($page, ceil($all_page/$per_page), $base_url, '&page=', $prevPage, $nextPage);
 
 $_order = ($nv_laws_setting['typeview'] == 1 or $nv_laws_setting['typeview'] == 4) ? 'ASC' : 'DESC';
-$_order_param = ($nv_laws_setting['typeview'] == 0 or $nv_laws_setting['typeview'] == 1) ? 'publtime' : 'addtime';
+$_order_param = ($nv_laws_setting['typeview'] == 0 or $nv_laws_setting['typeview'] == 1) ? (defined('ACTIVE_COMMENTS') ? 'start_comm_time' : 'publtime') : 'addtime';
 
 $db->select('*')
     ->order($_order_param . ' ' . $_order)

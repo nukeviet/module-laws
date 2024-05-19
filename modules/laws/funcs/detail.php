@@ -39,9 +39,14 @@ $base_url .= '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . 
 $page_url = $base_url;
 $canonicalUrl = getCanonicalUrl($page_url);
 
+$order = ($nv_laws_setting['typeview'] == 1 or $nv_laws_setting['typeview'] == 4) ? 'ASC' : 'DESC';
+$order_param = ($nv_laws_setting['typeview'] == 0 or $nv_laws_setting['typeview'] == 1) ? (defined('ACTIVE_COMMENTS') ? 'start_comm_time' : 'publtime') : 'addtime';
+
 $row['edit_link'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;edit=1&amp;id=" . $row['id'];
 
 $row['aid'] = [];
+$row['map_ids'] = [];
+
 $result = $db->query('SELECT area_id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row_area WHERE row_id=' . $row['id']);
 while (list ($area_id) = $result->fetch(3)) {
     $row['aid'][] = $area_id;
@@ -99,44 +104,42 @@ if ($nv_Request->isset_request('pdf', 'get')) {
     nv_htmlOutput($contents);
 }
 
-// Lay van ban thay the no
+// Lấy văn bản thay thế cho văn bản đang xem
 if (!empty($row['replacement'])) {
-    $sql = 'SELECT title, alias, code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id IN(' . $row['replacement'] . ')';
+    $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE status=1 AND id IN(' . $row['replacement'] . ') ORDER BY ' . $order_param . ' ' . $order;
     $result = $db->query($sql);
-    $row['replacement'] = [];
-    while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
-        $row['replacement'][] = array(
-            'title' => $_title,
-            'code' => $_code,
-            'link' => $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $_alias
-        );
+    $row['replacement'] = raw_law_list_by_result($result);
+    if (!empty($row['replacement'])) {
+        $row['map_ids'] = array_merge($row['map_ids'], array_keys($row['replacement']));
     }
 }
 
-// Lay van ban ma no thay the
-$row['unreplacement'] = [];
-$sql = 'SELECT b.title, b.alias, b.code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_set_replace AS a INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row AS b ON a.oid=b.id WHERE a.nid=' . $row['id'];
+// Lấy văn bản bị văn bản đang xem thay thế
+$sql = 'SELECT b.* FROM ' . NV_PREFIXLANG . '_' . $module_data . '_set_replace a
+INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row b ON a.oid=b.id WHERE a.nid=' . $row['id'] . ' AND b.status=1
+ORDER BY b.' . $order_param . ' ' . $order;
 $result = $db->query($sql);
-while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
-    $row['unreplacement'][] = array(
-        'title' => $_title,
-        'code' => $_code,
-        'link' => $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $_alias
-    );
+$row['unreplacement'] = raw_law_list_by_result($result);
+if (!empty($row['unreplacement'])) {
+    $row['map_ids'] = array_merge($row['map_ids'], array_keys($row['unreplacement']));
 }
 
-// Lay cac van ban lien quan
+// Lấy văn bản liên quan
 if (!empty($row['relatement'])) {
-    $sql = 'SELECT title, alias, code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id IN(' . $row['relatement'] . ')';
+    $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE status=1 AND id IN(' . $row['relatement'] . ') ORDER BY ' . $order_param . ' ' . $order;
     $result = $db->query($sql);
-    $row['relatement'] = [];
-    while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
-        $row['relatement'][] = array(
-            'title' => $_title,
-            'code' => $_code,
-            'link' => $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $_alias
-        );
+    $row['relatement'] = raw_law_list_by_result($result);
+    if (!empty($row['relatement'])) {
+        $row['map_ids'] = array_merge($row['map_ids'], array_keys($row['relatement']));
     }
+}
+
+$row['map_ids'] = array_unique(array_filter($row['map_ids']));
+$row['maps'] = [];
+if (!empty($row['map_ids'])) {
+    $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE status=1 AND id IN(' . implode(',', $row['map_ids']) . ') ORDER BY ' . $order_param . ' ' . $order;
+    $result = $db->query($sql);
+    $row['maps'] = raw_law_list_by_result($result);
 }
 
 // Nguoi ky
@@ -240,7 +243,6 @@ if (!in_array($row['id'], $lawsviewed)) {
     $nv_Request->set_Session('lawsviewed', $lawsviewed);
 }
 
-$order = ($nv_laws_setting['typeview'] == 1) ? 'ASC' : 'DESC';
 $nv_laws_setting['detail_other'] = unserialize($nv_laws_setting['detail_other']);
 $other_cat = [];
 $other_area = [];
@@ -313,7 +315,7 @@ if (isset($site_mods['comment']) and isset($module_config[$module_name]['activec
  * Định các tabs hiển thị
  */
 $tab_show = $nv_Request->get_title('tab', 'get', '');
-if ($tab_show and !in_array($tab_show, ['basic', 'body', 'others', 'files'])) {
+if ($tab_show and !in_array($tab_show, ['basic', 'body', 'maps', 'files', 'maps'])) {
     $tab_show = '';
 }
 $row['tabs'] = [];
@@ -338,13 +340,14 @@ if (!empty($row['bodytext']) or $row['quick_view']) {
     }
 }
 // Tab liên quan
-if (!empty($other_cat) or !empty($other_area) or !empty($other_subject) or !empty($other_signer)) {
-    $row['tabs']['doc-others'] = [
-        'active' => ($tab_show == 'others'),
-        'title' => $nv_Lang->getModule('tab_others'),
-        'link' => $page_url . '&amp;tab=others'
+if (!empty($row['maps'])) {
+    $row['tabs']['doc-maps'] = [
+        'active' => ($tab_show == 'maps'),
+        'title' => $nv_Lang->getModule('tab_maps'),
+        'link' => $page_url . '&amp;tab=maps'
     ];
 }
+
 // Tab tải về
 if (!empty($row['files'])) {
     $row['tabs']['doc-files'] = [
@@ -458,8 +461,6 @@ if (defined('ACTIVE_COMMENTS')) {
         ];
     }
 }
-
-//relatement,replacement,unreplacement
 
 $contents = nv_theme_laws_detail($row, $other_cat, $other_area, $other_subject, $other_signer, $content_comment);
 

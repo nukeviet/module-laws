@@ -57,7 +57,7 @@ if (empty($contents)) {
     }
 
     $order = ($nv_laws_setting['typeview'] == 1 or $nv_laws_setting['typeview'] == 4) ? "ASC" : "DESC";
-    $order_param = ($nv_laws_setting['typeview'] == 0 or $nv_laws_setting['typeview'] == 1) ? "publtime" : "addtime";
+    $order_param = ($nv_laws_setting['typeview'] == 0 or $nv_laws_setting['typeview'] == 1) ? (defined('ACTIVE_COMMENTS') ? 'start_comm_time' : 'publtime') : "addtime";
 
     $db->sqlreset()->select('COUNT(id)')->from(NV_PREFIXLANG . "_" . $module_data . "_row");
     $db->where("status=1 AND" . $in);

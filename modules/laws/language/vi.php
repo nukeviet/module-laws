@@ -288,4 +288,4 @@ $lang_module['effective_status1'] = 'Hiệu lực một phần';
 $lang_module['effective_status2'] = 'Đã sửa đổi';
 $lang_module['tab_basic'] = 'Tóm tắt';
 $lang_module['tab_download'] = 'Tải về';
-$lang_module['tab_others'] = 'VB liên quan';
+$lang_module['tab_maps'] = 'VB liên quan';
