@@ -37,6 +37,7 @@ $lang_module['replacement'] = 'Replacement';
 $lang_module['unreplacement'] = 'Unreplacement';
 $lang_module['relatement'] = 'Relatement';
 $lang_module['code'] = 'Code';
+$lang_module['code1'] = 'Code';
 $lang_module['introtext'] = 'Introtext';
 $lang_module['bodytext'] = 'Bodytext';
 $lang_module['signer'] = 'Signer';
