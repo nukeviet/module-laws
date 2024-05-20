@@ -154,6 +154,14 @@
     margin: 0;
 }
 
+.multi-fix .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    white-space: normal;
+}
+
+.multi-fix .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    height: 100%;
+}
+
 @media (max-width: 767.98px) {
     .mt-xs-2 {
         margin-top: 10px!important;

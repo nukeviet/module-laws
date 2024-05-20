@@ -104,7 +104,7 @@
                             <!-- END: normal_laws -->
                             <tr>
                                 <td>{LANG.replacement}</td>
-                                <td>
+                                <td class="multi-fix">
                                     <select id="element_replacement" name="replacement[]" class="form-control" multiple="multiple">
                                         <!-- BEGIN: replacement -->
                                         <option value="{REPLACEMENT.id}" selected="selected">{REPLACEMENT.title}</option>
@@ -114,7 +114,7 @@
                             </tr>
                             <tr>
                                 <td>{LANG.relatement}</td>
-                                <td>
+                                <td class="multi-fix">
                                     <select id="element_relatement" name="relatement[]" class="form-control" multiple="multiple">
                                         <!-- BEGIN: relatement -->
                                         <option value="{RELATEMENT.id}" selected="selected">{RELATEMENT.title}</option>
