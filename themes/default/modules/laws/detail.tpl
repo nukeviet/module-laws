@@ -12,8 +12,38 @@
         <li role="presentation"<!-- BEGIN: active --> class="active"<!-- END: active -->><a href="#{ID}" data-location="{LINK}" aria-controls="{ID}" role="tab" data-toggle="tab">{TITLE}</a></li>
         <!-- END: tab -->
     </ul>
-    <div class="metas"></div>
-    <div class="tab-content">
+    <!-- BEGIN: navigation -->
+    <link href="{ASSETS_STATIC_URL}/js/perfect-scrollbar/style{AUTO_MINIFIED}.css" rel="stylesheet" />
+    <script src="{ASSETS_STATIC_URL}/js/perfect-scrollbar/min.js" charset="utf-8"></script>
+    <div class="metas">
+        <div class="item item-dropdown">
+            <span class="item-show" id="law-btn-tableof-contents"><i class="fa fa-list-ol" aria-hidden="true"></i> {LANG.navigation}</span>
+            <div class="item-dropdown-container">
+                <div class="item-dropdown-content" id="law-tableof-contents">
+                    <div class="navigation-body">
+                        <ol class="navigation">
+                            <!-- BEGIN: navigation_item -->
+                            <li>
+                                <a href="#" data-scroll-to="{NAVIGATION.1}" data-location="{NAVIGATION.2}">{NAVIGATION.0}</a>
+                                <!-- BEGIN: sub_navigation -->
+                                <ol class="sub-navigation">
+                                    <!-- BEGIN: sub_navigation_item -->
+                                    <li>
+                                        <a href="#" data-scroll-to="{SUBNAVIGATION.1}" data-location="{SUBNAVIGATION.2}">{SUBNAVIGATION.0}</a>
+                                    </li>
+                                    <!-- END: sub_navigation_item -->
+                                </ol>
+                                <!-- END: sub_navigation -->
+                            </li>
+                            <!-- END: navigation_item -->
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: navigation -->
+    <div class="tab-content tab-content-main">
         <div role="tabpanel" class="tab-pane{ACTIVE_BASIC}" id="doc-basic">
             <div class="panel-body">
                 <p>{DATA.introtext}</p>
@@ -108,36 +138,83 @@
             </div>
         </div>
         <!-- END: files -->
+        <!-- BEGIN: maps -->
+        <div role="tabpanel" class="tab-pane{ACTIVE_MAPS}" id="doc-maps">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-8 col-md-6">
+                        <ul class="docmaps-nav list-unstyled">
+                            <!-- BEGIN: nav -->
+                            <li class="docmaps-nav-item{NAV_ACTIVE}"><a href="#maps-{NAV_ID}" data-toggle="tab">{NAV_NAME} <span class="text-danger">({NAV_NUM})</span></a></li>
+                            <!-- END: nav -->
+                        </ul>
+                    </div>
+                    <div class="col-sm-16 col-md-18">
+                        <div class="tab-content">
+                            <!-- BEGIN: map -->
+                            <div role="tabpanel" class="tab-pane{NAV_ACTIVE}" id="maps-{NAV_ID}">
+                                {HTML}
+                            </div>
+                            <!-- END: map -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: maps -->
     </div>
 </div>
 
 <div id="comment"></div>
 <!-- BEGIN: comment -->
-<div class="news_column panel panel-default">
+<div class="panel panel-default">
     <div class="panel-body">
     {CONTENT_COMMENT}
     </div>
 </div>
 <!-- END: comment -->
 
-<!-- BEGIN: other_cat -->
-<h2 class="subtitle">{LANG.other_cat} <a rel="dofollow" href="{DATA.cat_url}" title="{DATA.cat}">"{DATA.cat}"</a></h2>
-{OTHER_CAT}
-<!-- END: other_cat -->
+<div class="law-detail-other">
+    <!-- BEGIN: other_cat -->
+    <{OTHER_HEADING} class="margin-bottom{OTHER_CLASS}"><i class="fa fa-file-text-o" aria-hidden="true"></i> {LANG.other_cat} <a href="{DATA.cat_url}" title="{DATA.cat}">"{DATA.cat}"</a></{OTHER_HEADING}>
+    {OTHER_CAT}
+    <!-- END: other_cat -->
 
-<!-- BEGIN: other_area -->
-<h2 class="subtitle">{LANG.other_area} <a href="{AREA_TITLE.area_url}" title="{AREA_TITLE.area}">"{AREA_TITLE.area}"</a></h2>
-{OTHER_AREA}
-<!-- END: other_area -->
+    <!-- BEGIN: other_area -->
+    <{OTHER_HEADING} class="margin-bottom{OTHER_CLASS}"><i class="fa fa-file-text-o" aria-hidden="true"></i> {LANG.other_area} <a href="{AREA_TITLE.area_url}" title="{AREA_TITLE.area}">"{AREA_TITLE.area}"</a></{OTHER_HEADING}>
+    {OTHER_AREA}
+    <!-- END: other_area -->
 
-<!-- BEGIN: other_subject -->
-<h2 class="subtitle">{LANG.other_subject} <a rel="dofollow" href="{DATA.subject_url}" title="{DATA.subject}">"{DATA.subject}"</a></h2>
-{OTHER_SUBJECT}
-<!-- END: other_subject -->
+    <!-- BEGIN: other_subject -->
+    <{OTHER_HEADING} class="margin-bottom{OTHER_CLASS}"><i class="fa fa-file-text-o" aria-hidden="true"></i> {LANG.other_subject} <a href="{DATA.subject_url}" title="{DATA.subject}">"{DATA.subject}"</a></{OTHER_HEADING}>
+    {OTHER_SUBJECT}
+    <!-- END: other_subject -->
 
-<!-- BEGIN: other_signer -->
-<h2 class="subtitle">{LANG.other_signer} <a rel="dofollow" href="{DATA.signer_url}" title="{DATA.signer}">"{DATA.signer}"</a></h2>
-{OTHER_SIGNER}
-<!-- END: other_signer -->
-
+    <!-- BEGIN: other_signer -->
+    <{OTHER_HEADING} class="margin-bottom{OTHER_CLASS}"><i class="fa fa-file-text-o" aria-hidden="true"></i> {LANG.other_signer} <a href="{DATA.signer_url}" title="{DATA.signer}">"{DATA.signer}"</a></{OTHER_HEADING}>
+    {OTHER_SIGNER}
+    <!-- END: other_signer -->
+</div>
 <!-- END: main -->
+
+<!-- BEGIN: mapitems -->
+<ul class="list-unstyled mapitems">
+    <!-- BEGIN: loop -->
+    <li>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="item-title margin-bottom">
+                    <span>{ROW.stt}</span>
+                    <a href="{ROW.url}">{ROW.title}</a>
+                </div>
+                <div class="item-meta text-muted">
+                    <div class="item">{LANG.code1}: {ROW.code}</div>
+                    <!-- BEGIN: publtime --><div class="item">{LANG.publtime1}: {ROW.publtime}</div><!-- END: publtime -->
+                    <div class="item">{LANG.s_status}: {ROW.effective_status_show}</div>
+                </div>
+            </div>
+        </div>
+    </li>
+    <!-- END: loop -->
+</ul>
+<!-- END: mapitems -->

@@ -42,10 +42,30 @@ $canonicalUrl = getCanonicalUrl($page_url);
 $order = ($nv_laws_setting['typeview'] == 1 or $nv_laws_setting['typeview'] == 4) ? 'ASC' : 'DESC';
 $order_param = ($nv_laws_setting['typeview'] == 0 or $nv_laws_setting['typeview'] == 1) ? (defined('ACTIVE_COMMENTS') ? 'start_comm_time' : 'publtime') : 'addtime';
 
-$row['edit_link'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;edit=1&amp;id=" . $row['id'];
+$row['edit_link'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=content&amp;id=' . $row['id'];
+$row['map_ids'] = $row['maps'] = $row['aid'] = [];
+$row['maps_lang'] = [
+    'all' => $nv_Lang->getModule('tab_maps_all'),
+    'replacement' => $nv_Lang->getModule('replacement'),
+    'unreplacement' => $nv_Lang->getModule('unreplacement'),
+    'relatement' => $nv_Lang->getModule('relatement'),
+];
+$row['maps']['all'] = [];
+if (isset($nv_laws_listcat[$row['cid']])) {
+    $row['cat'] = $nv_laws_listcat[$row['cid']]['title'];
+    $row['cat_url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $nv_laws_listcat[$row['cid']]['alias'];
+} else {
+    $row['cat'] = '';
+    $row['cat_url'] = '#';
+}
 
-$row['aid'] = [];
-$row['map_ids'] = [];
+if (isset($nv_laws_listsubject[$row['sid']])) {
+    $row['subject'] = $nv_laws_listsubject[$row['sid']]['title'];
+    $row['subject_url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=subject/' . $nv_laws_listsubject[$row['sid']]['alias'];
+} else {
+    $row['subject'] = '';
+    $row['subject_url'] = '';
+}
 
 $result = $db->query('SELECT area_id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row_area WHERE row_id=' . $row['id']);
 while (list ($area_id) = $result->fetch(3)) {
@@ -108,9 +128,9 @@ if ($nv_Request->isset_request('pdf', 'get')) {
 if (!empty($row['replacement'])) {
     $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE status=1 AND id IN(' . $row['replacement'] . ') ORDER BY ' . $order_param . ' ' . $order;
     $result = $db->query($sql);
-    $row['replacement'] = raw_law_list_by_result($result);
-    if (!empty($row['replacement'])) {
-        $row['map_ids'] = array_merge($row['map_ids'], array_keys($row['replacement']));
+    $row['maps']['replacement'] = raw_law_list_by_result($result);
+    if (!empty($row['maps']['replacement'])) {
+        $row['map_ids'] = array_merge($row['map_ids'], array_keys($row['maps']['replacement']));
     }
 }
 
@@ -119,27 +139,26 @@ $sql = 'SELECT b.* FROM ' . NV_PREFIXLANG . '_' . $module_data . '_set_replace a
 INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row b ON a.oid=b.id WHERE a.nid=' . $row['id'] . ' AND b.status=1
 ORDER BY b.' . $order_param . ' ' . $order;
 $result = $db->query($sql);
-$row['unreplacement'] = raw_law_list_by_result($result);
-if (!empty($row['unreplacement'])) {
-    $row['map_ids'] = array_merge($row['map_ids'], array_keys($row['unreplacement']));
+$row['maps']['unreplacement'] = raw_law_list_by_result($result);
+if (!empty($row['maps']['unreplacement'])) {
+    $row['map_ids'] = array_merge($row['map_ids'], array_keys($row['maps']['unreplacement']));
 }
 
 // Lấy văn bản liên quan
 if (!empty($row['relatement'])) {
     $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE status=1 AND id IN(' . $row['relatement'] . ') ORDER BY ' . $order_param . ' ' . $order;
     $result = $db->query($sql);
-    $row['relatement'] = raw_law_list_by_result($result);
-    if (!empty($row['relatement'])) {
-        $row['map_ids'] = array_merge($row['map_ids'], array_keys($row['relatement']));
+    $row['maps']['relatement'] = raw_law_list_by_result($result);
+    if (!empty($row['maps']['relatement'])) {
+        $row['map_ids'] = array_merge($row['map_ids'], array_keys($row['maps']['relatement']));
     }
 }
 
 $row['map_ids'] = array_unique(array_filter($row['map_ids']));
-$row['maps'] = [];
 if (!empty($row['map_ids'])) {
     $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE status=1 AND id IN(' . implode(',', $row['map_ids']) . ') ORDER BY ' . $order_param . ' ' . $order;
     $result = $db->query($sql);
-    $row['maps'] = raw_law_list_by_result($result);
+    $row['maps']['all'] = raw_law_list_by_result($result);
 }
 
 // Nguoi ky
@@ -315,7 +334,7 @@ if (isset($site_mods['comment']) and isset($module_config[$module_name]['activec
  * Định các tabs hiển thị
  */
 $tab_show = $nv_Request->get_title('tab', 'get', '');
-if ($tab_show and !in_array($tab_show, ['basic', 'body', 'maps', 'files', 'maps'])) {
+if ($tab_show and !in_array($tab_show, ['basic', 'body', 'maps', 'files'])) {
     $tab_show = '';
 }
 $row['tabs'] = [];
@@ -340,7 +359,7 @@ if (!empty($row['bodytext']) or $row['quick_view']) {
     }
 }
 // Tab liên quan
-if (!empty($row['maps'])) {
+if (!empty($row['maps']['all'])) {
     $row['tabs']['doc-maps'] = [
         'active' => ($tab_show == 'maps'),
         'title' => $nv_Lang->getModule('tab_maps'),
@@ -459,6 +478,42 @@ if (defined('ACTIVE_COMMENTS')) {
             'label' => $nv_Lang->getModule('exptime'),
             'time' => $row['exptime']
         ];
+    }
+}
+
+// Xác định mục lục của văn bản theo quy luật: h2 > h3.
+$row['navigation'] = [];
+if (!empty($row['bodytext'])) {
+    unset($matches);
+    preg_match_all('/\<[\s]*(h2|h3)([^\>]*)\>(.*?)\<[\s]*\/[\s]*(h2|h3)[\s]*\>/is', $row['bodytext'], $matches, PREG_SET_ORDER);
+
+    $nav1 = $nav2 = 0;
+    $idname = 'art-menu-';
+
+    foreach ($matches as $match) {
+        $text = trim(preg_replace('/\s[\s]+/is', ' ', strip_tags(nv_br2nl($match[3], ' '))));
+        $tag = strtolower($match[1]);
+        if (empty($text)) {
+            continue;
+        }
+
+        if ($tag == 'h2') {
+            $nav1++;
+            $nav2++;
+            $attrid = $idname . $nav2;
+
+            $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $match[3] . '</' . $tag . '>';
+            $row['navigation'][$nav1]['item'] = [$text, $attrid];
+            $row['bodytext'] = str_replace($match[0], $html, $row['bodytext']);
+        } elseif ($nav1) {
+            $nav2++;
+            $attrid = $idname . $nav2;
+
+            $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $match[3] . '</' . $tag . '>';
+            !isset($row['navigation'][$nav1]['subitems']) && $row['navigation'][$nav1]['subitems'] = [];
+            $row['navigation'][$nav1]['subitems'][] = [$text, $attrid];
+            $row['bodytext'] = str_replace($match[0], $html, $row['bodytext']);
+        }
     }
 }
 

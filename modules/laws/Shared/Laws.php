@@ -52,7 +52,7 @@ class Laws
         }
         if (!empty($row['startvalid'])) {
             // Còn hiệu lực hoặc chưa hiệu lực
-            return $nv_Lang->getModule($row['startvalid'] > NV_CURRENTTIME ? 'hl0' : 'hl2');
+            return $nv_Lang->getModule($row['startvalid'] > NV_CURRENTTIME ? 'hl2' : 'hl0');
         }
         // Đã biết
         return $nv_Lang->getModule('effective_status0');

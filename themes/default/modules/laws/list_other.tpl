@@ -20,7 +20,7 @@
         <div class="c-comtime"><span class="label-name">{LANG.comm_time_title}:</span>{ROW.comm_time}</div>
         <!-- END: comm_time -->
         <div class="c-intro">
-            <a rel="dofollow" href="{ROW.url}">{LAW_TITLE}</a>
+            <a rel="dofollow" href="{ROW.url}" class="fw-bold">{LAW_TITLE}</a>
             <!-- BEGIN: introtext -->
             <div class="l-intro margin-top-sm">
                 {ROW.introtext}

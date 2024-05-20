@@ -236,7 +236,7 @@ function nv_theme_laws_detail($array_data, $other_cat, $other_area, $other_subje
 
     $xtpl->assign('ACTIVE_BASIC', $array_data['tab_show'] == 'basic' ? ' active' : '');
     $xtpl->assign('ACTIVE_BODY', $array_data['tab_show'] == 'body' ? ' active' : '');
-    $xtpl->assign('ACTIVE_OTHERS', $array_data['tab_show'] == 'others' ? ' active' : '');
+    $xtpl->assign('ACTIVE_MAPS', $array_data['tab_show'] == 'maps' ? ' active' : '');
     $xtpl->assign('ACTIVE_FILES', $array_data['tab_show'] == 'files' ? ' active' : '');
     $xtpl->assign('DATA', $array_data);
 
@@ -311,6 +311,24 @@ function nv_theme_laws_detail($array_data, $other_cat, $other_area, $other_subje
         if (!empty($array_data['bodytext'])) {
             // Nội dung văn bản được soạn thảo
             $xtpl->parse('main.docbody.bodytext');
+
+            if (!empty($array_data['navigation'])) {
+                foreach ($array_data['navigation'] as $item) {
+                    $xtpl->assign('NAVIGATION', $item['item']);
+
+                    if (!empty($item['subitems'])) {
+                        foreach ($item['subitems'] as $subitem) {
+                            $xtpl->assign('SUBNAVIGATION', $subitem);
+                            $xtpl->parse('main.navigation.navigation_item.sub_navigation.sub_navigation_item');
+                        }
+                        $xtpl->parse('main.navigation.navigation_item.sub_navigation');
+                    }
+
+                    $xtpl->parse('main.navigation.navigation_item');
+                }
+
+                $xtpl->parse('main.navigation');
+            }
         } else {
             // Xem nội dung từ các file đính kèm
             foreach ($array_data['files'] as $file) {
@@ -361,6 +379,34 @@ function nv_theme_laws_detail($array_data, $other_cat, $other_area, $other_subje
         $xtpl->parse('main.files');
     }
 
+    // Tab liên quan
+    if (isset($array_data['tabs']['doc-maps'])) {
+        $stt = 0;
+        foreach ($array_data['maps'] as $map_id => $map_rows) {
+            if (empty($map_rows)) {
+                continue;
+            }
+            $stt++;
+            $xtpl->assign('NAV_ACTIVE', $stt == 1 ? ' active' : '');
+            $xtpl->assign('NAV_ID', $map_id);
+            $xtpl->assign('NAV_NAME', $array_data['maps_lang'][$map_id]);
+            $xtpl->assign('NAV_NUM', number_format(sizeof($map_rows), 0, ',', '.'));
+            $xtpl->parse('main.maps.nav');
+
+            $xtpl->assign('HTML', nv_theme_laws_detail_map($map_rows));
+            $xtpl->parse('main.maps.map');
+        }
+
+        $xtpl->parse('main.maps');
+    }
+
+    if (!empty($array_data['bodytext'])) {
+        $xtpl->assign('OTHER_HEADING', 'div');
+        $xtpl->assign('OTHER_CLASS', ' h2');
+    } else {
+        $xtpl->assign('OTHER_HEADING', 'h2');
+        $xtpl->assign('OTHER_CLASS', '');
+    }
 
     if (!empty($other_cat)) {
         $xtpl->assign('OTHER_CAT', nv_theme_laws_list_other($other_cat));
@@ -399,6 +445,35 @@ function nv_theme_laws_detail($array_data, $other_cat, $other_area, $other_subje
 
     $xtpl->parse('main');
     return $xtpl->text('main');
+}
+
+/**
+ * Danh sách các văn bản liên quan, lược đồ khi xem chi tiết văn bản
+ *
+ * @param array $array
+ * @return string
+ */
+function nv_theme_laws_detail_map(array $array)
+{
+    global $module_info;
+
+    $xtpl = new XTemplate('detail.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
+    $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
+
+    foreach ($array as $row) {
+        $row['stt'] = str_pad(number_format($row['stt'], 0, ',', '.'), 2, '0', STR_PAD_LEFT);
+        $row['publtime'] = $row['publtime'] ? nv_date('d/m/Y', $row['publtime']) : '';
+
+        $xtpl->assign('ROW', $row);
+
+        if (!empty($row['publtime'])) {
+            $xtpl->parse('mapitems.loop.publtime');
+        }
+        $xtpl->parse('mapitems.loop');
+    }
+
+    $xtpl->parse('mapitems');
+    return $xtpl->text('mapitems');
 }
 
 /**

@@ -11,6 +11,8 @@
     --vb-color-primary: #428bca;
     --vb-color-border: #dddddd;
     --vb-color-background: #f7f7f7;
+    --vb-color-background-info: #d9edf7;
+    --vb-color-white: #ffffff;
     --vb-font-bold: 700;
 }
 
@@ -444,14 +446,60 @@ a#btn-search {
     border-right: 1px var(--vb-color-border) solid;
     border-bottom: 2px var(--vb-color-border) solid;
     background-color: var(--vb-color-background);
+    position: relative;
 }
 
-.law-detail .tab-content {
+.law-detail .metas .item {
+    display: inline-block;
+}
+
+.law-detail .metas .item .item-show {
+    display: block;
+    padding: 7px 10px;
+    background-color: var(--vb-color-white);
+}
+
+.law-detail .metas .item .item-dropdown-container {
+    display: none;
+    position: absolute;
+    top: calc(100% - 10px);
+    max-width: 100%;
+    left: 0;
+    background-color: var(--vb-color-background-info);
+    padding: 15px;
+}
+
+.law-detail .metas .item.item-dropdown:hover .item-dropdown-container {
+    display: block;
+}
+
+.law-detail .metas .item .item-dropdown-content {
+    position: relative;
+    max-height: 300px;
+}
+
+.law-detail .navigation-body .navigation {
+    padding: 0;
+    margin: 0;
+}
+
+.law-detail .navigation-body .navigation>li>a {
+    font-weight: var(--vb-font-bold);
+}
+
+.law-detail .navigation-body .sub-navigation {
+    padding: 0;
+    margin: 0;
+    margin-left: 20px;
+}
+
+.law-detail .tab-content-main {
     border-left: 1px var(--vb-color-border) solid;
     border-right: 1px var(--vb-color-border) solid;
     border-bottom: 1px var(--vb-color-border) solid;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
+    margin-bottom: 20px;
 }
 
 .law-detail .nav-tabs a {
@@ -531,4 +579,64 @@ a#btn-search {
 .law-detail .quickview-holder {
     height: 10px;
     overflow: hidden;
+}
+
+.law-detail .docmaps-nav {
+    margin-bottom: 0;
+}
+
+.law-detail .docmaps-nav-item {
+    border-left: 1px var(--vb-color-border) solid;
+    border-right: 1px var(--vb-color-border) solid;
+    padding: 7px;
+    border-top: 1px var(--vb-color-border) solid;
+    font-weight: var(--vb-font-bold);
+}
+
+.law-detail .docmaps-nav-item:last-child {
+    border-bottom: 1px var(--vb-color-border) solid;
+}
+
+.law-detail .docmaps-nav-item.active {
+    background-color: var(--vb-color-background);
+}
+
+.law-detail .mapitems {
+    margin-bottom: 0;
+}
+
+.law-detail .mapitems .item-title {
+    display: flex;
+}
+
+.law-detail .mapitems .item-title span {
+    margin-right: 10px;
+    flex: 0 0 20px;
+    overflow: hidden;
+    max-width: 20px;
+    font-weight: var(--vb-font-bold);
+    text-align: center;
+}
+
+.law-detail .mapitems .item-meta {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.law-detail .mapitems .item-meta .item {
+    margin-right: 15px;
+}
+
+.law-detail .mapitems .item-meta .item:last-child {
+    margin-right: 0;
+}
+
+.law-detail-other .h2 {
+    font-weight: var(--vb-font-bold);
+}
+
+@media (max-width: 767.98px) {
+    .enable-responsive.law-detail .docmaps-nav {
+        margin-bottom: 15px;
+    }
 }

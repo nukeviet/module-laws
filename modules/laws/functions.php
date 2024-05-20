@@ -13,6 +13,8 @@ if (!defined('NV_SYSTEM')) {
     die('Stop!!!');
 }
 
+use NukeViet\Module\laws\Shared\Laws;
+
 define('NV_IS_MOD_LAWS', true);
 
 if (!empty($module_config[$module_name]['activecomm'])) {
@@ -156,6 +158,7 @@ function raw_law_list_by_result($result, $page = 1, $per_page = 1)
         }
 
         $row['number_comm'] = 0;
+        $row['effective_status_show'] = Laws::getStatus($row);
         $row['comm_time'] = $row['start_comm_time'] . '-' . $row['end_comm_time'];
         $row['stt'] = $stt ++;
         $row['edit_link'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;edit=1&amp;id=" . $row['id'];

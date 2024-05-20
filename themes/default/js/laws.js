@@ -39,4 +39,35 @@ $(function() {
             $(this).html('<div class="quickview-holder">&nbsp;</div>');
         });
     });
+
+    // Mục lục văn bản
+    var tocs = $('#law-tableof-contents');
+    if (typeof PerfectScrollbar != "undefined" && tocs.length) {
+        new PerfectScrollbar(tocs[0], {
+            wheelSpeed: 1,
+            wheelPropagation: true,
+            minScrollbarLength: 20
+        });
+    }
+    $('a[data-scroll-to]').on('click', function(e) {
+        e.preventDefault;
+        var id = $(this).data('scroll-to');
+        if ($('#doc-body').not('.active')) {
+            $('[aria-controls="doc-body"]').trigger('click');
+            setTimeout(() => {
+                $("html, body").animate({
+                    scrollTop: $('[data-id=' + id + ']').offset().top
+                }, 500);
+            }, 200);
+            return;
+        }
+        $("html, body").animate({
+            scrollTop: $('[data-id=' + id + ']').offset().top
+        }, 500);
+    });
+    $('h2[data-id], h3[data-id]').on('click', function() {
+        $("html, body").animate({
+            scrollTop: $('#law-btn-tableof-contents').offset().top
+        }, 500);
+    });
 });
