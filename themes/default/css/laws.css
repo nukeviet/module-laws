@@ -640,3 +640,12 @@ a#btn-search {
         margin-bottom: 15px;
     }
 }
+
+@media (max-width: 499.98px) {
+    .enable-responsive.law-detail .table-properties td {
+        float: left;
+        width: 50%;
+        border: 0;
+        border-top: 1px var(--vb-color-border) solid;
+    }
+}

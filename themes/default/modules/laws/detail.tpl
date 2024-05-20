@@ -46,7 +46,7 @@
     <div class="tab-content tab-content-main">
         <div role="tabpanel" class="tab-pane{ACTIVE_BASIC}" id="doc-basic">
             <div class="panel-body">
-                <p>{DATA.introtext}</p>
+                <p class="margin-bottom">{DATA.introtext}</p>
                 <!-- BEGIN: properties -->
                 <table class="table table-properties table-bordered mb-0">
                     <tbody>
@@ -64,6 +64,7 @@
                         <!-- END: tr -->
                     </tbody>
                 </table>
+                <div class="clearfix"></div>
                 <!-- END: properties -->
             </div>
         </div>
