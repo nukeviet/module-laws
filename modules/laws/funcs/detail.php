@@ -13,6 +13,8 @@ if (!defined('NV_IS_MOD_LAWS')) {
     die('Stop!!!');
 }
 
+use NukeViet\Module\laws\Shared\QuickViews;
+
 $base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name;
 $lawalias = isset($array_op[1]) ? $array_op[1] : '';
 $id = 0;
@@ -179,42 +181,6 @@ if (!empty($row['eid'])) {
 // File download
 $row['quick_view'] = 0;
 $row['groups_download_array'] = explode(',', $row['groups_download']);
-$quick_view_exts = [
-    'pdf' => 'pdf',
-    // Word
-    'docx' => 'word',
-    'doc' => 'word',
-    'dotx' => 'word',
-    'dot' => 'word',
-    'dotm' => 'word',
-    'docm' => 'word',
-    'odt' => 'word',
-    // Excel
-    'xlsx' => 'excel',
-    'xls' => 'excel',
-    'xlsm' => 'excel',
-    'xlsb' => 'excel',
-    'xltx' => 'excel',
-    'xltm' => 'excel',
-    'csv' => 'excel',
-    'ods' => 'excel',
-    // PowerPoint
-    'pptx' => 'powerpoint',
-    'ppt' => 'powerpoint',
-    'ppsx' => 'powerpoint',
-    'pps' => 'powerpoint',
-    'potx' => 'powerpoint',
-    'pot' => 'powerpoint',
-    'potm' => 'powerpoint',
-    'ppsm' => 'powerpoint',
-    'odp' => 'powerpoint',
-    // Image
-    'jpg' => 'image',
-    'png' => 'image',
-    'gif' => 'image',
-    'webp' => 'image',
-    'jpeg' => 'image',
-];
 
 if (!empty($row['files'])) {
     $row['files'] = explode(',', $row['files']);
@@ -225,12 +191,13 @@ if (!empty($row['files'])) {
         $is_remote = (strpos($file, '//') !== false);
         $ext = $is_remote ? '' : nv_getextension($file);
         $file_title = !$is_remote ? basename($file) : $nv_Lang->getModule('click_to_download');
-        $file_type = $quick_view_exts[$ext] ?? '';
+        $file_type = QuickViews::typeFile($ext);
         $url = !$is_remote ? urlRewriteWithDomain($base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $lawalias . '&amp;download=1&amp;id=' . $id, NV_MY_DOMAIN) : $file;
 
         // Nếu pdf và ảnh thì xem nhanh nếu có set quyền download cũng được, các loại khác public download mới xem được
         $quick_view = ($file_type == 'image' or $file_type == 'pdf') ? true : (($file_type != '' and in_array(6, $row['groups_download_array'])) ? true : false);
-        !$nv_laws_setting['detail_pdf_quick_view'] && $quick_view = false;
+        $quick_view && $quick_view = QuickViews::canPreview($ext);
+        $quick_view = $quick_view ? in_array($quick_view, $nv_laws_setting['quickview']) : false;
 
         $row['files'][] = [
             'title' => $file_title,

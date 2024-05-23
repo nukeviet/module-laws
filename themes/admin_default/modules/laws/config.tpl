@@ -71,9 +71,13 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>{LANG.config_detail_pdf_quick_view}</td>
+                    <td>{LANG.config_quickview}</td>
                     <td>
-                        <input type="checkbox" name="detail_pdf_quick_view" value="1"{DATA.detail_pdf_quick_view}/>
+                        <!-- BEGIN: quickview -->
+                        <div class="checkbox">
+                            <label><input type="checkbox" name="quickview[]" value="{QUICKVIEW.key}"{QUICKVIEW.checked}> {QUICKVIEW.title}</label>
+                        </div>
+                        <!-- END: quickview -->
                     </td>
                 </tr>
                 <tr>

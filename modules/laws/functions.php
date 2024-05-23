@@ -35,6 +35,7 @@ function nv_module_setting()
     foreach ($list as $values) {
         $array[$values['config_name']] = $values['config_value'];
     }
+    $array['quickview'] = empty($array['quickview']) ? [] : explode(',', $array['quickview']);
 
     return $array;
 }
