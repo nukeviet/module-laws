@@ -70,4 +70,26 @@ $(function() {
             scrollTop: $('#law-btn-tableof-contents').offset().top
         }, 500);
     });
+
+    if ($('.metas').length) {
+        $(document).on('click', 'button.go_table_content', function() {
+            var metas = $('.metas');
+            if (metas.length) {
+                $("html, body").animate({
+                    scrollTop: metas.offset().top
+                }, 800);
+            }
+        });
+
+        var clipboard = new ClipboardJS('[data-clipboard-text]');
+        clipboard.on('success', function(e) {
+            $(e.trigger).on('hidden.bs.tooltip', function() {
+                setTimeout(function() {
+                    $(e.trigger).tooltip('destroy');
+                })
+            }).tooltip({title: $('.metas').data('copied'), placement: 'top', container: 'body', trigger: 'hover focus', animation: false});
+            $(e.trigger).tooltip('show');
+        });
+    }
+
 });

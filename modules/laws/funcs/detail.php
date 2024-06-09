@@ -469,14 +469,20 @@ if (!empty($row['bodytext'])) {
             $nav2++;
             $attrid = $idname . $nav2;
 
-            $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $match[3] . '</' . $tag . '>';
+            $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $match[3] . '<div class="bt_law">
+                <button type="button" class="go_table_content" title="' . $nv_Lang->getModule('navigation') . '"><em class="fa fa-chevron-up fa-fw"></em></button>
+                <button type="button" class="copylink" title="' .$nv_Lang->getModule('copy_link') . '" data-clipboard-text="' . urlRewriteWithDomain($page_url, NV_MY_DOMAIN) . '#' . $attrid . '"><em class="fa fa-files-o fa-fw"></em></button>
+            </div></' . $tag . '>';
             $row['navigation'][$nav1]['item'] = [$text, $attrid];
             $row['bodytext'] = str_replace($match[0], $html, $row['bodytext']);
         } elseif ($nav1) {
             $nav2++;
             $attrid = $idname . $nav2;
 
-            $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $match[3] . '</' . $tag . '>';
+            $html = '<' . $tag . $match[2] . ' id="' . $attrid . '">' . $match[3] . '<div class="bt_law">
+                <button type="button" class="go_table_content" title="' . $nv_Lang->getModule('navigation') . '"><em class="fa fa-chevron-up fa-fw"></em></button>
+                <button type="button" class="copylink" title="' .$nv_Lang->getModule('copy_link') . '" data-clipboard-text="' . urlRewriteWithDomain($page_url, NV_MY_DOMAIN) . '#' . $attrid . '"><em class="fa fa-files-o fa-fw"></em></button>
+            </div></' . $tag . '>';
             !isset($row['navigation'][$nav1]['subitems']) && $row['navigation'][$nav1]['subitems'] = [];
             $row['navigation'][$nav1]['subitems'][] = [$text, $attrid];
             $row['bodytext'] = str_replace($match[0], $html, $row['bodytext']);
