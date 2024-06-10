@@ -72,7 +72,7 @@ $(function() {
     });
 
     if ($('#nav-table-content').length) {
-        $(document).on('click', 'button.go-table-content', function() {
+        $(document).on('click', 'a.go-table-content', function() {
             var nav_table_content = $('#nav-table-content');
             if (nav_table_content.length) {
                 $("html, body").animate({
