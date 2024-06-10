@@ -296,3 +296,4 @@ $lang_module['tab_download'] = 'Download';
 $lang_module['tab_maps'] = 'Related';
 $lang_module['tab_maps_all'] = 'All';
 $lang_module['navigation'] = 'Table of contents';
+$lang_module['copy_link'] = 'Copy link';

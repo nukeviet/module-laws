@@ -15,7 +15,8 @@
     <!-- BEGIN: navigation -->
     <link href="{ASSETS_STATIC_URL}/js/perfect-scrollbar/style{AUTO_MINIFIED}.css" rel="stylesheet" />
     <script src="{ASSETS_STATIC_URL}/js/perfect-scrollbar/min.js" charset="utf-8"></script>
-    <div class="metas">
+    <script type="text/javascript" src="{ASSETS_STATIC_URL}/js/clipboard/clipboard.min.js"></script>
+    <div class="metas" id="nav-table-content">
         <div class="item item-dropdown">
             <span class="item-show" id="law-btn-tableof-contents"><i class="fa fa-list-ol" aria-hidden="true"></i> {LANG.navigation}</span>
             <div class="item-dropdown-container">
