@@ -70,7 +70,7 @@ if (isset($nv_laws_listsubject[$row['sid']])) {
 }
 
 $result = $db->query('SELECT area_id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row_area WHERE row_id=' . $row['id']);
-while (list ($area_id) = $result->fetch(3)) {
+while (list($area_id) = $result->fetch(3)) {
     $row['aid'][] = $area_id;
 }
 
@@ -167,7 +167,7 @@ if (!empty($row['map_ids'])) {
 if (!empty($row['sgid'])) {
     $sql = 'SELECT title FROM ' . NV_PREFIXLANG . '_' . $module_data . '_signer WHERE id = ' . $row['sgid'];
     $result = $db->query($sql);
-    list ($row['signer']) = $result->fetch(3);
+    list($row['signer']) = $result->fetch(3);
     $row['signer_url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=signer/' . $row['sgid'] . '/' . change_alias($row['signer']);
 }
 
@@ -175,7 +175,7 @@ if (!empty($row['sgid'])) {
 if (!empty($row['eid'])) {
     $sql = 'SELECT title FROM ' . NV_PREFIXLANG . '_' . $module_data . '_examine WHERE id = ' . $row['eid'];
     $result = $db->query($sql);
-    list ($row['examine']) = $result->fetch(3);
+    list($row['examine']) = $result->fetch(3);
 }
 
 // File download
@@ -469,20 +469,23 @@ if (!empty($row['bodytext'])) {
             $nav2++;
             $attrid = $idname . $nav2;
 
-            $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $match[3] . '<div class="bt_law">
-                <button type="button" class="go_table_content" title="' . $nv_Lang->getModule('navigation') . '"><em class="fa fa-chevron-up fa-fw"></em></button>
-                <button type="button" class="copylink" title="' .$nv_Lang->getModule('copy_link') . '" data-clipboard-text="' . urlRewriteWithDomain($page_url, NV_MY_DOMAIN) . '#' . $attrid . '"><em class="fa fa-files-o fa-fw"></em></button>
-            </div></' . $tag . '>';
+            $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $match[3];
+            $html .= '<div class="bt-law">';
+            $html .= '<a href="javascript:void(0);" class="go-table-content" title="' . $nv_Lang->getModule('navigation') . '">';
+            $html .= '<i class="fa fa-chevron-up fa-fw"></i></a>';
+            $html .= '<a href="javascript:void(0);" class="copylink" title="' . $nv_Lang->getModule('copy_link') . '" data-clipboard-text="' . urlRewriteWithDomain($page_url, NV_MY_DOMAIN) . '#' . $attrid . '">';
+            $html .= '<i class="fa fa-files-o fa-fw"></i></a></div></' . $tag . '>';
             $row['navigation'][$nav1]['item'] = [$text, $attrid];
             $row['bodytext'] = str_replace($match[0], $html, $row['bodytext']);
         } elseif ($nav1) {
             $nav2++;
             $attrid = $idname . $nav2;
-
-            $html = '<' . $tag . $match[2] . ' id="' . $attrid . '">' . $match[3] . '<div class="bt_law">
-                <button type="button" class="go_table_content" title="' . $nv_Lang->getModule('navigation') . '"><em class="fa fa-chevron-up fa-fw"></em></button>
-                <button type="button" class="copylink" title="' .$nv_Lang->getModule('copy_link') . '" data-clipboard-text="' . urlRewriteWithDomain($page_url, NV_MY_DOMAIN) . '#' . $attrid . '"><em class="fa fa-files-o fa-fw"></em></button>
-            </div></' . $tag . '>';
+            $html = '<' . $tag . $match[2] . ' id="' . $attrid . '">' . $match[3];
+            $html .= '<div class="bt-law">';
+            $html .= '<a href="javascript:void(0);" class="go-table-content" title="' . $nv_Lang->getModule('navigation') . '">';
+            $html .= '<i class="fa fa-chevron-up fa-fw"></i></a>';
+            $html .= '<a href="javascript:void(0);" class="copylink" title="' . $nv_Lang->getModule('copy_link') . '" data-clipboard-text="' . urlRewriteWithDomain($page_url, NV_MY_DOMAIN) . '#' . $attrid . '">';
+            $html .= '<i class="fa fa-files-o fa-fw"></i></a></div></' . $tag . '>';
             !isset($row['navigation'][$nav1]['subitems']) && $row['navigation'][$nav1]['subitems'] = [];
             $row['navigation'][$nav1]['subitems'][] = [$text, $attrid];
             $row['bodytext'] = str_replace($match[0], $html, $row['bodytext']);

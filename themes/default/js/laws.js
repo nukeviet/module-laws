@@ -71,10 +71,10 @@ $(function() {
         }, 500);
     });
 
-    if ($('.metas').length) {
-        $(document).on('click', 'button.go_table_content', function() {
-            var metas = $('.metas');
-            if (metas.length) {
+    if ($('#nav-table-content').length) {
+        $(document).on('click', 'button.go-table-content', function() {
+            var nav_table_content = $('#nav-table-content');
+            if (nav_table_content.length) {
                 $("html, body").animate({
                     scrollTop: metas.offset().top
                 }, 800);
@@ -87,9 +87,8 @@ $(function() {
                 setTimeout(function() {
                     $(e.trigger).tooltip('destroy');
                 })
-            }).tooltip({title: $('.metas').data('copied'), placement: 'top', container: 'body', trigger: 'hover focus', animation: false});
+            }).tooltip({title: $('#nav-table-content').data('copied'), placement: 'top', container: 'body', trigger: 'hover focus', animation: false});
             $(e.trigger).tooltip('show');
         });
     }
-
 });
