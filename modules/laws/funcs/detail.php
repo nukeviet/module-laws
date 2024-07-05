@@ -70,7 +70,7 @@ if (isset($nv_laws_listsubject[$row['sid']])) {
 }
 
 $result = $db->query('SELECT area_id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row_area WHERE row_id=' . $row['id']);
-while (list($area_id) = $result->fetch(3)) {
+while (list ($area_id) = $result->fetch(3)) {
     $row['aid'][] = $area_id;
 }
 
@@ -167,7 +167,7 @@ if (!empty($row['map_ids'])) {
 if (!empty($row['sgid'])) {
     $sql = 'SELECT title FROM ' . NV_PREFIXLANG . '_' . $module_data . '_signer WHERE id = ' . $row['sgid'];
     $result = $db->query($sql);
-    list($row['signer']) = $result->fetch(3);
+    list ($row['signer']) = $result->fetch(3);
     $row['signer_url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=signer/' . $row['sgid'] . '/' . change_alias($row['signer']);
 }
 
@@ -175,7 +175,7 @@ if (!empty($row['sgid'])) {
 if (!empty($row['eid'])) {
     $sql = 'SELECT title FROM ' . NV_PREFIXLANG . '_' . $module_data . '_examine WHERE id = ' . $row['eid'];
     $result = $db->query($sql);
-    list($row['examine']) = $result->fetch(3);
+    list ($row['examine']) = $result->fetch(3);
 }
 
 // File download
