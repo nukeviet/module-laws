@@ -469,14 +469,23 @@ if (!empty($row['bodytext'])) {
             $nav2++;
             $attrid = $idname . $nav2;
 
-            $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $match[3] . '</' . $tag . '>';
+            $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $match[3];
+            $html .= '<div class="bt-law">';
+            $html .= '<a href="javascript:void(0);" class="go-table-content" title="' . $nv_Lang->getModule('navigation') . '">';
+            $html .= '<i class="fa fa-chevron-up fa-fw"></i></a>';
+            $html .= '<a href="javascript:void(0);" class="copylink" title="' . $nv_Lang->getModule('copy_link') . '" data-clipboard-text="' . urlRewriteWithDomain($page_url, NV_MY_DOMAIN) . '#' . $attrid . '">';
+            $html .= '<i class="fa fa-files-o fa-fw"></i></a></div></' . $tag . '>';
             $row['navigation'][$nav1]['item'] = [$text, $attrid];
             $row['bodytext'] = str_replace($match[0], $html, $row['bodytext']);
         } elseif ($nav1) {
             $nav2++;
             $attrid = $idname . $nav2;
-
-            $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $match[3] . '</' . $tag . '>';
+            $html = '<' . $tag . $match[2] . ' id="' . $attrid . '">' . $match[3];
+            $html .= '<div class="bt-law">';
+            $html .= '<a href="javascript:void(0);" class="go-table-content" title="' . $nv_Lang->getModule('navigation') . '">';
+            $html .= '<i class="fa fa-chevron-up fa-fw"></i></a>';
+            $html .= '<a href="javascript:void(0);" class="copylink" title="' . $nv_Lang->getModule('copy_link') . '" data-clipboard-text="' . urlRewriteWithDomain($page_url, NV_MY_DOMAIN) . '#' . $attrid . '">';
+            $html .= '<i class="fa fa-files-o fa-fw"></i></a></div></' . $tag . '>';
             !isset($row['navigation'][$nav1]['subitems']) && $row['navigation'][$nav1]['subitems'] = [];
             $row['navigation'][$nav1]['subitems'][] = [$text, $attrid];
             $row['bodytext'] = str_replace($match[0], $html, $row['bodytext']);

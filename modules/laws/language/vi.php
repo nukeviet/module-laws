@@ -296,3 +296,4 @@ $lang_module['tab_download'] = 'Tải về';
 $lang_module['tab_maps'] = 'VB liên quan';
 $lang_module['tab_maps_all'] = 'Tất cả';
 $lang_module['navigation'] = 'Mục lục';
+$lang_module['copy_link'] = 'Sao chép liên kết';

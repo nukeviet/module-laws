@@ -635,6 +635,21 @@ a#btn-search {
     font-weight: var(--vb-font-bold);
 }
 
+.bt-law {
+    float: right;
+    margin-left: 4px;
+}
+
+.bt-law a {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .2;
+    text-decoration: none;
+}
+
 @media (max-width: 767.98px) {
     .enable-responsive.law-detail .docmaps-nav {
         margin-bottom: 15px;
