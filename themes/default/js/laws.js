@@ -65,22 +65,13 @@ $(function() {
             scrollTop: $('[data-id=' + id + ']').offset().top
         }, 500);
     });
-    $('h2[data-id], h3[data-id]').on('click', function() {
+    $('h2[data-id] a.go-table-content, h3[data-id] a.go-table-content').on('click', function() {
         $("html, body").animate({
             scrollTop: $('#law-btn-tableof-contents').offset().top
         }, 500);
     });
 
     if ($('#nav-table-content').length) {
-        $(document).on('click', 'a.go-table-content', function() {
-            var nav_table_content = $('#nav-table-content');
-            if (nav_table_content.length) {
-                $("html, body").animate({
-                    scrollTop: metas.offset().top
-                }, 800);
-            }
-        });
-
         var clipboard = new ClipboardJS('[data-clipboard-text]');
         clipboard.on('success', function(e) {
             $(e.trigger).on('hidden.bs.tooltip', function() {
