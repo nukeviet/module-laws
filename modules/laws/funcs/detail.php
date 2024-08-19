@@ -480,7 +480,7 @@ if (!empty($row['bodytext'])) {
         } elseif ($nav1) {
             $nav2++;
             $attrid = $idname . $nav2;
-            $html = '<' . $tag . $match[2] . ' id="' . $attrid . '">' . $match[3];
+            $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $match[3];
             $html .= '<div class="bt-law">';
             $html .= '<a href="javascript:void(0);" class="go-table-content" title="' . $nv_Lang->getModule('navigation') . '">';
             $html .= '<i class="fa fa-chevron-up fa-fw"></i></a>';
