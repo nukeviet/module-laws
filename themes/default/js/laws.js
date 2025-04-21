@@ -19,8 +19,23 @@ function nv_delete_law(url, id) {
 
 $(function() {
     $('.laws-download-file [data-toggle="tooltip"]').tooltip({
-       container: "body"
+        container: "body"
     });
+
+    $('a[role="tab"]').on('shown.bs.tab', function(e) {
+        var urlParams = new URLSearchParams(window.location.search);
+        var ml = urlParams.get('ml');
+        var location = $(this).data('location');
+
+        if (ml) {
+            location += (location.indexOf('?') !== -1 ? '&' : '?') + 'ml=' + ml;
+        }
+
+        if (history.pushState) {
+            history.pushState(null, '', location);
+        }
+    });
+
     $('[data-toggle="collapsepdf"]').each(function() {
         $('#' + $(this).attr('id')).on('shown.bs.collapse', function() {
             var $this = $(this);
@@ -49,9 +64,12 @@ $(function() {
             minScrollbarLength: 20
         });
     }
+
     $('a[data-scroll-to]').on('click', function(e) {
-        e.preventDefault;
+        e.preventDefault();
         var id = $(this).data('scroll-to');
+        var location = $(this).data('location');
+
         if ($('#doc-body').not('.active')) {
             $('[aria-controls="doc-body"]').trigger('click');
             setTimeout(() => {
@@ -81,5 +99,18 @@ $(function() {
             }).tooltip({title: $('#nav-table-content').data('copied'), placement: 'top', container: 'body', trigger: 'hover focus', animation: false});
             $(e.trigger).tooltip('show');
         });
+    }
+
+    var urlParams = new URLSearchParams(window.location.search);
+    var ml = urlParams.get('ml');
+    if (ml) {
+        if (!$('#doc-body').hasClass('active')) {
+            $('[aria-controls="doc-body"]').tab('show');
+        }
+        setTimeout(() => {
+            $("html, body").animate({
+                scrollTop: $('[data-id=' + ml + ']').offset().top
+            }, 500);
+        }, 200);
     }
 });
