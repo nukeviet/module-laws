@@ -454,8 +454,11 @@ if (!empty($row['bodytext'])) {
     unset($matches);
     preg_match_all('/\<[\s]*(h2|h3)([^\>]*)\>(.*?)\<[\s]*\/[\s]*(h2|h3)[\s]*\>/is', $row['bodytext'], $matches, PREG_SET_ORDER);
 
-    $nav1 = $nav2 = 0;
     $idname = 'art-menu-';
+    $i = 0;
+    $y = 0;
+    $location = nv_url_rewrite($page_url, true);
+    $location = NV_MY_DOMAIN . $location . ((str_contains($location, '?') ? '&' : '?') . 'ml=');
 
     foreach ($matches as $match) {
         $text = trim(preg_replace('/\s[\s]+/is', ' ', strip_tags(nv_br2nl($match[3], ' '))));
@@ -465,29 +468,32 @@ if (!empty($row['bodytext'])) {
         }
 
         if ($tag == 'h2') {
-            $nav1++;
-            $nav2++;
-            $attrid = $idname . $nav2;
+            ++$y;
+            ++$i;
+            $attrid = $idname . $i;
 
             $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $match[3];
             $html .= '<div class="bt-law">';
             $html .= '<a href="javascript:void(0);" class="go-table-content" title="' . $nv_Lang->getModule('navigation') . '">';
             $html .= '<i class="fa fa-chevron-up fa-fw"></i></a>';
-            $html .= '<a href="javascript:void(0);" class="copylink" title="' . $nv_Lang->getModule('copy_link') . '" data-clipboard-text="' . urlRewriteWithDomain($page_url, NV_MY_DOMAIN) . '#' . $attrid . '">';
+            $html .= '<a href="javascript:void(0);" class="copylink" title="' . $nv_Lang->getModule('copy_link') . '" data-clipboard-text="' . $location . $attrid . '">';
             $html .= '<i class="fa fa-files-o fa-fw"></i></a></div></' . $tag . '>';
-            $row['navigation'][$nav1]['item'] = [$text, $attrid];
+
+            $row['navigation'][$y]['item'] = [$text, $attrid, $location . $attrid];
             $row['bodytext'] = str_replace($match[0], $html, $row['bodytext']);
-        } elseif ($nav1) {
-            $nav2++;
-            $attrid = $idname . $nav2;
+        } elseif ($y) {
+            ++$i;
+            $attrid = $idname . $i;
+
             $html = '<' . $tag . $match[2] . ' data-id="' . $attrid . '">' . $match[3];
             $html .= '<div class="bt-law">';
             $html .= '<a href="javascript:void(0);" class="go-table-content" title="' . $nv_Lang->getModule('navigation') . '">';
             $html .= '<i class="fa fa-chevron-up fa-fw"></i></a>';
-            $html .= '<a href="javascript:void(0);" class="copylink" title="' . $nv_Lang->getModule('copy_link') . '" data-clipboard-text="' . urlRewriteWithDomain($page_url, NV_MY_DOMAIN) . '#' . $attrid . '">';
+            $html .= '<a href="javascript:void(0);" class="copylink" title="' . $nv_Lang->getModule('copy_link') . '" data-clipboard-text="' . $location . $attrid . '">';
             $html .= '<i class="fa fa-files-o fa-fw"></i></a></div></' . $tag . '>';
-            !isset($row['navigation'][$nav1]['subitems']) && $row['navigation'][$nav1]['subitems'] = [];
-            $row['navigation'][$nav1]['subitems'][] = [$text, $attrid];
+
+            !isset($row['navigation'][$y]['subitems']) && $row['navigation'][$y]['subitems'] = [];
+            $row['navigation'][$y]['subitems'][] = [$text, $attrid, $location . $attrid];
             $row['bodytext'] = str_replace($match[0], $html, $row['bodytext']);
         }
     }
