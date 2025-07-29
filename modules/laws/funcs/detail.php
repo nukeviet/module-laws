@@ -27,7 +27,13 @@ $id = intval($m[2]);
 if ($id <= 0) {
     nv_redirect_location($base_url);
 }
-$sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id=' . $id . ' AND status=1';
+$sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id=' . $id;
+
+// Quản trị module xem chi tiết văn bản chưa kích hoạt, link từ trang quản trị
+if (!defined('NV_IS_MODADMIN')) {
+    $sql .= ' AND status=1';
+}
+
 $row = $db->query($sql)->fetch();
 if (empty($row)) {
     nv_redirect_location($base_url);
