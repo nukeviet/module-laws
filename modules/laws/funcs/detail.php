@@ -24,7 +24,13 @@ $id = intval($m[2]);
 if ($id <= 0) {
     nv_redirect_location($base_url);
 }
-$sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id=' . $id . ' AND status=1';
+$sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id=' . $id;
+
+// Quản trị module xem chi tiết văn bản chưa kích hoạt, link từ trang quản trị
+if (!defined('NV_IS_MODADMIN')) {
+    $sql .= ' AND status=1';
+}
+
 $row = $db->query($sql)->fetch();
 if (empty($row)) {
     nv_redirect_location($base_url);
@@ -34,7 +40,7 @@ $base_url .= '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . 
 $page_url = $base_url;
 $canonicalUrl = getCanonicalUrl($page_url);
 
-$row['edit_link'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;edit=1&amp;id=" . $row['id'];
+$row['edit_link'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=content&amp;id=' . $row['id'];
 
 $row['aid'] = [];
 $result = $db->query('SELECT area_id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row_area WHERE row_id=' . $row['id']);
