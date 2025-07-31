@@ -235,7 +235,7 @@ if ($nv_Request->isset_request('save', 'post')) {
 
     $post['end_comm_time'] = $nv_Request->get_title('end_comm_time', 'post', '');
     if (preg_match("/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/", $post['end_comm_time'], $m)) {
-        $post['end_comm_time'] = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
+        $post['end_comm_time'] = mktime(23, 59, 59, $m[2], $m[1], $m[3]);
     } else {
         $post['end_comm_time'] = 0;
     }
