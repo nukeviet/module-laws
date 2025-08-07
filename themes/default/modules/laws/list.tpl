@@ -47,10 +47,20 @@
         </div>
         <!-- END: down_in_home -->
         <!-- BEGIN: send_comm -->
-        <div class="c-comment a-center"><span class="label-name">{LANG.comm_time}:</span><a rel="dofollow" href="{ROW.url}#comment" title="{LANG.comm_time}"><span class="send_comm"></span></a></div>
+        <div class="c-comment a-center">
+            <span class="label-name">{LANG.comm_time}:</span>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.comm_time}"><span class="send_comm"></span></a>
+            <br>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.comm_time}">{LANG.comm_time_in}</a>
+        </div>
         <!-- END: send_comm -->
         <!-- BEGIN: comm_close -->
-        <div class="c-comment a-center"><span class="label-name">{LANG.comm_time}:</span><a rel="dofollow" href="{ROW.url}#comment" title="{LANG.uncomm_time}"><span class="comm_close"></span></a></div>
+        <div class="c-comment a-center">
+            <span class="label-name">{LANG.comm_time}:</span>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.uncomm_time}"><span class="comm_close"></span></a>
+            <br>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.uncomm_time}"><span class="text-danger">{LANG.comm_time_out}</span></a>
+        </div>
         <!-- END: comm_close -->
     </div>
     <!-- END: loop -->
