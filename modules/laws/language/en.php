@@ -82,6 +82,7 @@ $lang_module['start_comm_time_title'] = 'Receive comment from';
 $lang_module['end_comm_time_title'] = 'Receive comment to';
 $lang_module['comm_time_in'] = 'Collecting comments';
 $lang_module['comm_time_out'] = 'Comment period expired';
+$lang_module['comm_notarrived'] = 'Comment period not arrived';
 $lang_module['unlimit'] = 'Unlimited';
 $lang_module['start_comm_time'] = 'From %s';
 $lang_module['end_comm_time'] = 'To %s';

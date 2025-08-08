@@ -92,6 +92,8 @@ function nv_theme_laws_list($array_data, $generate_page = '', $show_header = tru
 
             if ($row['allow_comm']) {
                 $xtpl->parse('main.loop.send_comm');
+            } elseif ($row['start_comm_time'] > NV_CURRENTTIME) {
+                $xtpl->parse('main.loop.comm_notarrived');
             } else {
                 $xtpl->parse('main.loop.comm_close');
             }

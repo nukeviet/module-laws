@@ -62,6 +62,14 @@
             <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.uncomm_time}"><span class="text-danger">{LANG.comm_time_out}</span></a>
         </div>
         <!-- END: comm_close -->
+        <!-- BEGIN: comm_notarrived -->
+        <div class="c-comment a-center">
+            <span class="label-name">{LANG.comm_time}:</span>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.comm_notarrived}"><span class="comm_close"></span></a>
+            <br>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.comm_notarrived}"><span class="text-danger">{LANG.comm_notarrived}</span></a>
+        </div>
+        <!-- END: comm_notarrived -->
     </div>
     <!-- END: loop -->
 </div>

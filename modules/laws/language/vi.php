@@ -85,6 +85,7 @@ $lang_module['start_comm_time_title'] = 'Bắt đầu lấy ý kiến';
 $lang_module['end_comm_time_title'] = 'Kết thúc lấy ý kiến';
 $lang_module['comm_time_in'] = 'Đang lấy ý kiến';
 $lang_module['comm_time_out'] = 'Hết hạn lấy ý kiến';
+$lang_module['comm_notarrived'] = 'Chưa đến thời hạn lấy ý kiến';
 $lang_module['unlimit'] = 'Không giới hạn';
 $lang_module['start_comm_time'] = 'Từ %s';
 $lang_module['end_comm_time'] = 'Đến %s';
