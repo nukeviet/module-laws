@@ -106,7 +106,7 @@ $description = $row['introtext'];
 
 // Lay van ban thay the no
 if (!empty($row['replacement'])) {
-    $sql = 'SELECT title, alias, code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id IN(' . $row['replacement'] . ')';
+    $sql = 'SELECT title, alias, code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id IN(' . $row['replacement'] . ') AND status=1';
     $result = $db->query($sql);
     $row['replacement'] = [];
     while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
@@ -120,7 +120,7 @@ if (!empty($row['replacement'])) {
 
 // Lay van ban ma no thay the
 $row['unreplacement'] = [];
-$sql = 'SELECT b.title, b.alias, b.code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_set_replace AS a INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row AS b ON a.oid=b.id WHERE a.nid=' . $row['id'];
+$sql = 'SELECT b.title, b.alias, b.code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_set_replace AS a INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row AS b ON a.oid=b.id WHERE b.status=1 AND a.nid=' . $row['id'];
 $result = $db->query($sql);
 while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
     $row['unreplacement'][] = array(
@@ -132,7 +132,7 @@ while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
 
 // Lay cac van ban lien quan
 if (!empty($row['relatement'])) {
-    $sql = 'SELECT title, alias, code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id IN(' . $row['relatement'] . ')';
+    $sql = 'SELECT title, alias, code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id IN(' . $row['relatement'] . ') AND status=1';
     $result = $db->query($sql);
     $row['relatement'] = [];
     while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
@@ -198,7 +198,7 @@ $other_signer = [];
 
 if ($nv_laws_setting['detail_other']) {
     if (in_array('cat', $nv_laws_setting['detail_other'])) {
-        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE cid=' . $row['cid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
+        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE cid=' . $row['cid'] . ' AND id!=' . $row['id'] . ' AND status=1 ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
         while ($data = $result->fetch()) {
             $data['url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
             $other_cat[$data['id']] = $data;
@@ -207,7 +207,7 @@ if ($nv_laws_setting['detail_other']) {
 
     if (in_array('area', $nv_laws_setting['detail_other'])) {
         foreach ($row['aid'] as $key => $aid) {
-            $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row t1 INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row_area t2 ON t1.id=t2.row_id WHERE t2.area_id = ' . $aid . ' AND t1.id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
+            $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row t1 INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row_area t2 ON t1.id=t2.row_id WHERE t2.area_id = ' . $aid . ' AND t1.id!=' . $row['id'] . ' AND t1.status=1 ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
             while ($data = $result->fetch()) {
                 $data['url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
                 $other_area[$data['area_id']][$data['id']] = $data;
@@ -216,7 +216,7 @@ if ($nv_laws_setting['detail_other']) {
     }
 
     if (in_array('subject', $nv_laws_setting['detail_other'])) {
-        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $row['sid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
+        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $row['sid'] . ' AND id!=' . $row['id'] . ' AND status=1 ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
         while ($data = $result->fetch()) {
             $data['url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
             $other_subject[$data['id']] = $data;
@@ -224,7 +224,7 @@ if ($nv_laws_setting['detail_other']) {
     }
 
     if (in_array('singer', $nv_laws_setting['detail_other'])) {
-        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sgid=' . $row['sgid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
+        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sgid=' . $row['sgid'] . ' AND id!=' . $row['id'] . ' AND status=1 ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
         while ($data = $result->fetch()) {
             $data['url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
             $other_signer[$data['id']] = $data;
