@@ -19,8 +19,8 @@ $module_version = [
     'change_alias' => 'detail',
     'is_sysmod' => 0,
     'virtual' => 1,
-    'version' => '4.5.08',
-    'date' => 'Friday, April 17, 2026 11:01:04 AM GMT+07:00',
+    'version' => '4.6.00',
+    'date' => 'Friday, June 19, 2026 at 3:08:43 PM UTC+07:00',
     'author' => 'VINADES <contact@vinades.vn>',
     'uploads_dir' => [
         $module_upload
