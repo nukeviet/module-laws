@@ -1,4 +1,4 @@
 <!-- BEGIN: main -->
-<h3 class="pagetitle"><span class="big-icon bcat">&nbsp;</span>{LANG.view_signer} {CAT.title}</h3>
+<h1 class="margin-bottom"><i class="fa fa-file-text-o"></i> {LANG.view_signer} {CAT.title}</h1>
 {HTML}
 <!-- END: main -->

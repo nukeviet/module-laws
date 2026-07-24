@@ -5,6 +5,10 @@
  * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
  */
 
+.d-inline {
+    display: inline!important;
+}
+
 /* Block Menu */
 .smoothmenu2 {
     z-index: 1000
@@ -310,79 +314,9 @@
 }
 
 /* Other */
-h3.pagetitle {
-    line-height: 30px;
-    padding: 0px;
-    margin: 8px 0px 8px 0px;
-}
-
 .generate_page {
     text-align: center;
     font-weight: bold
-}
-
-/* Style button */
-.style-button {
-    padding: 0px 10px 0px 0px;
-    height: 25px;
-    cursor: pointer;
-    display: inline-block;
-    background-image: url('../images/laws/button.png');
-    background-position: right top;
-    background-repeat: no-repeat;
-}
-
-.style-button:hover {
-    background-image: url('../images/laws/button.png');
-    background-repeat: no-repeat;
-    background-position: right bottom;
-}
-
-.style-button:hover span, .style-button:hover a {
-    background-repeat: no-repeat !important;
-    background-position: left bottom;
-    background-image: url('../images/laws/button.png');
-}
-
-.style-button span, .style-button a {
-    background-position: left top;
-    line-height: 25px;
-    padding-left: 10px;
-    display: inline-block;
-    background-repeat: no-repeat;
-    background-image: url('../images/laws/button.png');
-    font-weight: bold;
-    color: #FFFFFF;
-}
-
-/* big icon */
-.big-icon {
-    height: 32px;
-    padding: 0;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    display: inline-block;
-    width: 32px;
-    margin-right: 4px;
-}
-
-.bcourse {
-    background-image: url('../images/laws/big-icon-pack.png');
-}
-
-.bdetail {
-    background-position: -32px 0px;
-    background-image: url('../images/laws/big-icon-pack.png');
-}
-
-.bteacher {
-    background-position: -64px 0px;
-    background-image: url('../images/laws/big-icon-pack.png');
-}
-
-.bcat {
-    background-position: -96px 0px;
-    background-image: url('../images/laws/big-icon-pack.png');
 }
 
 /* small icon */

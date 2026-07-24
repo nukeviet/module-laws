@@ -97,3 +97,4 @@ $lang_module['examine'] = 'Examine';
 $lang_module['edit'] = 'Edit';
 $lang_module['delete'] = 'Delete';
 $lang_module['addtime'] = 'Add time';
+$lang_module['search_laws'] = 'Search laws';

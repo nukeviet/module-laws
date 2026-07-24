@@ -44,9 +44,11 @@ $row['edit_link'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . N
 
 $row['aid'] = [];
 $result = $db->query('SELECT area_id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row_area WHERE row_id=' . $row['id']);
-while (list ($area_id) = $result->fetch(3)) {
+while ($_scratch = $result->fetch(3)) {
+    [$area_id] = $_scratch;
     $row['aid'][] = $area_id;
 }
+$result->closeCursor();
 
 if (!nv_user_in_groups($row['groups_view'])) {
     nv_info_die($lang_module['info_no_allow'], $lang_module['info_no_allow'], $lang_module['info_no_allow_detail']);
@@ -122,13 +124,15 @@ if (!empty($row['replacement'])) {
 $row['unreplacement'] = [];
 $sql = 'SELECT b.title, b.alias, b.code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_set_replace AS a INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row AS b ON a.oid=b.id WHERE b.status=1 AND a.nid=' . $row['id'];
 $result = $db->query($sql);
-while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
+while ($_scratch = $result->fetch(3)) {
+    [$_title, $_alias, $_code] = $_scratch;
     $row['unreplacement'][] = array(
         'title' => $_title,
         'code' => $_code,
         'link' => $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $_alias
     );
 }
+$result->closeCursor();
 
 // Lay cac van ban lien quan
 if (!empty($row['relatement'])) {

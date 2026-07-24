@@ -13,7 +13,15 @@
     <!-- BEGIN: loop -->
     <div class="table-rows">
         <!-- BEGIN: stt --><div class="c-stt a-center">{ROW.stt}</div><!-- END: stt -->
-        <div class="c-code"><span class="label-name">{LANG.code}:</span><a rel="dofollow" href="{ROW.url}" title="{ROW.title}">{ROW.code}</a></div>
+        <div class="c-code">
+            <span class="label-name">{LANG.code}:</span>
+            <!-- BEGIN: heading_level2 -->
+            <h2 class="h4 d-inline"><a rel="dofollow" href="{ROW.url}" title="{ROW.title}">{ROW.code}</a></h2>
+            <!-- END: heading_level2 -->
+            <!-- BEGIN: heading_level3 -->
+            <h3 class="h4 d-inline"><a rel="dofollow" href="{ROW.url}" title="{ROW.title}">{ROW.code}</a></h3>
+            <!-- END: heading_level3 -->
+        </div>
         <!-- BEGIN: publtime -->
         <div class="c-time"><span class="label-name">{LANG.publtime}:</span>{ROW.publtime}</div>
         <!-- END: publtime -->

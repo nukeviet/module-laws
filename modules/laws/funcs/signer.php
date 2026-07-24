@@ -12,6 +12,10 @@ if (!defined('NV_IS_MOD_LAWS')) {
     die('Stop!!!');
 }
 
+/**
+ * Văn bản luật theo người ký
+ */
+
 $id = isset($array_op[1]) ? intval($array_op[1]) : 0;
 $page_url = $base_url = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name;
 

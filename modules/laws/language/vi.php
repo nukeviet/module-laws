@@ -100,3 +100,4 @@ $lang_module['examine'] = 'Cơ quan thẩm tra';
 $lang_module['edit'] = 'Sửa';
 $lang_module['delete'] = 'Xóa';
 $lang_module['addtime'] = 'Thời gian đăng';
+$lang_module['search_laws'] = 'Tìm kiếm văn bản';

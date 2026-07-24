@@ -152,7 +152,7 @@ $canonicalUrl = getCanonicalUrl($page_url);
 
 if (!$search) {
     include NV_ROOTDIR . '/includes/header.php';
-    echo nv_site_theme(nv_theme_laws_search([], "", 0));
+    echo nv_site_theme(nv_theme_laws_search([], '', 0, false));
     include NV_ROOTDIR . '/includes/footer.php';
 }
 

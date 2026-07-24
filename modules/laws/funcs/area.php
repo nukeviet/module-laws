@@ -12,6 +12,10 @@ if (!defined('NV_IS_MOD_LAWS')) {
     die('Stop!!!');
 }
 
+/**
+ * Văn bản theo lĩnh vực
+ */
+
 $alias = isset($array_op[1]) ? $array_op[1] : "";
 $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
 if (!preg_match("/^([a-z0-9\-\_\.]+)$/i", $alias)) {
