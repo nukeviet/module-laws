@@ -64,7 +64,7 @@
 					</tr>
 					<tr>
 						<td colspan="4" class="text-center">
-							<input class="btn btn-primary" type="submit" name="submit" value="{LANG.search}"/>
+							<input class="btn btn-primary" type="submit" name="submitsave" value="{LANG.search}"/>
 							<input type="button" class="reset" value="{LANG.reset}"/>
 						</td>
 					</tr>
@@ -93,7 +93,7 @@ $("#pfrom,#pto,#efrom,#eto").datepicker({
 $("#formgetuid").submit(function() {
   var a = $(this).attr("action");
   b = $(this).serialize();
-  a = a + "&" + b + "&submit=1";
+  a = a + "&" + b + "&submitsave=1";
   $("#formgetuid input, #formgetuid select").attr("disabled", "disabled");
   $.ajax({type:"GET", url:a, success:function(c) {
     $("#resultdata").html(c);

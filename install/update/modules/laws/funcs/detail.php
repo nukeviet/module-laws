@@ -24,7 +24,13 @@ $id = intval($m[2]);
 if ($id <= 0) {
     nv_redirect_location($base_url);
 }
-$sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id=' . $id . ' AND status=1';
+$sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id=' . $id;
+
+// Quản trị module xem chi tiết văn bản chưa kích hoạt, link từ trang quản trị
+if (!defined('NV_IS_MODADMIN')) {
+    $sql .= ' AND status=1';
+}
+
 $row = $db->query($sql)->fetch();
 if (empty($row)) {
     nv_redirect_location($base_url);
@@ -34,13 +40,15 @@ $base_url .= '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . 
 $page_url = $base_url;
 $canonicalUrl = getCanonicalUrl($page_url);
 
-$row['edit_link'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;edit=1&amp;id=" . $row['id'];
+$row['edit_link'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=content&amp;id=' . $row['id'];
 
 $row['aid'] = [];
 $result = $db->query('SELECT area_id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row_area WHERE row_id=' . $row['id']);
-while (list ($area_id) = $result->fetch(3)) {
+while ($_scratch = $result->fetch(3)) {
+    [$area_id] = $_scratch;
     $row['aid'][] = $area_id;
 }
+$result->closeCursor();
 
 if (!nv_user_in_groups($row['groups_view'])) {
     nv_info_die($lang_module['info_no_allow'], $lang_module['info_no_allow'], $lang_module['info_no_allow_detail']);
@@ -100,7 +108,7 @@ $description = $row['introtext'];
 
 // Lay van ban thay the no
 if (!empty($row['replacement'])) {
-    $sql = 'SELECT title, alias, code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id IN(' . $row['replacement'] . ')';
+    $sql = 'SELECT title, alias, code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id IN(' . $row['replacement'] . ') AND status=1';
     $result = $db->query($sql);
     $row['replacement'] = [];
     while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
@@ -114,19 +122,21 @@ if (!empty($row['replacement'])) {
 
 // Lay van ban ma no thay the
 $row['unreplacement'] = [];
-$sql = 'SELECT b.title, b.alias, b.code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_set_replace AS a INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row AS b ON a.oid=b.id WHERE a.nid=' . $row['id'];
+$sql = 'SELECT b.title, b.alias, b.code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_set_replace AS a INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row AS b ON a.oid=b.id WHERE b.status=1 AND a.nid=' . $row['id'];
 $result = $db->query($sql);
-while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
+while ($_scratch = $result->fetch(3)) {
+    [$_title, $_alias, $_code] = $_scratch;
     $row['unreplacement'][] = array(
         'title' => $_title,
         'code' => $_code,
         'link' => $base_url . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $_alias
     );
 }
+$result->closeCursor();
 
 // Lay cac van ban lien quan
 if (!empty($row['relatement'])) {
-    $sql = 'SELECT title, alias, code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id IN(' . $row['relatement'] . ')';
+    $sql = 'SELECT title, alias, code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id IN(' . $row['relatement'] . ') AND status=1';
     $result = $db->query($sql);
     $row['relatement'] = [];
     while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
@@ -192,7 +202,7 @@ $other_signer = [];
 
 if ($nv_laws_setting['detail_other']) {
     if (in_array('cat', $nv_laws_setting['detail_other'])) {
-        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE cid=' . $row['cid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
+        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE cid=' . $row['cid'] . ' AND id!=' . $row['id'] . ' AND status=1 ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
         while ($data = $result->fetch()) {
             $data['url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
             $other_cat[$data['id']] = $data;
@@ -201,7 +211,7 @@ if ($nv_laws_setting['detail_other']) {
 
     if (in_array('area', $nv_laws_setting['detail_other'])) {
         foreach ($row['aid'] as $key => $aid) {
-            $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row t1 INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row_area t2 ON t1.id=t2.row_id WHERE t2.area_id = ' . $aid . ' AND t1.id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
+            $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row t1 INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row_area t2 ON t1.id=t2.row_id WHERE t2.area_id = ' . $aid . ' AND t1.id!=' . $row['id'] . ' AND t1.status=1 ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
             while ($data = $result->fetch()) {
                 $data['url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
                 $other_area[$data['area_id']][$data['id']] = $data;
@@ -210,7 +220,7 @@ if ($nv_laws_setting['detail_other']) {
     }
 
     if (in_array('subject', $nv_laws_setting['detail_other'])) {
-        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $row['sid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
+        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $row['sid'] . ' AND id!=' . $row['id'] . ' AND status=1 ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
         while ($data = $result->fetch()) {
             $data['url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
             $other_subject[$data['id']] = $data;
@@ -218,7 +228,7 @@ if ($nv_laws_setting['detail_other']) {
     }
 
     if (in_array('singer', $nv_laws_setting['detail_other'])) {
-        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sgid=' . $row['sgid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
+        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sgid=' . $row['sgid'] . ' AND id!=' . $row['id'] . ' AND status=1 ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
         while ($data = $result->fetch()) {
             $data['url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
             $other_signer[$data['id']] = $data;
@@ -245,7 +255,7 @@ if (isset($site_mods['comment']) and isset($module_config[$module_name]['activec
 
     require_once NV_ROOTDIR . '/modules/comment/comment.php';
     $area = (defined('NV_COMM_AREA')) ? NV_COMM_AREA : 0;
-    $checkss = md5($module_name . '-' . $area . '-' . NV_COMM_ID . '-' . $allowed . '-' . NV_CACHE_PREFIX);
+    $checkss = md5($module_name . '-' . $area . '-' . NV_COMM_ID . '-' . $allowed . '-' . NV_CHECK_SESSION);
 
     $content_comment = nv_comment_module($module_name, $checkss, $area, NV_COMM_ID, $allowed, 1);
 } else {

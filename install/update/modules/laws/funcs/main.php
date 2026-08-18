@@ -26,7 +26,7 @@ $per_page = $nv_laws_setting['nummain'];
 
 if (!defined('NV_IS_MODADMIN') and $page < 5) {
     $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';
-    if (($cache = $nv_Cache->getItem($module_name, $cache_file)) != false) {
+    if (($cache = $nv_Cache->getItem($module_name, $cache_file, 3600)) != false) {
         $contents = $cache;
     }
 }
@@ -73,7 +73,7 @@ if (empty($contents)) {
     }
 
     if (!defined('NV_IS_MODADMIN') and $contents != '' and $cache_file != '') {
-        $nv_Cache->setItem($module_name, $cache_file, $contents);
+        $nv_Cache->setItem($module_name, $cache_file, $contents, 3600);
     }
 }
 

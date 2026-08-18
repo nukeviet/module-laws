@@ -1,4 +1,7 @@
 <!-- BEGIN: main -->
+<!-- BEGIN: title -->
+<h1 class="sr-only">{PAGE_TITLE}</h1>
+<!-- END: title -->
 <div class="flex-table-laws-inline">
     <div class="flex-table-laws">
         <div class="table-rows table-head">

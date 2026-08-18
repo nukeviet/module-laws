@@ -2,12 +2,12 @@
 <div class="block-law marquee" <!-- BEGIN: marquee_data -->data-direction='{DATA.direction}' data-duration='{DATA.duration}' data-pauseOnHover="{DATA.pauseOnHover}" data-duplicated="{DATA.duplicated}" style="height: 200px; overflow: hidden;"<!-- END: marquee_data --> >
 	<!-- BEGIN: loop -->
 	<div class="m-bottom item">
-		<h3 class="law-code">
+		<div class="law-code">
 			<a rel="dofollow" href="{ROW.link}" title="{ROW.title}">{ROW.code}</a>
 			<!-- BEGIN: newday -->
 			<span class="icon_new"></span>
 			<!-- END: newday -->
-		</h3>
+		</div>
 		<p class="law-title">{ROW.title}</p>
 		<p class="text-muted law-view">{LANG.addtime}: {ROW.addtime}</p>
 		<!-- BEGIN: code -->

@@ -13,7 +13,15 @@
     <!-- BEGIN: loop -->
     <div class="table-rows">
         <!-- BEGIN: stt --><div class="c-stt a-center">{ROW.stt}</div><!-- END: stt -->
-        <div class="c-code"><span class="label-name">{LANG.code}:</span><a rel="dofollow" href="{ROW.url}" title="{ROW.title}">{ROW.code}</a></div>
+        <div class="c-code">
+            <span class="label-name">{LANG.code}:</span>
+            <!-- BEGIN: heading_level2 -->
+            <h2 class="h4 d-inline"><a rel="dofollow" href="{ROW.url}" title="{ROW.title}">{ROW.code}</a></h2>
+            <!-- END: heading_level2 -->
+            <!-- BEGIN: heading_level3 -->
+            <h3 class="h4 d-inline"><a rel="dofollow" href="{ROW.url}" title="{ROW.title}">{ROW.code}</a></h3>
+            <!-- END: heading_level3 -->
+        </div>
         <!-- BEGIN: publtime -->
         <div class="c-time"><span class="label-name">{LANG.publtime}:</span>{ROW.publtime}</div>
         <!-- END: publtime -->
@@ -47,11 +55,29 @@
         </div>
         <!-- END: down_in_home -->
         <!-- BEGIN: send_comm -->
-        <div class="c-comment a-center"><span class="label-name">{LANG.comm_time}:</span><a rel="dofollow" href="{ROW.url}#comment" title="{LANG.comm_time}"><span class="send_comm"></span></a></div>
+        <div class="c-comment a-center">
+            <span class="label-name">{LANG.comm_time}:</span>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.comm_time}"><span class="send_comm"></span></a>
+            <br>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.comm_time}">{LANG.comm_time_in}</a>
+        </div>
         <!-- END: send_comm -->
         <!-- BEGIN: comm_close -->
-        <div class="c-comment a-center"><span class="label-name">{LANG.comm_time}:</span><a rel="dofollow" href="{ROW.url}#comment" title="{LANG.uncomm_time}"><span class="comm_close"></span></a></div>
+        <div class="c-comment a-center">
+            <span class="label-name">{LANG.comm_time}:</span>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.uncomm_time}"><span class="comm_close"></span></a>
+            <br>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.uncomm_time}"><span class="text-danger">{LANG.comm_time_out}</span></a>
+        </div>
         <!-- END: comm_close -->
+        <!-- BEGIN: comm_notarrived -->
+        <div class="c-comment a-center">
+            <span class="label-name">{LANG.comm_time}:</span>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.comm_notarrived}"><span class="comm_close"></span></a>
+            <br>
+            <a rel="dofollow" href="{ROW.url}#comment" title="{LANG.comm_notarrived}"><span class="text-danger">{LANG.comm_notarrived}</span></a>
+        </div>
+        <!-- END: comm_notarrived -->
     </div>
     <!-- END: loop -->
 </div>

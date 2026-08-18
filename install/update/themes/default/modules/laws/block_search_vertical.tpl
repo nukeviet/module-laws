@@ -124,7 +124,7 @@ $(document).ready(function() {
     $("#ls_from,#ls_to").datepicker({
         showOn : "both",
         dateFormat : "dd/mm/yy",
-        yearRange: "2000:2025",
+        yearRange: "c-30:c+0",
         changeMonth : true,
         changeYear : true,
         showOtherMonths : true,

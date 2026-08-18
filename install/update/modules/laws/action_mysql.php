@@ -88,7 +88,7 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   sgid smallint(4) unsigned NOT NULL DEFAULT '0',
   note text NOT NULL,
   introtext text NOT NULL,
-  bodytext text NOT NULL,
+  bodytext mediumtext NOT NULL,
   keywords varchar(255) NOT NULL,
   groups_view varchar(255) NOT NULL,
   groups_download varchar(255) NOT NULL,

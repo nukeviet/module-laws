@@ -12,6 +12,10 @@ if (!defined('NV_IS_MOD_LAWS')) {
     die('Stop!!!');
 }
 
+/**
+ * Văn bản theo lĩnh vực
+ */
+
 $alias = isset($array_op[1]) ? $array_op[1] : "";
 $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
 if (!preg_match("/^([a-z0-9\-\_\.]+)$/i", $alias)) {
@@ -58,7 +62,7 @@ $canonicalUrl = getCanonicalUrl($page_url);
 
 if (!defined('NV_IS_MODADMIN') and $page < 5) {
     $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_' . $catid . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';
-    if (($cache = $nv_Cache->getItem($module_name, $cache_file)) != false) {
+    if (($cache = $nv_Cache->getItem($module_name, $cache_file, 3600)) != false) {
         $contents = $cache;
     }
 }
@@ -91,7 +95,7 @@ if (empty($contents)) {
     $contents = nv_theme_laws_area($array_data, $generate_page, $cat);
 
     if (!defined('NV_IS_MODADMIN') and $contents != '' and $cache_file != '') {
-        $nv_Cache->setItem($module_name, $cache_file, $contents);
+        $nv_Cache->setItem($module_name, $cache_file, $contents, 3600);
     }
 }
 

@@ -76,9 +76,11 @@ $array_config['title_show_type'] = 0;
 
 $sql = "SELECT config_name, config_value FROM " . NV_PREFIXLANG . "_" . $module_data . "_config";
 $result = $db->query($sql);
-while (list ($c_config_name, $c_config_value) = $result->fetch(3)) {
+while ($_scratch = $result->fetch(3)) {
+    [$c_config_name, $c_config_value] = $_scratch;
     $array_config[$c_config_name] = $c_config_value;
 }
+$result->closeCursor();
 $array_config['activecomm'] = $module_config[$module_name]['activecomm'];
 $typeview = [];
 for ($i = 0; $i <= 4; $i++) {
