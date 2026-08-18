@@ -698,6 +698,9 @@ function nv_up_finish()
     nv_deletefile(NV_ROOTDIR . '/modules/laws/funcs/.htaccess');
     nv_deletefile(NV_ROOTDIR . '/modules/laws/language/.htaccess');
 
+    nv_deletefile(NV_ROOTDIR . '/themes/default/images/laws/big-icon-pack.png');
+    nv_deletefile(NV_ROOTDIR . '/themes/default/images/laws/button.png');
+
     try {
         $num = $db->query("SELECT COUNT(*) FROM " . $db_config['prefix'] . "_setup_extensions WHERE basename='" . $nv_update_config['formodule'] . "' AND type='module'")->fetchColumn();
         $version = $nv_update_config['to_version'] . " " . $nv_update_config['release_date'];
