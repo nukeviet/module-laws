@@ -24,7 +24,7 @@ if ($id) {
         nv_info_die($lang_global['error_404_title'], $lang_global['error_404_title'], $lang_global['error_404_content']);
     }
 
-    list ($id, $title, $offices, $positions) = $result->fetch(3);
+    list ($id, $title, $offices, $positions) = $result->fetch(3) ?: [null, null, null, null];
 
     $array_old = $array = array(
         "id" => $id,
@@ -60,7 +60,7 @@ if ($nv_Request->isset_request('bntsubmit', 'post')) {
             // Check exist
             $sql = "SELECT id FROM " . NV_PREFIXLANG . "_" . $module_data . "_signer WHERE title=" . $db->quote($array['title']) . " AND offices=" . $db->quote($array['offices']) . " AND positions=" . $db->quote($array['positions']);
             $result = $db->query($sql);
-            list ($check_exist) = $result->fetch(3);
+            list ($check_exist) = $result->fetch(3) ?: [null];
 
             if ($check_exist) {
                 $error = $lang_module['scontent_error_exist'];
@@ -86,7 +86,7 @@ if ($nv_Request->isset_request('bntsubmit', 'post')) {
             // Check exist
             $sql = "SELECT id FROM " . NV_PREFIXLANG . "_" . $module_data . "_signer WHERE title=" . $db->quote($array['title']) . " AND id!=" . $id;
             $result = $db->query($sql);
-            list ($check_exist) = $result->fetch(3);
+            list ($check_exist) = $result->fetch(3) ?: [null];
 
             if ($check_exist) {
                 $error = $lang_module['actor_error_exist'];

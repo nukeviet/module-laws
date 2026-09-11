@@ -50,7 +50,9 @@ if (!empty($nv_laws_listcat)) {
     }
     if ($module_info['rss']) {
         if (($result = $db->query($sql)) !== false) {
-            while (list ($id, $title, $code, $alias, $introtext, $addtime, $publtime) = $result->fetch(3)) {
+            while ($_scratch = $result->fetch(3)) {
+                list($id, $title, $code, $alias, $introtext, $addtime, $publtime) = $_scratch;
+                unset($_scratch);
                 $items[] = [
                     'title' => '[' . $code . '] ' . $title,
                     'link' => NV_MY_DOMAIN . NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=detail/" . $alias,

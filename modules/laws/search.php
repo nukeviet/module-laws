@@ -26,7 +26,9 @@ $num_items = $result->fetchColumn();
 if ($num_items) {
     $link = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $m_values['module_name'] . '&amp;' . NV_OP_VARIABLE . '=' . $site_mods[$m_values['module_name']]['alias']['detail'] . '/';
 
-    while (list($id, $tilterow, $alias, $content) = $tmp_re->fetch(3)) {
+    while ($_scratch = $tmp_re->fetch(3)) {
+        list($id, $tilterow, $alias, $content) = $_scratch;
+        unset($_scratch);
         $result_array[] = [
             'link' => $link . $alias,
             'title' => BoldKeywordInStr($tilterow, $key, $logic),

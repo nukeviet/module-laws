@@ -111,7 +111,9 @@ if (!empty($row['replacement'])) {
     $sql = 'SELECT title, alias, code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id IN(' . $row['replacement'] . ') AND status=1';
     $result = $db->query($sql);
     $row['replacement'] = [];
-    while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
+    while ($_scratch = $result->fetch(3)) {
+        list($_title, $_alias, $_code) = $_scratch;
+        unset($_scratch);
         $row['replacement'][] = array(
             'title' => $_title,
             'code' => $_code,
@@ -139,7 +141,9 @@ if (!empty($row['relatement'])) {
     $sql = 'SELECT title, alias, code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE id IN(' . $row['relatement'] . ') AND status=1';
     $result = $db->query($sql);
     $row['relatement'] = [];
-    while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
+    while ($_scratch = $result->fetch(3)) {
+        list($_title, $_alias, $_code) = $_scratch;
+        unset($_scratch);
         $row['relatement'][] = array(
             'title' => $_title,
             'code' => $_code,
@@ -152,7 +156,7 @@ if (!empty($row['relatement'])) {
 if (!empty($row['sgid'])) {
     $sql = 'SELECT title FROM ' . NV_PREFIXLANG . '_' . $module_data . '_signer WHERE id = ' . $row['sgid'];
     $result = $db->query($sql);
-    list ($row['signer']) = $result->fetch(3);
+    list ($row['signer']) = $result->fetch(3) ?: [null];
     $row['signer_url'] = $base_url . '&amp;' . NV_OP_VARIABLE . '=signer/' . $row['sgid'] . '/' . change_alias($row['signer']);
 }
 
@@ -160,7 +164,7 @@ if (!empty($row['sgid'])) {
 if (!empty($row['eid'])) {
     $sql = 'SELECT title FROM ' . NV_PREFIXLANG . '_' . $module_data . '_examine WHERE id = ' . $row['eid'];
     $result = $db->query($sql);
-    list ($row['examine']) = $result->fetch(3);
+    list ($row['examine']) = $result->fetch(3) ?: [null];
 }
 
 // File download
